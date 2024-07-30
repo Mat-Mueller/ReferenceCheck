@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Text Selection and CrossRef Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .search-string-frame, .result-frame {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+
+            .search-string-frame p, .result-frame p {
+                margin: 0;
+                font-size: 16px;
+            }
+        #controls img {
+            height: 40px; /* Adjust size as needed to match button height */
+            
+            margin-right: 10px;
+        }
+
+        #controls {
+            padding: 15px;
+            background: #4a90e2;
+            color: #fff;
+            
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            #controls button, #controls input[type="file"] {
+                margin-left: 10px;
+                padding: 10px 15px;
+                width: 190px;
+                background-color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                color: #333;
+            }
+
+                #controls button.active {
+                    background-color: #333;
+                    color: #fff;
+                }
+
+        #viewer {
+            display: flex;
+            flex: 1;
+            overflow-y: hidden;
+        }
+
+        #left-column {
+            width: 60px;
+            background-color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #ccc;
+        }
+
+        .frame {
+            width: 50%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .textLayer {
+            position: relative;
+            pointer-events: auto;
+            display: block;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+
+        .textLayer > div {
+            position: absolute;
+            transform-origin: 0% 0%;
+        }
+
+        .textLayer .endOfContent {
+            display: none;
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+        }
+
+            .result-item p {
+                margin: 0;
+            }
+
+        .active {
+            background-color: #ccc; /* Active button style */
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <img src="Logo.png" alt="Icon" id="icon">
+        <input type="file" id="pdf-upload" accept="application/pdf">
+        <button id="automatic-search-button" class="active" onclick="toggleSearchMode('automatic')">Automatic Search</button>
+        <button id="manual-search-button" onclick="toggleSearchMode('manual')">Manual Search</button>
+
+
+        <button onclick="LoadScholar()">Search on Google Scholar</button>
+        <!--<button onclick="clearPDFAndReload()">Reload Page</button>-->
+    </div>
+    <div id="viewer">
+
+        <div class="frame" id="pdf-container"></div>
+        <div class="frame" id="scholar-container">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="script.js"></script>
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="script.js"></script>
+
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+
+        const pdfContainer = document.getElementById('pdf-container');
+        let pdfDocument = null;
+        let searchMode = 'automatic'; // Initial search mode
+
+        function clearPDFAndReload() {
+            const pdfContainer = document.getElementById('pdf-container');
+            pdfContainer.innerHTML = ''; // Clear the PDF container
+
+            window.location.reload(true); // Reload the page from the server
+        }
+
+        function LoadScholar() {
+
+
+            // Encode the query to be URL-safe
+            const encodedQuery = encodeURIComponent(getSelectedText());
+            // Construct the Google Scholar search URL
+            const url = `https://scholar.google.com/scholar?q=${encodedQuery}`;
+            // Open a new window with the constructed URL
+            window.open(url, '_blank');
+
+        }
+
+        function toggleSearchMode(mode) {
+            // Reset buttons to inactive state
+            document.getElementById('manual-search-button').classList.remove('active');
+            document.getElementById('automatic-search-button').classList.remove('active');
+
+            if (mode === 'manual' && !(searchMode === 'manual')) {
+                document.getElementById('manual-search-button').classList.add('active');
+                document.getElementById('automatic-search-button').classList.remove('active');
+                searchMode = 'manual';
+            } else if (mode === 'manual' && (searchMode === 'manual')) {
+                searchMode = 'none';
+                document.getElementById('manual-search-button').classList.remove('active');
+                document.getElementById('automatic-search-button').classList.remove('active');
+            }
+
+            else if (mode === 'automatic' && !(searchMode === 'automatic')) {
+                document.getElementById('automatic-search-button').classList.add('active');
+                document.getElementById('manual-search-button').classList.remove('active');
+                searchMode = 'automatic';
+            } else if (mode === 'automatic' && (searchMode === 'automatic')) {
+                searchMode = 'none';
+                document.getElementById('manual-search-button').classList.remove('active');
+                document.getElementById('automatic-search-button').classList.remove('active');
+
+            }
+        }
+        document.getElementById('pdf-upload').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const fileURL = URL.createObjectURL(file);
+                loadPDF(fileURL);
+            }
+        });
+
+        function loadPDF(url) {
+            pdfjsLib.getDocument(url).promise.then(function (pdf) {
+                pdfDocument = pdf;
+                document.getElementById('pdf-container').innerHTML = ''; // Clear previous content
+                renderAllPages();
+                removeEmptyDivs()
+            });
+        }
+
+        function renderAllPages() {
+            for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
+                pdfDocument.getPage(pageNum).then(function (page) {
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const textLayerDiv = document.createElement('div');
+                    textLayerDiv.className = 'textLayer';
+                    textLayerDiv.style.height = `${viewport.height}px`;
+                    textLayerDiv.style.width = `${viewport.width}px`;
+                    textLayerDiv.style.position = 'relative';
+                    textLayerDiv.style.marginBottom = '20px'; // Space between pages
+
+                    pdfContainer.appendChild(textLayerDiv);
+
+                    page.getTextContent().then(function (textContent) {
+                        let prevY = null;
+                        let paragraph = '';
+
+                        textContent.items.forEach(function (textItem) {
+                            if (prevY === null || textItem.transform[5] === prevY) {
+                                // Same line (or first item)
+                                paragraph += textItem.str + ' ';
+                            } else {
+                                // New line (new paragraph)
+                                processParagraph(textLayerDiv, paragraph);
+                                paragraph = textItem.str + ' ';
+                            }
+                            prevY = textItem.transform[5];
+                        });
+
+                        // Process the last paragraph
+                        processParagraph(textLayerDiv, paragraph);
+                    });
+                });
+            }
+        }
+
+        function processParagraph(textLayerDiv, paragraph) {
+            const paragraphElement = document.createElement('p');
+            paragraphElement.textContent = paragraph.trim();
+
+            // Detect and convert URLs into clickable links
+            paragraphElement.innerHTML = paragraphElement.innerHTML.replace(
+                /((https?:\/\/|www\.)[^\s]+)/g,
+                '<a href="$1" target="_blank">$1</a>'
+            );
+
+            textLayerDiv.appendChild(paragraphElement);
+        }
+
+        function removeEmptyDivs() {
+            const textLayerDivs = pdfContainer.querySelectorAll('.textLayer');
+            textLayerDivs.forEach(div => {
+                if (!div.textContent.trim()) {
+                    div.remove();
+                }
+            });
+        }
+
+
+
+        function getSelectedText() {
+            let text = '';
+            if (window.getSelection) {
+                const selection = window.getSelection();
+                text = selection.toString();
+            } else if (document.selection && document.selection.type != "Control") {
+                text = range.text;
+            }
+            return text.trim();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let highlightCounter = 0; // Counter for unique IDs
+            console.log(searchMode)
+
+            document.addEventListener("mouseup", function (e) {
+                if (searchMode == 'manual') {
+                    Make_Reference(window.getSelection())
+                }
+                if (searchMode == 'automatic') {
+                    Sudivide(window.getSelection())
+
+                }
+            });
+
+            // Add event listener for clicks on spans with class 'highlight'
+            document.addEventListener('click', function (e) {
+                if (e.target && e.target.matches('span.highlight')) {
+                    const spanId = e.target.id;
+                    const dataResults = e.target.getAttribute('data-results');
+
+                    if (dataResults) {
+                        const data = JSON.parse(dataResults);
+                        displaySearchResults(data, e.target.textContent, spanId);
+                    } else {
+                        console.error('No data found for span ID:', spanId);
+                    }
+                }
+            });
+
+            function delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+
+            async function Sudivide(selection) {
+                if (!selection.isCollapsed) {
+                    for (let i = 0; i < selection.rangeCount; i++) {
+                        const range = selection.getRangeAt(i);
+
+                        const container = range.commonAncestorContainer;
+                        const walker = document.createTreeWalker(container, NodeFilter.SHOW_ELEMENT, {
+                            acceptNode: function (node) {
+                                return NodeFilter.FILTER_ACCEPT;
+                            }
+                        });
+
+                        let node;
+                        let pElements = [];
+
+                        while (node = walker.nextNode()) {
+                            if (node.nodeName === 'P' && range.intersectsNode(node)) {
+                                pElements.push(node);
+                            }
+                        }
+
+                        var mergedContent = ""
+                        const yearRegex = /(?<=^|\s|\()(19[4-9]\d|20[0-2]\d|2030)(?=$|\s|\)|\.|,)/;
+                        let counter = []
+                        for (let j = 0; j < pElements.length; j++) {
+                            var mergedContent = mergedContent + " " + pElements[j].textContent.trim()// + " " + pElements[j + 1].textContent.trim();
+                            counter.push(j)
+                            console.log(counter)
+                            if (yearRegex.test(pElements[j + 1]?.textContent) || j == pElements.length - 1) {  // counter.length == 2
+
+                                const mergedElement = document.createElement('p');
+                                mergedElement.textContent = mergedContent;
+
+                                pElements[j].parentNode.insertBefore(mergedElement, pElements[j]);
+
+
+                                counter.forEach(element => {//pElements[j].remove();
+                                    pElements[element].remove();
+                                })
+                                const newRange = document.createRange();
+                                newRange.selectNodeContents(mergedElement);
+
+                                const newSelection = window.getSelection();
+                                newSelection.removeAllRanges();
+                                newSelection.addRange(newRange);
+
+                                Make_Reference(newSelection);
+                                counter = []
+                                mergedContent = ""
+                                // Wait for the dynamic delay before continuing
+
+                                await delay(500);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
+            function Make_Reference(selection) {
+
+                //console.log(selection)
+                if (!selection.isCollapsed) {
+                    const range = selection.getRangeAt(0);
+                    const selectedText = range.toString();
+
+                    if (selectedText.length > 0) {
+                        const span = document.createElement("span");
+                        span.className = "highlight";
+                        span.textContent = selectedText;
+
+                        const spanId = `highlight-${highlightCounter}`;
+                        span.id = spanId; // Assign unique ID
+                        //span.style = "margin-left: 30px; display: block;"
+                        highlightCounter++; // Increment counter for next span
+
+                        range.deleteContents();
+                        range.insertNode(span);
+
+                        const normalizedRange = document.createRange();
+                        normalizedRange.selectNodeContents(span);
+
+                        selection.removeAllRanges();
+                        selection.addRange(normalizedRange);
+
+                        triggerSearch(spanId);
+                    }
+                }
+
+            }
+
+        });
+
+        function triggerSearch(spanId) {
+            const selectedText = getSelectedText();
+            const span = document.getElementById(spanId);
+            if (selectedText.length > 0) {
+                document.body.style.cursor = 'wait'; // Change cursor to wait
+                const query = encodeURIComponent(selectedText);
+                const apiUrl = `https://api.crossref.org/works?query.bibliographic=${query}&rows=3`;
+
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        displaySearchResults(data, query, spanId);
+                        span.setAttribute('data-results', JSON.stringify(data));
+                        document.body.style.cursor = 'default'; // Revert cursor to default
+                    })
+                    .catch(error => {
+                        console.error('Error fetching CrossRef data:', error);
+                        document.body.style.cursor = 'default'; // Revert cursor to default even if there's an error
+                    });
+            } else {
+                alert('Please select some text in the PDF first.');
+            }
+        }
+
+        function displaySearchResults(data, query, spanId) {
+            const scholarContainer = document.getElementById('scholar-container');
+            scholarContainer.innerHTML = ''; // Clear previous content
+
+            // Create a frame for the search string
+            const searchStringFrame = document.createElement('div');
+            searchStringFrame.className = 'search-string-frame';
+            const searchStringParagraph = document.createElement('p');
+            searchStringParagraph.innerHTML = `<strong>Search String:</strong> ${decodeURIComponent(query)}`;
+            searchStringFrame.appendChild(searchStringParagraph);
+            scholarContainer.appendChild(searchStringFrame);
+
+            if (data && data.message && data.message.items && data.message.items.length > 0) {
+                const results = data.message.items.slice(0, 3); // Limit to first 3 results
+
+                let highestMatch = 0;
+                results.forEach(item => { //// sort based on match
+                    if (item.title && item.URL) { // Check if title and URL are present
+                        const resultFrame = document.createElement('div');
+                        resultFrame.className = 'result-frame';
+                        resultFrame.style.backgroundColor = "#FFFFFF";
+
+                        // Format authors
+                        const formattedAuthors = formatAuthors(item.author);
+
+                        // Create a single paragraph element
+                        const resultParagraph = document.createElement('p');
+                        resultParagraph.style.fontSize = '16px'; // Set font size
+                        resultParagraph.style.backgroundColor =  "#FFFFFF";
+                        const matchPercentage = calculateMatchPercentage(item, query)
+
+                        // Construct the inner HTML content with clickable DOI and empty spaces as separators
+                        resultParagraph.innerHTML = `<strong>${matchPercentage}% Match</strong>.
+                             ${formattedAuthors}
+                             (${getYear(item.issued)}).
+                             ${item.title[0]}</strong>.
+                             ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
+                             DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
+
+                        resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
+
+                        // Add empty line between results
+                        resultFrame.style.marginBottom = '20px';
+
+                        scholarContainer.appendChild(resultFrame);
+
+                        // Highlight corresponding span based on match percentage
+                        highlightSpan(spanId, matchPercentage);
+
+                        if (highestMatch < matchPercentage) { highestMatch = matchPercentage }
+                    }
+                });
+
+                highlightSpan(spanId, highestMatch);
+
+                if (scholarContainer.children.length === 0) {
+                    const noResultsMsg = document.createElement('p');
+                    noResultsMsg.textContent = 'No results found.';
+                    scholarContainer.appendChild(noResultsMsg);
+                }
+            } else {
+                const noResultsMsg = document.createElement('p');
+                noResultsMsg.textContent = 'No results found.';
+                scholarContainer.appendChild(noResultsMsg);
+            }
+        }
+
+
+
+        function highlightSpan(spanId, matchPercentage) {
+            const span = document.getElementById(spanId);
+            if (span) {
+                // Calculate hue value based on match percentage
+                const hue = (matchPercentage / 100) * 120; // Hue ranges from 0 (green) to 120 (red)
+                span.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+            }
+        }
+
+        function calculateMatchPercentage(item, query) {
+            // Decode the query string first
+            query = decodeURIComponent(query);
+
+            // Weights for different components
+            let title_weight = 45;
+            let author_weight = 30;
+            let journal_weight = 10;
+            let year_weight = 10;
+            let doi_weight = 5;
+
+            // Format the authors and other components
+            const formattedAuthors = formatAuthors(item.author);
+            const title = `$${formattedAuthors}
+                             (${getYear(item.issued)}).
+                             <strong><a href="${item.URL}" target="_blank">${item.title[0]}</a></strong>.
+                             ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
+                             DOI: ${item.DOI}`;
+
+            // Clean and split title words
+            const titleWords = item.title[0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
+
+            // Split decoded query into lowercase words
+            var queryWords = query.replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
+            queryWords = queryWords.filter((element) => {
+                return element.length > 1;
+            });
+            const queryWordSet = new Set(queryWords);
+
+            // Clean and split author surnames
+            let authorSurnames = formatAuthors_Surname(item.author).replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
+
+            // Clean and split journal name
+            let journalWords = item['container-title'] ? item['container-title'][0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/) : [];
+
+            // Year as a string
+            let yearString = getYear(item.issued).toString();
+
+            // Extract DOI from the query using regex
+            const doiRegex = /\b10\.\d{4,}(?:\.\d+)*\/\S+\b/;
+            const queryDOI = query.match(doiRegex) ? query.match(doiRegex)[0] : '';
+
+            // DOI from the item
+            let doiString = item.DOI ? item.DOI.toLowerCase() : '';
+            // Count matches for title words
+            let titleMatchCount = 0;
+            titleWords.forEach(word => {
+                if (queryWordSet.has(word)) {
+                    titleMatchCount++;
+                }
+            });
+            // Count matches for author surnames
+            let authorMatchCount = 0;
+            authorSurnames.forEach(word => {
+                if (queryWordSet.has(word)) {
+                    authorMatchCount++;
+                }
+            });
+            // Count matches for journal words
+            let journalMatchCount = 0;
+            journalWords.forEach(word => {
+                if (queryWordSet.has(word)) {
+                    journalMatchCount++;
+                }
+            });
+            // Check if year matches
+            let yearMatchCount = queryWordSet.has(yearString) ? 1 : 0;
+            // Check if DOI matches
+            let doiMatchCount = (queryDOI && queryDOI === doiString) ? 1 : 0;
+            // Logging counts
+
+            // Calculate match percentages for each component
+            let titleMatchPercentage = (titleMatchCount / titleWords.length) * title_weight;
+            let authorMatchPercentage = (authorMatchCount / authorSurnames.length) * author_weight;
+            let journalMatchPercentage = (journalMatchCount / journalWords.length) * journal_weight;
+            let yearMatchPercentage = yearMatchCount * year_weight;
+            let doiMatchPercentage = doiMatchCount * doi_weight;
+            // Combine match percentages
+            var matchPercentage = Math.round(titleMatchPercentage + authorMatchPercentage + journalMatchPercentage + yearMatchPercentage + doiMatchPercentage);
+
+            return matchPercentage;
+        }
+
+        function formatAuthors_Surname(authors) {
+            if (!authors || authors.length === 0) {
+                return '';
+            }
+            return authors.map(author => `$${author.family}`).join(', ');
+        }
+
+        function formatAuthors(authors) {
+            if (!authors || authors.length === 0) {
+                return '';
+            }
+            return authors.map(author => {
+                const givenNameInitial = author.given ? `${author.given[0]}.` : '';
+                return `${givenNameInitial} ${author.family}`;
+            }).join(', ');
+        }
+
+        function getYear(issued) {
+            if (!issued || !issued['date-parts'] || !Array.isArray(issued['date-parts']) || !issued['date-parts'][0] || !Array.isArray(issued['date-parts'][0])) {
+                return 'Unknown Year';
+            }
+            return issued['date-parts'][0][0] || 'Unknown Year';
+        }
+    </script>
+</body>
+</html>

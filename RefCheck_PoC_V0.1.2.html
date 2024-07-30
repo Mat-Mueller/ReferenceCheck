@@ -43,16 +43,23 @@
             align-items: center;
         }
 
-            #controls button, #controls input[type="file"] {
-                margin-left: 10px;
-                padding: 10px 15px;
-                width: 190px;
-                background-color: #fff;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                color: #333;
-            }
+        #controls button, #controls input[type="file"] {
+            margin-left: 10px;
+            padding: 10px 15px;
+            width: 190px;
+            background-color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s; /* Hinzugefügt für sanften Übergang beim Hover */
+        }
+        
+        #controls button:hover, #controls input[type="file"]:hover {
+            background-color: #333; /* Hintergrundfarbe beim Hover */
+            color: #fff; /* Textfarbe beim Hover */
+        }
+
 
                 #controls button.active {
                     background-color: #333;

@@ -34,7 +34,7 @@
 
         #controls {
             padding: 15px;
-            background: #003F75;
+            background: #4a90e2;
             color: #fff;
             
             border-bottom: 1px solid #ccc;
@@ -43,26 +43,19 @@
             align-items: center;
         }
 
-        #controls button, #controls input[type="file"] {
-            margin-left: 10px;
-            padding: 10px 15px;
-            width: 190px;
-            background-color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            color: #333;
-            transition: background-color 0.3s, color 0.3s; /* Hinzugefügt für sanften Übergang beim Hover */
-        }
-        
-        #controls button:hover, #controls input[type="file"]:hover {
-            background-color: #ccc; /* Hintergrundfarbe beim Hover */
-            color: #fff; /* Textfarbe beim Hover */
-        }
-
+            #controls button, #controls input[type="file"] {
+                margin-left: 10px;
+                padding: 10px 15px;
+                width: 190px;
+                background-color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                color: #333;
+            }
 
                 #controls button.active {
-                    background-color: #ccc;
+                    background-color: #333;
                     color: #fff;
                 }
 
@@ -134,7 +127,7 @@
 
 
         <button onclick="LoadScholar()">Search on Google Scholar</button>
-        <button onclick="clearPDFAndReload()">Reload Page</button>
+        <!--<button onclick="clearPDFAndReload()">Reload Page</button>-->
     </div>
     <div id="viewer">
 
@@ -148,13 +141,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script src="script.js"></script>
 
-    <!-- PDF.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-    <script src="script.js"></script>
 
-
-    <!-- PDF.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
         const pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
@@ -234,44 +221,33 @@
                     textLayerDiv.style.height = `${viewport.height}px`;
                     textLayerDiv.style.width = `${viewport.width}px`;
                     textLayerDiv.style.position = 'relative';
-                    textLayerDiv.style.marginBottom = '20px'; // Space between pages
+                    textLayerDiv.style.marginBottom = '5px'; // Space between pages
 
                     pdfContainer.appendChild(textLayerDiv);
 
                     page.getTextContent().then(function (textContent) {
                         let prevY = null;
-                        let paragraph = '';
 
                         textContent.items.forEach(function (textItem) {
-                            if (prevY === null || textItem.transform[5] === prevY) {
-                                // Same line (or first item)
-                                paragraph += textItem.str + ' ';
+                            if (prevY === null || textItem.transform[5] !== prevY) {
+                                // New line, create a new paragraph
+                                processParagraph(textLayerDiv, textItem.str);
                             } else {
-                                // New line (new paragraph)
-                                processParagraph(textLayerDiv, paragraph);
-                                paragraph = textItem.str + ' ';
+                                // Same line, append to the last paragraph created
+                                const lastParagraph = textLayerDiv.lastChild;
+                                lastParagraph.textContent += textItem.str + ' ';
                             }
                             prevY = textItem.transform[5];
                         });
-
-                        // Process the last paragraph
-                        processParagraph(textLayerDiv, paragraph);
                     });
                 });
             }
         }
-
-        function processParagraph(textLayerDiv, paragraph) {
-            const paragraphElement = document.createElement('p');
-            paragraphElement.textContent = paragraph.trim();
-
-            // Detect and convert URLs into clickable links
-            paragraphElement.innerHTML = paragraphElement.innerHTML.replace(
-                /((https?:\/\/|www\.)[^\s]+)/g,
-                '<a href="$1" target="_blank">$1</a>'
-            );
-
-            textLayerDiv.appendChild(paragraphElement);
+        function processParagraph(container, text) {
+            const p = document.createElement('p');
+            p.textContent = text;
+            p.style.margin = '0';
+            container.appendChild(p);
         }
 
         function removeEmptyDivs() {

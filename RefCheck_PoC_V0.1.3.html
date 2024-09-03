@@ -43,7 +43,7 @@
             align-items: center;
         }
 
-            #controls button, #controls input[type="file"] {
+            #controls button, #controls input[type="file"], #controls select {
                 margin-left: 10px;
                 padding: 10px 15px;
                 width: 190px;
@@ -123,6 +123,10 @@
     <div id="controls">
         <img src="Logo.png" alt="Icon" id="icon">
         <input type="file" id="pdf-upload" accept="application/pdf">
+        <select id="separationCriteria">
+            <option value="byYear">By Year</option>
+            <option value="byParagraph">By Paragraph</option>
+        </select>
         <button id="automatic-search-button" class="active" onclick="toggleSearchMode('automatic')">Automatic Search</button>
         <button id="manual-search-button" onclick="toggleSearchMode('manual')">Manual Search</button>
 
@@ -386,6 +390,9 @@
 
             async function Sudivide(selection) {
                 if (!selection.isCollapsed) {
+                    // Get the selected criterion
+                    const selectedCriterion = document.getElementById('separationCriteria').value;
+
                     for (let i = 0; i < selection.rangeCount; i++) {
                         const range = selection.getRangeAt(i);
 
@@ -405,25 +412,55 @@
                             }
                         }
 
-                        var mergedContent = ""
-                        const yearRegex = /(?<=^|\s|\()(19[4-9]\d|20[0-2]\d|2030)(?=$|\s|\)|\.|,)/;
-                        let counter = []
-                        for (let j = 0; j < pElements.length; j++) {
-                            var mergedContent = mergedContent + " " + pElements[j].textContent.trim()// + " " + pElements[j + 1].textContent.trim();
-                            pElements[j].setAttribute("myID", highlightCounter)
-                            pElements[j].style.backgroundColor = 'yellow'
-                            pElements[j].classList.add('highlight');  // Add the 'highlight' class
-                            counter.push(j)
-                            console.log(counter)
-                            if (yearRegex.test(pElements[j + 1]?.textContent) || j == pElements.length - 1) {  // counter.length == 2
-                                Make_Reference(highlightCounter, pElements)
-                                highlightCounter++;
-                                console.log(highlightCounter)
+                        // Calculate distances between consecutive DIVs if "byParagraph" is selected
+                        let distances = [];
+                        if (selectedCriterion === 'byParagraph') {
+                            for (let j = 0; j < pElements.length - 1; j++) {
+                                const currentRect = pElements[j].getBoundingClientRect();
+                                const nextRect = pElements[j + 1].getBoundingClientRect();
+                                const distance = nextRect.top - currentRect.bottom;
+                                distances.push(distance);
+                            }
+                        }
 
-                               
-                                counter = []
-                                mergedContent = ""
-                                // Wait for the dynamic delay before continuing
+                        // Find the most common distance
+                        const mostCommonDistance = findMostCommonDistance(distances);
+                        console.log(distances)
+                        
+
+                        let mergedContent = "";
+                        const yearRegex = /(?<=^|\s|\()(19[4-9]\d|20[0-2]\d|2030)(?=$|\s|\)|\.|,)/;
+                        let counter = [];
+
+                        for (let j = 0; j < pElements.length; j++) {
+                            mergedContent += " " + pElements[j].textContent.trim();
+                            pElements[j].setAttribute("myID", highlightCounter);
+                            pElements[j].style.backgroundColor = 'yellow';
+                            pElements[j].classList.add('highlight');
+                            counter.push(j);
+
+                            // Separation logic based on the selected criterion
+                            let shouldSeparate = false;
+
+                            if (selectedCriterion === 'byYear') {
+                                if (yearRegex.test(pElements[j + 1]?.textContent) || j == pElements.length - 1) {
+                                    shouldSeparate = true;
+                                }
+                            } else if (selectedCriterion === 'byParagraph') {
+                                // Use the most common distance as the threshold
+                                const currentRect = pElements[j].getBoundingClientRect();
+                                const nextRect = pElements[j + 1]?.getBoundingClientRect();
+
+                                if (nextRect && (nextRect.top - currentRect.bottom > mostCommonDistance + 1) || j == pElements.length - 1) {
+                                    shouldSeparate = true;
+                                }
+                            }
+
+                            if (shouldSeparate) {
+                                Make_Reference(highlightCounter, pElements);
+                                highlightCounter++;
+                                counter = [];
+                                mergedContent = "";
 
                                 await delay(1000);
                             }
@@ -431,6 +468,22 @@
                     }
                 }
             }
+
+            // Function to find the most common distance
+            function findMostCommonDistance(distances) {
+                if (distances.length === 0) return 0;
+
+                const distanceCount = distances.reduce((acc, dist) => {
+                    acc[dist] = (acc[dist] || 0) + 1;
+                    return acc;
+                }, {});
+
+                // Sort by frequency, then by the smallest distance
+                const sortedDistances = Object.entries(distanceCount).sort((a, b) => b[1] - a[1] || a[0] - b[0]);
+
+                return parseInt(sortedDistances[0][0], 10);
+            }
+
 
 
 

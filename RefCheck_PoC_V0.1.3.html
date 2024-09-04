@@ -124,22 +124,34 @@
         <img src="Logo.png" alt="Icon" id="icon">
         <input type="file" id="pdf-upload" accept="application/pdf">
         <select id="separationCriteria">
-            <option value="" disabled selected>Seperation Criteria:</option>
+            <option value="" disabled selected>Separation Criteria:</option>
             <option value="byYear">By Year</option>
             <option value="byParagraph">By Paragraph</option>
+            <option value="byIndent">By Indent</option>
+            <option value="None">None</option>
         </select>
+
         <select id="selectionMode">
             <option value="" disabled selected>Reference Section:</option>
             <option value="byTitle">By Headline</option>
             <option value="manual">Manual Select</option>
             <option value="clickSelect">Start/End Select</option>
         </select>
-        <button id="automatic-search-button" class="active" onclick="toggleSearchMode('automatic')">Automatic Search</button>
-        <button id="manual-search-button" onclick="toggleSearchMode('manual')">Manual Search</button>
 
 
-        <button onclick="LoadScholar()">Search on Google Scholar</button>
+
+
+        <button id="crossref-button">Crossref Search</button>
         <!--<button onclick="clearPDFAndReload()">Reload Page</button>-->
+        <div id="notification" style="
+    
+        margin-top: 10px;
+        
+        border: 2px solid white;
+        width: 300px; /* Fixed width */
+        padding: 10px; /* Padding inside the box */
+        text-align: center;
+    ">Hier Kann Text Stehen</div>
     </div>
     <div id="viewer">
 
@@ -181,32 +193,7 @@
 
         }
 
-        function toggleSearchMode(mode) {
-            // Reset buttons to inactive state
-            document.getElementById('manual-search-button').classList.remove('active');
-            document.getElementById('automatic-search-button').classList.remove('active');
 
-            if (mode === 'manual' && !(searchMode === 'manual')) {
-                document.getElementById('manual-search-button').classList.add('active');
-                document.getElementById('automatic-search-button').classList.remove('active');
-                searchMode = 'manual';
-            } else if (mode === 'manual' && (searchMode === 'manual')) {
-                searchMode = 'none';
-                document.getElementById('manual-search-button').classList.remove('active');
-                document.getElementById('automatic-search-button').classList.remove('active');
-            }
-
-            else if (mode === 'automatic' && !(searchMode === 'automatic')) {
-                document.getElementById('automatic-search-button').classList.add('active');
-                document.getElementById('manual-search-button').classList.remove('active');
-                searchMode = 'automatic';
-            } else if (mode === 'automatic' && (searchMode === 'automatic')) {
-                searchMode = 'none';
-                document.getElementById('manual-search-button').classList.remove('active');
-                document.getElementById('automatic-search-button').classList.remove('active');
-
-            }
-        }
         document.getElementById('pdf-upload').addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file && file.type === 'application/pdf') {
@@ -286,6 +273,8 @@
                             const currentY = textItem.transform[5]; // Y coordinate
                             const currentX = textItem.transform[4]; // X coordinate
                             const lineText = textItem.str;
+                            const fontSize = textItem.transform[0]; // Extract font size
+                            const fontName = textItem.fontName; // Extract font name (for bold, italic, etc.)
 
                             let line = lines.find(line => Math.abs(line.y - currentY) < 2); // Find line with a similar Y coordinate
 
@@ -294,6 +283,8 @@
                                     text: '',
                                     x: currentX,
                                     y: currentY,
+                                    fontSize: fontSize, // Store font size for the line
+                                    fontName: fontName // Store font name for the line
                                 };
                                 lines.push(line);
                             }
@@ -308,7 +299,7 @@
                         lines.forEach(function (line) {
                             const lineElement = document.createElement('div');
                             lineElement.textContent = line.text.trim(); // Remove any trailing space
-                            lineElement.className = 'textLine'
+                            lineElement.className = 'textLine';
                             lineElement.style.position = 'absolute';
                             lineElement.style.whiteSpace = 'pre'; // Preserve whitespace
                             lineElement.style.left = `${line.x}px`; // Set X position based on the first text item
@@ -316,12 +307,19 @@
                             lineElement.style.margin = '0'; // Ensure no margin is added
                             lineElement.style.padding = '0'; // Ensure no padding is added
 
+                            // Apply font size and font weight (bold) if applicable
+                            lineElement.style.fontSize = `${line.fontSize}px`; // Set font size
+                            if (line.fontName && line.fontName.toLowerCase().includes('bold')) {
+                                lineElement.style.fontWeight = 'bold'; // Set bold style if the font name contains "bold"
+                            }
+
                             textLayerDiv.appendChild(lineElement);
                         });
                     });
                 });
             }
         }
+
 
 
 
@@ -360,6 +358,10 @@
             return text.trim();
         }
 
+
+
+        ////// Functions to select potential References /////////////
+
         document.addEventListener("DOMContentLoaded", () => {
             let highlightCounter = 0; // Counter for unique IDs
             let isSelecting = false;
@@ -368,14 +370,11 @@
             document.addEventListener("mouseup", function (e) {
                 const selectionMode = document.getElementById('selectionMode').value;
 
-                if (selectionMode === 'mouseDrag') {
-                    if (searchMode == 'manual') {
-                        Make_Reference(window.getSelection());
-                    }
-                    if (searchMode == 'automatic') {
-                        Sudivide(window.getSelection());
-                    }
+                
+                if (selectionMode === 'manual' || selectionMode === 'automatic') {
+                    Sudivide(window.getSelection());
                 }
+                
             });
 
             document.addEventListener("click", function (e) {
@@ -469,56 +468,174 @@
                 return nearestDiv;
             }
 
+            const selectionMode = document.getElementById('selectionMode');
+
+            // Add event listener for change on the select element
+            selectionMode.addEventListener('change', function () {
+                const selectedValue = selectionMode.value;
+
+                // Check if "byTitle" is selected
+                if (selectedValue === 'byTitle') {
+                    // Do something when "byTitle" is selected
+                    console.log('byTitle selected! Performing action...');
+
+                    // Reset the select element back to its default option
+                    const titles = [
+                        'references',
+                        'références',
+                        'rÉférences',
+                        'r´ef´erences',
+                        'bibliography',
+                        'bibliographie',
+                        'literaturverzeichnis',
+                        'citations',
+                        'refs',
+                        'publications',
+                        'réfs',
+                        'rÉfs',
+                        'reference',
+                        'référence',
+                        'rÉférence'
+                    ];
+
+                    function findReferenceSection() {
+                        const divs = document.querySelectorAll('div.textLine'); // Get all div elements with class "textLine"
+                        let startPoint = null;
+
+                        // Iterate through all divs to find the start of the reference section
+                        for (let i = 0; i < divs.length; i++) {
+                            const divText = divs[i].textContent.trim().toLowerCase(); // Get the text and convert to lowercase
+
+                            // Check if any of the keywords matches the div text
+                            if (titles.some(title => divText === title.toLowerCase())) {
+                                console.log('Reference section found at div index:', i);
+                                console.log('Text:', divs[i].textContent.trim());
+
+                                // Set the start point of the reference section
+                                startPoint = divs[i + 1];
+                                startFontSize = window.getComputedStyle(divs[i]).fontSize;
+                                normalFontSize = window.getComputedStyle(startPoint).fontSize;
+                                console.log(startFontSize)
+                                console.log(normalFontSize)
+                                // Optionally, highlight the start of the reference section
+                                startPoint.style.backgroundColor = 'yellow'; // Highlight the start of the reference section
+
+                                break; // Stop after finding the first match
+                            }
+                        }
+
+                        if (startPoint) {
+                            let endPoint = null
+                            if (startFontSize > normalFontSize) {
+
+                                
+                                for (let i = Array.from(divs).indexOf(startPoint) + 1; i < divs.length; i++) {
+                                    const currentFontSize = window.getComputedStyle(divs[i]).fontSize;
+
+                                    // If we find a div with the same font size as startFontSize, set it as the endPoint
+                                    if (currentFontSize === startFontSize) {
+                                        endPoint = divs[i - 1];
+                                        console.log('Found matching font size div at index:', i);
+                                        break;
+                                    }
+                                }
 
 
+                                
+                            } 
 
 
-            function getCaretCharacterOffsetWithin(element) {
-                let caretOffset = 0;
-                const selection = window.getSelection();
-                if (selection.rangeCount > 0) {
-                    const range = selection.getRangeAt(0);
-                    const preCaretRange = range.cloneRange();
-                    preCaretRange.selectNodeContents(element);
-                    preCaretRange.setEnd(range.endContainer, range.endOffset);
-                    caretOffset = preCaretRange.toString().length;
+                            if (!endPoint) {
+                                endPoint = divs[divs.length - 1]; // Last div element
+                                console.log('No matching font size found, reference section ends at the last div.');
+                            }
+                                // Assume the last div in the document is the end of the reference section
+                                console.log('Reference section ends at the last div.');
+
+                                // Create a Range and Selection for the reference section
+                                const range = document.createRange();
+                                const selection = window.getSelection();
+
+                                // Set the start of the range at the first child of the start div
+                                range.setStart(startPoint.firstChild || startPoint, 0);
+
+                                // Set the end of the range at the last child of the last div
+                                range.setEnd(endPoint.lastChild || endPoint, endPoint.textContent.length);
+
+                                // Clear existing selections
+                                selection.removeAllRanges();
+
+                                // Add the newly created range to the selection
+                                selection.addRange(range);
+
+                                // Call the Sudivide function with the selection
+                                Sudivide(selection);
+                            
+                        } else {
+                            console.log('Reference section not found.');
+                        }
+                    }
+
+
+                    // Call the function to find the reference section
+                    findReferenceSection();
+
+                    // Reset the select element back to its default option
+                    selectionMode.selectedIndex = 0;
+                
                 }
-                return caretOffset;
-            }
+            });
+
+
+            ///////////   JZjzgkjulewileiwfi /////////////
+
 
             // Add event listener for clicks on spans with class 'highlight'
             document.addEventListener('click', function (e) {
                 if (e.target && e.target.matches('div.highlight')) {  // Adjusted to handle 'div.highlight' 
-                    //console.log(e.target.getAttribute('query'))
-                    const divId = e.target.getAttribute.myid;  // Getting the ID of the clicked div
-                    //console.log("divId")
-                    console.log(e.target.getAttribute('query'))
-                    console.log(e.target.getAttribute('MyId'))
-                    const dataResults = e.target.getAttribute('data-results');  // Fetching the data-results attribute
+                    // Get necessary attributes from the clicked div
+                    const divId = e.target.getAttribute('MyId');  // Getting the ID of the clicked div
+                    const query = getMergedTextByMyId(divId);
+                    let dataResults = e.target.getAttribute('data-results');  // Fetching the data-results attribute
 
-                    if (dataResults) {
-                        try {
-                            //console.log(dataResults)
-                            const data = JSON.parse(dataResults);  // Parsing the data as JSON
-                            displaySearchResults(data, e.target.getAttribute('query'), e.target.getAttribute('MyId'));  // Displaying the search results
-                        } catch (error) {
-                            console.error('Error parsing data for div ID:', divId, error);
+                    console.log('Query:', query);
+                    console.log('MyId:', divId);
+
+                    // If dataResults is not defined, make it an empty object "{}"
+                    if (!dataResults) {
+                        dataResults = '{}';  // Treat as an empty object
+                    }
+
+                    try {
+                        // Parse the data-results as JSON
+                        const data = JSON.parse(dataResults);
+
+                        // Check if data is valid (if data.message.items exists)
+                        if (data && data.message && data.message.items) {
+                            displaySearchResults(data, query, divId);  // Display the search results
+                        } else {
+                            console.log('No valid results to display for div ID:', divId);
+                            displaySearchResults({}, query, divId);  // Display empty results
                         }
-                    } else {
-                        console.error('No data found for div ID:', divId);
+                    } catch (error) {
+                        console.error('Error parsing data for div ID:', divId, error);
                     }
                 }
             });
+
 
             function delay(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
 
 
-            async function Sudivide(selection) {
+            function Sudivide(selection) {
+                console.log("subdivide")
                 if (!selection.isCollapsed) {
-                    // Get the selected criterion
+                    // Get the selected criterion for separation
                     const selectedCriterion = document.getElementById('separationCriteria').value;
+                    // Get the selected mode for reference section
+                    //const selectedMode = document.getElementById('selectionMode').value;
 
                     for (let i = 0; i < selection.rangeCount; i++) {
                         const range = selection.getRangeAt(i);
@@ -541,6 +658,25 @@
                             }
                         }
 
+                        // If the selection mode is "manual", we don't subdivide at all
+                        if (selectedCriterion === 'None') {
+                            let mergedContent = "";
+                            for (let j = 0; j < pElements.length; j++) {
+                                mergedContent += " " + pElements[j].textContent.trim();
+                                pElements[j].setAttribute("myID", highlightCounter);
+                                pElements[j].style.backgroundColor = '#add8e6';
+                                pElements[j].classList.add('highlight');
+                            }
+                            Make_Reference(highlightCounter, pElements);
+                            highlightCounter++;
+                            continue; // Skip to the next range if in manual mode
+                        }
+
+
+
+
+
+
                         // Calculate distances between consecutive DIVs if "byParagraph" is selected
                         let distances = [];
                         if (selectedCriterion === 'byParagraph') {
@@ -555,17 +691,15 @@
 
                         // Find the most common distance
                         const mostCommonDistance = findMostCommonDistance(distances);
-                        console.log(distances)
-                        console.log(mostCommonDistance)
 
                         let mergedContent = "";
                         const yearRegex = /(?<=^|\s|\()(19[4-9]\d|20[0-2]\d|2030)(?=$|\s|\)|\.|,)/;
                         let counter = [];
-
+                        const firstRect = pElements[0].getBoundingClientRect();
                         for (let j = 0; j < pElements.length; j++) {
                             mergedContent += " " + pElements[j].textContent.trim();
                             pElements[j].setAttribute("myID", highlightCounter);
-                            pElements[j].style.backgroundColor = 'yellow';
+                            pElements[j].style.backgroundColor = '#add8e6';
                             pElements[j].classList.add('highlight');
                             counter.push(j);
 
@@ -577,298 +711,385 @@
                                     shouldSeparate = true;
                                 }
                             } else if (selectedCriterion === 'byParagraph') {
-                                // Use the most common distance as the threshold
                                 const currentRect = pElements[j].getBoundingClientRect();
                                 const nextRect = pElements[j + 1]?.getBoundingClientRect();
+                                console.log(distances)
+                                console.log(mostCommonDistance)
 
                                 if (nextRect && (nextRect.top - currentRect.bottom > mostCommonDistance + 1) || j == pElements.length - 1) {
                                     shouldSeparate = true;
                                 }
+                            } else if (selectedCriterion === 'byIndent') {
+                                const currentRect = pElements[j].getBoundingClientRect();
+                                // Get the left position of the first div as the reference for non-indented divs
+                                const nextRect = pElements[j + 1]?.getBoundingClientRect();
+
+                                
+                                if (nextRect && (Math.round(nextRect.left * 10) / 10 < Math.round(currentRect.left * 10) / 10) || j == pElements.length - 1) {
+                                    shouldSeparate = true;
+                                }
+
+                                
                             }
 
                             if (shouldSeparate) {
-                                Make_Reference(highlightCounter, pElements);
-                                highlightCounter++;
+                                //Make_Reference(highlightCounter, pElements);
+                                
                                 counter = [];
-                                mergedContent = "";
+                                
 
-                                await delay(1000);
+
+                                highlightCounter++;
+                                //await delay(2000); // Optional delay for any async tasks like highlighting
                             }
                         }
+                        const notificationElement = document.getElementById('notification');
+                        notificationElement.textContent = `Found ${highlightCounter} References` ;
                     }
                 }
             }
+
+
 
 
             // Function to find the most common distance
             function findMostCommonDistance(distances) {
                 if (distances.length === 0) return 0;
 
+                // Count occurrences of each distance
                 const distanceCount = distances.reduce((acc, dist) => {
                     acc[dist] = (acc[dist] || 0) + 1;
                     return acc;
                 }, {});
 
-                // Sort by frequency, then by the smallest distance
-                const sortedDistances = Object.entries(distanceCount).sort((a, b) => b[1] - a[1] || a[0] - b[0]);
+                // Get the unique distances sorted by frequency and value
+                const sortedDistances = Object.entries(distanceCount)
+                    .sort((a, b) => b[1] - a[1] || a[0] - b[0]) // Sort by frequency, then by distance value
+                    .map(([dist, count]) => ({ dist: parseFloat(dist), count })); // Convert the distances back to numbers
 
-                return parseInt(sortedDistances[0][0], 10);
+                // If there are more than two unique distances, reduce to the two most frequent
+                if (sortedDistances.length > 2) {
+                    sortedDistances.length = 2; // Keep only the top two most frequent distances
+                }
+
+                // From the remaining distances, return the smallest
+                return Math.min(sortedDistances[0].dist, sortedDistances[1].dist);
             }
 
 
 
 
-function Make_Reference(highlightCounter, pElements) {
-    // Loop through the array of pElements (div elements)
+
+  
+
+            function Make_Reference(highlightCounter, pElements) {
+                // Loop through the array of pElements (div elements)
 
 
-    // Optionally trigger further actions with the highlightCounter
-    triggerSearch(highlightCounter); // Assuming this handles all the highlighted divs
-}
-
-
-
-
-
-
-        });
-        function getMergedTextByMyId(MyId) {
-            const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
-            let mergedText = '';
-            divs.forEach(div => {
-                mergedText += div.textContent.trim() + ' ';
-            });
-            return mergedText.trim();
-        }
-
-
-        function triggerSearch(MyId) {
-            const mergedText = getMergedTextByMyId(MyId);
-            console.log(mergedText);
-
-            // Select all div elements with the specified MyId attribute
-            const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
-
-            if (mergedText.length > 0) {
-                document.body.style.cursor = 'wait'; // Change cursor to wait
-                const query = encodeURIComponent(mergedText);
-                const apiUrl = `https://api.crossref.org/works?query.bibliographic=${query}&rows=3`;
-
-                fetch(apiUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        displaySearchResults(data, query, MyId);
-
-                        // Set data-results attribute for all matching divs
-                        divs.forEach(div => {
-                            div.setAttribute('data-results', JSON.stringify(data));
-                            div.setAttribute('query', query);
-                            div.setAttribute('MyId', MyId);
-                        });
-
-                        document.body.style.cursor = 'default'; // Revert cursor to default
-                    })
-                    .catch(error => {
-                        console.error('Error fetching CrossRef data:', error);
-                        document.body.style.cursor = 'default'; // Revert cursor to default even if there's an error
-                    });
-            } else {
-                alert('No text found in the selected divs.');
+                // Optionally trigger further actions with the highlightCounter
+                triggerSearch(highlightCounter); // Assuming this handles all the highlighted divs
             }
-        }
 
 
-        function displaySearchResults(data, query, spanId) {
-            const scholarContainer = document.getElementById('scholar-container');
-            scholarContainer.innerHTML = ''; // Clear previous content
-            //console.log(spanId, query)
-            // Create a frame for the search string
-            const searchStringFrame = document.createElement('div');
-            searchStringFrame.className = 'search-string-frame';
-            const searchStringParagraph = document.createElement('p');
-            searchStringParagraph.innerHTML = `<strong>Search String:</strong> ${decodeURIComponent(query)}`;
-            searchStringFrame.appendChild(searchStringParagraph);
-            scholarContainer.appendChild(searchStringFrame);
+            document.getElementById('crossref-button').addEventListener('click', CrossrefSearch);
+            function delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
 
-            if (data && data.message && data.message.items && data.message.items.length > 0) {
-                const results = data.message.items.slice(0, 3); // Limit to first 3 results
-
-                let highestMatch = 0;
-                results.forEach(item => { //// sort based on match
-                    if (item.title && item.URL) { // Check if title and URL are present
-                        const resultFrame = document.createElement('div');
-                        resultFrame.className = 'result-frame';
-                        resultFrame.style.backgroundColor = "#FFFFFF";
-
-                        // Format authors
-                        const formattedAuthors = formatAuthors(item.author);
-
-                        // Create a single paragraph element
-                        const resultParagraph = document.createElement('p');
-                        resultParagraph.style.fontSize = '16px'; // Set font size
-                        resultParagraph.style.backgroundColor =  "#FFFFFF";
-                        const matchPercentage = calculateMatchPercentage(item, query)
-
-                        // Construct the inner HTML content with clickable DOI and empty spaces as separators
-                        resultParagraph.innerHTML = `<strong>${matchPercentage}% Match</strong>.
-                             ${formattedAuthors}
-                             (${getYear(item.issued)}).
-                             ${item.title[0]}</strong>.
-                             ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
-                             DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
-
-                        resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
-
-                        // Add empty line between results
-                        resultFrame.style.marginBottom = '20px';
-
-                        scholarContainer.appendChild(resultFrame);
-
-                        // Highlight corresponding span based on match percentage
-                        highlightSpan(spanId, matchPercentage);
-
-                        if (highestMatch < matchPercentage) { highestMatch = matchPercentage }
-                    }
+            // Updated CrossrefSearch function to introduce a delay between each call
+            async function CrossrefSearch() {
+                for (let j = 0; j < highlightCounter; j++) {
+                    triggerSearch(j);
+                    await delay(2000); // Wait for 2 seconds before the next call
+                }
+            }
+            function getMergedTextByMyId(MyId) {
+                const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
+                let mergedText = '';
+                divs.forEach(div => {
+                    mergedText += div.textContent.trim() + ' ';
                 });
+                return mergedText.trim();
+            }
 
-                highlightSpan(spanId, highestMatch);
+            function triggerSearch(MyId) {
+                const mergedText = getMergedTextByMyId(MyId);
+                console.log(mergedText);
 
-                if (scholarContainer.children.length === 0) {
+                // Select all div elements with the specified MyId attribute
+                const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
+
+                if (mergedText.length > 0) {
+                    document.body.style.cursor = 'wait'; // Change cursor to wait
+                    const query = encodeURIComponent(mergedText);
+                    const apiUrl = `https://api.crossref.org/works?query.bibliographic=${query}&rows=3`;
+
+                    fetch(apiUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            displaySearchResults(data, query, MyId);
+
+                            // Set data-results attribute for all matching divs
+                            divs.forEach(div => {
+                                div.setAttribute('data-results', JSON.stringify(data));
+                                div.setAttribute('query', query);
+                                div.setAttribute('MyId', MyId);
+                            });
+
+                            document.body.style.cursor = 'default'; // Revert cursor to default
+                        })
+                        .catch(error => {
+                            console.error('Error fetching CrossRef data:', error);
+                            document.body.style.cursor = 'default'; // Revert cursor to default even if there's an error
+                        });
+                } else {
+                    alert('No text found in the selected divs.');
+                }
+            }
+
+            function displaySearchResults(data, query, spanId) {
+                const scholarContainer = document.getElementById('scholar-container');
+                scholarContainer.innerHTML = ''; // Clear previous content
+
+                // Create a frame for the search string
+                const searchStringFrame = document.createElement('div');
+                searchStringFrame.className = 'search-string-frame';
+
+                // Create a paragraph element to display the search string
+                const searchStringParagraph = document.createElement('p');
+                searchStringParagraph.innerHTML = `<strong>Search String:</strong> ${decodeURIComponent(query)}`;
+                searchStringFrame.appendChild(searchStringParagraph);
+
+                // Create a button to search on Google Scholar
+                const searchButton = document.createElement('button');
+                searchButton.textContent = 'Search on Google Scholar';
+
+                // Add margin to move the button slightly down from the search string
+                searchButton.style.margin = '10px 0 0 10px'; // Top margin of 10px to move it down, and left margin of 10px for spacing
+
+                // Set up the click event to open Google Scholar search
+                searchButton.onclick = function () {
+                    const cleanedQuery = decodeURIComponent(query).replace(/%2C/g, ','); // Replace encoded commas with actual commas
+                    const scholarSearchURL = `https://scholar.google.com/scholar?q=${encodeURIComponent(cleanedQuery)}`;
+                    window.open(scholarSearchURL, '_blank'); // Open the URL in a new tab
+                };
+
+                // Append the button to the search string frame
+                searchStringFrame.appendChild(searchButton);
+
+                // Append the search string frame to the container
+                scholarContainer.appendChild(searchStringFrame);
+
+                if (data && data.message && data.message.items && data.message.items.length > 0) {
+                    const results = data.message.items.slice(0, 3); // Limit to first 3 results
+
+                    let highestMatch = 0;
+                    results.forEach(item => { //// sort based on match
+                        if (item.title && item.URL) { // Check if title and URL are present
+                            const resultFrame = document.createElement('div');
+                            resultFrame.className = 'result-frame';
+                            resultFrame.style.backgroundColor = "#FFFFFF";
+
+                            // Format authors
+                            const formattedAuthors = formatAuthors(item.author);
+
+                            // Create a single paragraph element
+                            const resultParagraph = document.createElement('p');
+                            resultParagraph.style.fontSize = '16px'; // Set font size
+                            resultParagraph.style.backgroundColor = "#FFFFFF";
+                            const matchPercentage = calculateMatchPercentage(item, query);
+
+                            // Construct the inner HTML content with clickable DOI and empty spaces as separators
+                            resultParagraph.innerHTML = `<strong>${matchPercentage}% Match</strong>.
+         ${formattedAuthors}
+         (${getYear(item.issued)}).
+         ${item.title[0]}</strong>.
+         ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
+         DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
+
+                            resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
+
+                            // Add empty line between results
+                            resultFrame.style.marginBottom = '20px';
+
+                            scholarContainer.appendChild(resultFrame);
+
+                            // Highlight corresponding span based on match percentage
+                            highlightSpan(spanId, matchPercentage);
+
+                            if (highestMatch < matchPercentage) { highestMatch = matchPercentage }
+                        }
+                    });
+
+                    highlightSpan(spanId, highestMatch);
+
+                    if (scholarContainer.children.length === 0) {
+                        const noResultsMsg = document.createElement('p');
+                        noResultsMsg.textContent = 'No results found.';
+                        scholarContainer.appendChild(noResultsMsg);
+                    }
+                } else {
                     const noResultsMsg = document.createElement('p');
                     noResultsMsg.textContent = 'No results found.';
                     scholarContainer.appendChild(noResultsMsg);
+
+                    // Create the button to retry the search
+                    const retryButton = document.createElement('button');
+                    retryButton.textContent = 'Retry CrossRef Search';
+                    retryButton.style.marginTop = '5px'; // Add some space above the button
+
+                    // Set up the click event to trigger TriggerSearch()
+                    retryButton.onclick = function () {
+                        triggerSearch(spanId); // Call TriggerSearch with the query
+                    };
+
+                    // Append the retry button to the container
+                    scholarContainer.appendChild(retryButton);
                 }
-            } else {
-                const noResultsMsg = document.createElement('p');
-                noResultsMsg.textContent = 'No results found.';
-                scholarContainer.appendChild(noResultsMsg);
             }
-        }
 
 
 
-        function highlightSpan(MyId, matchPercentage) {
-            // Select all div elements with the specified MyId attribute
-            const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
 
-            if (divs.length > 0) {
-                // Calculate hue value based on match percentage
-                const hue = (matchPercentage / 100) * 120; // Hue ranges from 0 (green) to 120 (red)
 
-                // Apply the background color to each matching div
-                divs.forEach(div => {
-                    div.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
-                });
+
+            function highlightSpan(MyId, matchPercentage) {
+                // Select all div elements with the specified MyId attribute
+                const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
+
+                if (divs.length > 0) {
+                    // Calculate hue value based on match percentage
+                    const hue = (matchPercentage / 100) * 120; // Hue ranges from 0 (green) to 120 (red)
+
+                    // Apply the background color to each matching div
+                    divs.forEach(div => {
+                        div.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+                    });
+                }
             }
-        }
 
 
-        function calculateMatchPercentage(item, query) {
-            // Decode the query string first
-            query = decodeURIComponent(query);
+            function calculateMatchPercentage(item, query) {
+                // Decode the query string first
+                query = decodeURIComponent(query);
 
-            // Weights for different components
-            let title_weight = 45;
-            let author_weight = 30;
-            let journal_weight = 10;
-            let year_weight = 10;
-            let doi_weight = 5;
+                // Weights for different components
+                let title_weight = 45;
+                let author_weight = 30;
+                let journal_weight = 10;
+                let year_weight = 10;
+                let doi_weight = 5;
 
-            // Format the authors and other components
-            const formattedAuthors = formatAuthors(item.author);
-            const title = `$${formattedAuthors}
+                // Format the authors and other components
+                const formattedAuthors = formatAuthors(item.author);
+                const title = `$${formattedAuthors}
                              (${getYear(item.issued)}).
                              <strong><a href="${item.URL}" target="_blank">${item.title[0]}</a></strong>.
                              ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
                              DOI: ${item.DOI}`;
 
-            // Clean and split title words
-            const titleWords = item.title[0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
+                // Clean and split title words
+                const titleWords = item.title[0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
 
-            // Split decoded query into lowercase words
-            var queryWords = query.replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
-            queryWords = queryWords.filter((element) => {
-                return element.length > 1;
-            });
-            const queryWordSet = new Set(queryWords);
+                // Split decoded query into lowercase words
+                var queryWords = query.replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
+                queryWords = queryWords.filter((element) => {
+                    return element.length > 1;
+                });
+                const queryWordSet = new Set(queryWords);
 
-            // Clean and split author surnames
-            let authorSurnames = formatAuthors_Surname(item.author).replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
+                // Clean and split author surnames
+                let authorSurnames = formatAuthors_Surname(item.author).replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
 
-            // Clean and split journal name
-            let journalWords = item['container-title'] ? item['container-title'][0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/) : [];
+                // Clean and split journal name
+                let journalWords = item['container-title'] ? item['container-title'][0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/) : [];
 
-            // Year as a string
-            let yearString = getYear(item.issued).toString();
+                // Year as a string
+                let yearString = getYear(item.issued).toString();
 
-            // Extract DOI from the query using regex
-            const doiRegex = /\b10\.\d{4,}(?:\.\d+)*\/\S+\b/;
-            const queryDOI = query.match(doiRegex) ? query.match(doiRegex)[0] : '';
+                // Extract DOI from the query using regex
+                const doiRegex = /\b10\.\d{4,}(?:\.\d+)*\/\S+\b/;
+                const queryDOI = query.match(doiRegex) ? query.match(doiRegex)[0] : '';
 
-            // DOI from the item
-            let doiString = item.DOI ? item.DOI.toLowerCase() : '';
-            // Count matches for title words
-            let titleMatchCount = 0;
-            titleWords.forEach(word => {
-                if (queryWordSet.has(word)) {
-                    titleMatchCount++;
-                }
-            });
-            // Count matches for author surnames
-            let authorMatchCount = 0;
-            authorSurnames.forEach(word => {
-                if (queryWordSet.has(word)) {
-                    authorMatchCount++;
-                }
-            });
-            // Count matches for journal words
-            let journalMatchCount = 0;
-            journalWords.forEach(word => {
-                if (queryWordSet.has(word)) {
-                    journalMatchCount++;
-                }
-            });
-            // Check if year matches
-            let yearMatchCount = queryWordSet.has(yearString) ? 1 : 0;
-            // Check if DOI matches
-            let doiMatchCount = (queryDOI && queryDOI === doiString) ? 1 : 0;
-            // Logging counts
+                // DOI from the item
+                let doiString = item.DOI ? item.DOI.toLowerCase() : '';
+                // Count matches for title words
+                let titleMatchCount = 0;
+                titleWords.forEach(word => {
+                    if (queryWordSet.has(word)) {
+                        titleMatchCount++;
+                    }
+                });
+                // Count matches for author surnames
+                let authorMatchCount = 0;
+                authorSurnames.forEach(word => {
+                    if (queryWordSet.has(word)) {
+                        authorMatchCount++;
+                    }
+                });
+                // Count matches for journal words
+                let journalMatchCount = 0;
+                journalWords.forEach(word => {
+                    if (queryWordSet.has(word)) {
+                        journalMatchCount++;
+                    }
+                });
+                // Check if year matches
+                let yearMatchCount = queryWordSet.has(yearString) ? 1 : 0;
+                // Check if DOI matches
+                let doiMatchCount = (queryDOI && queryDOI === doiString) ? 1 : 0;
+                // Logging counts
 
-            // Calculate match percentages for each component
-            let titleMatchPercentage = (titleMatchCount / titleWords.length) * title_weight;
-            let authorMatchPercentage = (authorMatchCount / authorSurnames.length) * author_weight;
-            let journalMatchPercentage = (journalMatchCount / journalWords.length) * journal_weight;
-            let yearMatchPercentage = yearMatchCount * year_weight;
-            let doiMatchPercentage = doiMatchCount * doi_weight;
-            // Combine match percentages
-            var matchPercentage = Math.round(titleMatchPercentage + authorMatchPercentage + journalMatchPercentage + yearMatchPercentage + doiMatchPercentage);
+                // Calculate match percentages for each component
+                let titleMatchPercentage = (titleMatchCount / titleWords.length) * title_weight;
+                let authorMatchPercentage = (authorMatchCount / authorSurnames.length) * author_weight;
+                let journalMatchPercentage = (journalMatchCount / journalWords.length) * journal_weight;
+                let yearMatchPercentage = yearMatchCount * year_weight;
+                let doiMatchPercentage = doiMatchCount * doi_weight;
+                // Combine match percentages
+                var matchPercentage = Math.round(titleMatchPercentage + authorMatchPercentage + journalMatchPercentage + yearMatchPercentage + doiMatchPercentage);
 
-            return matchPercentage;
-        }
-
-        function formatAuthors_Surname(authors) {
-            if (!authors || authors.length === 0) {
-                return '';
+                return matchPercentage;
             }
-            return authors.map(author => `$${author.family}`).join(', ');
-        }
 
-        function formatAuthors(authors) {
-            if (!authors || authors.length === 0) {
-                return '';
+            function formatAuthors_Surname(authors) {
+                if (!authors || authors.length === 0) {
+                    return '';
+                }
+                return authors.map(author => `$${author.family}`).join(', ');
             }
-            return authors.map(author => {
-                const givenNameInitial = author.given ? `${author.given[0]}.` : '';
-                return `${givenNameInitial} ${author.family}`;
-            }).join(', ');
-        }
 
-        function getYear(issued) {
-            if (!issued || !issued['date-parts'] || !Array.isArray(issued['date-parts']) || !issued['date-parts'][0] || !Array.isArray(issued['date-parts'][0])) {
-                return 'Unknown Year';
+            function formatAuthors(authors) {
+                if (!authors || authors.length === 0) {
+                    return '';
+                }
+                return authors.map(author => {
+                    const givenNameInitial = author.given ? `${author.given[0]}.` : '';
+                    return `${givenNameInitial} ${author.family}`;
+                }).join(', ');
             }
-            return issued['date-parts'][0][0] || 'Unknown Year';
-        }
+
+            function getYear(issued) {
+                if (!issued || !issued['date-parts'] || !Array.isArray(issued['date-parts']) || !issued['date-parts'][0] || !Array.isArray(issued['date-parts'][0])) {
+                    return 'Unknown Year';
+                }
+                return issued['date-parts'][0][0] || 'Unknown Year';
+            }
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
     </script>
 </body>
 </html>

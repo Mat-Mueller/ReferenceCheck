@@ -117,6 +117,12 @@
         .active {
             background-color: #ccc; /* Active button style */
         }
+
+        .citation {
+            background-color: yellow;
+            font-weight: bold;
+            padding: 2px;
+        }
     </style>
 </head>
 <body>
@@ -896,6 +902,58 @@
                         });
                     }
                 }
+
+
+
+
+
+                // experimental
+
+
+                function identifyAndWrapCitations() {
+                    // Updated regex to handle "et al.", commas, and periods
+                    const citationPattern = /\(([^()]+?,\s*\d{4}(?:;\s*[^()]+?,\s*\d{4})*)\)/g;
+
+                    // Get all divs
+                    const allDivs = document.querySelectorAll('div');
+
+                    // Loop through each div to find citations
+                    allDivs.forEach(div => {
+                        let divText = div.innerHTML;  // Get the current div's HTML content
+
+                        // Replace all found citations with span-wrapped versions
+                        let modifiedText = divText.replace(citationPattern, function (match) {
+                            return `<span class="citation">${match}</span>`;  // Wrap the citation in a span
+                        });
+
+                        // Update the div's content with the modified text
+                        div.innerHTML = modifiedText;
+                    });
+
+                    const citationSpans = document.querySelectorAll('.citation');
+                    citationSpans.forEach(span => {
+                        span.addEventListener('click', function () {
+                            const citation = this.textContent;
+                            alert(`You clicked on the citation: ${citation}`);
+                            // You can replace the alert with any other action, such as redirecting to a different page, opening a modal, etc.
+                        });
+                    });
+                }
+
+                // Call the function to identify and wrap in-text citations
+                identifyAndWrapCitations();
+
+
+
+
+
+
+
+
+
+
+
+
             }
 
             function displaySearchResults(data, query, spanId) {

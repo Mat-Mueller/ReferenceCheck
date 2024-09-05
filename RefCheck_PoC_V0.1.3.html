@@ -726,6 +726,30 @@
                 }
             }
 
+            // Function to find the most common distance
+            function findMostCommonDistance(distances) {
+                if (distances.length === 0) return 0;
+
+                // Count occurrences of each distance
+                const distanceCount = distances.reduce((acc, dist) => {
+                    acc[dist] = (acc[dist] || 0) + 1;
+                    return acc;
+                }, {});
+
+                // Get the unique distances sorted by frequency and value
+                const sortedDistances = Object.entries(distanceCount)
+                    .sort((a, b) => b[1] - a[1] || a[0] - b[0]) // Sort by frequency, then by distance value
+                    .map(([dist, count]) => ({ dist: parseFloat(dist), count })); // Convert the distances back to numbers
+
+                // If there are more than two unique distances, reduce to the two most frequent
+                if (sortedDistances.length > 2) {
+                    sortedDistances.length = 2; // Keep only the top two most frequent distances
+                }
+
+                // From the remaining distances, return the smallest
+                return Math.min(sortedDistances[0].dist, sortedDistances[1].dist);
+            }
+
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -784,29 +808,7 @@
 
 
 
-            // Function to find the most common distance
-            function findMostCommonDistance(distances) {
-                if (distances.length === 0) return 0;
 
-                // Count occurrences of each distance
-                const distanceCount = distances.reduce((acc, dist) => {
-                    acc[dist] = (acc[dist] || 0) + 1;
-                    return acc;
-                }, {});
-
-                // Get the unique distances sorted by frequency and value
-                const sortedDistances = Object.entries(distanceCount)
-                    .sort((a, b) => b[1] - a[1] || a[0] - b[0]) // Sort by frequency, then by distance value
-                    .map(([dist, count]) => ({ dist: parseFloat(dist), count })); // Convert the distances back to numbers
-
-                // If there are more than two unique distances, reduce to the two most frequent
-                if (sortedDistances.length > 2) {
-                    sortedDistances.length = 2; // Keep only the top two most frequent distances
-                }
-
-                // From the remaining distances, return the smallest
-                return Math.min(sortedDistances[0].dist, sortedDistances[1].dist);
-            }
 
 
             function Make_Reference(highlightCounter, pElements) {
@@ -873,35 +875,7 @@
 
             document.getElementById('InText-button').addEventListener('click', InTextSearch);
             function InTextSearch() { 
-                for (let j = 0; j < highlightCounter; j++) {
-                    const divs = document.querySelectorAll(`[MyId="${j}"]`)
-                    const highlightDivs = document.querySelectorAll('div.textLine');
-                    let matchCount = 0;
-                    const mergedText = getMergedTextByMyId(j);
-                    const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
 
-                    
-
-                    // Loop through all highlight divs and check if they contain the first word
-                    highlightDivs.forEach(div => {
-                        if (!(div.hasAttribute("myid")) && (div.textContent.includes(firstWord))) {
-                            //console.log(div.textContent)
-                            matchCount++;  // Increment the count if the first word is found
-                        }
-                    });
-
-                    if (matchCount === 0) {
-
-
-                        console.log(firstWord)
-                        console.log(matchCount)
-
-                        divs.forEach(div => {
-                            div.style.color = 'red';
-
-                        });
-                    }
-                }
 
 
 
@@ -940,20 +914,79 @@
                     });
                 }
 
+
+
                 // Call the function to identify and wrap in-text citations
-                identifyAndWrapCitations();
+                
+
+
+                const scholarContainer = document.getElementById('scholar-container');
+                scholarContainer.innerHTML = ''; // Clear previous content
+
+
+                // First Frame for Bla bla
+
+                const TextFrame = document.createElement('div');
+                TextFrame.className = 'search-string-frame';
+                const TextFrameParagraph = document.createElement('p');
+                TextFrameParagraph.innerHTML = " BLa BLa Bla"; ////// highlightCounter
+                TextFrame.appendChild(TextFrameParagraph);
+                scholarContainer.appendChild(TextFrame);
+                // second frame for references
+
+                const ReferenceFrame = document.createElement('div');
+                ReferenceFrame.className = 'search-string-frame';
+
+                for (let j = 0; j < highlightCounter; j++) {
+                    const divs = document.querySelectorAll(`[MyId="${j}"]`)
+                    const highlightDivs = document.querySelectorAll('div.textLine');
+                    let matchCount = 0;
+                    const mergedText = getMergedTextByMyId(j);
+                    const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
 
 
 
+                    // Loop through all highlight divs and check if they contain the first word
+                    highlightDivs.forEach(div => {
+                        if (!(div.hasAttribute("myid")) && (div.textContent.includes(firstWord))) {
+                            //console.log(div.textContent)
+                            matchCount++;  // Increment the count if the first word is found
+                        }
+                    });
+
+
+                    const ReferenceFrameParagraph = document.createElement('p');
+                    ReferenceFrameParagraph.innerHTML = mergedText;
+                    
+                    if (matchCount === 0) {
+
+
+                        console.log(firstWord)
+                        console.log(matchCount)
+                        ReferenceFrameParagraph.style.color = 'red'
+                        divs.forEach(div => {
+                            div.style.color = 'red';
+
+                        });
+                    }
+
+                    
+                    ReferenceFrame.appendChild(ReferenceFrameParagraph);
+
+                }
 
 
 
+                scholarContainer.appendChild(ReferenceFrame);
 
-
-
-
-
-
+                /// Third frame for Intext citations
+                //identifyAndWrapCitations();
+                const InTextCitFrame = document.createElement('div');
+                InTextCitFrame.className = 'search-string-frame';
+                const InTextCitFrameParagraph = document.createElement('p');
+                InTextCitFrameParagraph.innerHTML = " BLa BLa Bla"; ////// highlightCounter
+                InTextCitFrame.appendChild(InTextCitFrameParagraph);
+                scholarContainer.appendChild(InTextCitFrame);
             }
 
             function displaySearchResults(data, query, spanId) {

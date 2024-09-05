@@ -141,12 +141,16 @@
 
 
 
-        <button id="crossref-button">Crossref Search</button>
+        <button id="crossref-button">Crossref Search All</button>
+
+        <button id="InText-button">Do Intext Analysis</button>
+
+
         <!--<button onclick="clearPDFAndReload()">Reload Page</button>-->
         <div id="notification" style="
-    
+
         margin-top: 10px;
-        
+
         border: 2px solid white;
         width: 300px; /* Fixed width */
         padding: 10px; /* Padding inside the box */
@@ -174,6 +178,19 @@
         let pdfDocument = null;
         let searchMode = 'automatic'; // Initial search mode
 
+
+
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////// PDF LOADING ETC //////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
         function clearPDFAndReload() {
             const pdfContainer = document.getElementById('pdf-container');
             pdfContainer.innerHTML = ''; // Clear the PDF container
@@ -181,17 +198,7 @@
             window.location.reload(true); // Reload the page from the server
         }
 
-        function LoadScholar() {
 
-
-            // Encode the query to be URL-safe
-            const encodedQuery = encodeURIComponent(getSelectedText());
-            // Construct the Google Scholar search URL
-            const url = `https://scholar.google.com/scholar?q=${encodedQuery}`;
-            // Open a new window with the constructed URL
-            window.open(url, '_blank');
-
-        }
 
 
         document.getElementById('pdf-upload').addEventListener('change', function (event) {
@@ -201,6 +208,16 @@
                 loadPDF(fileURL);
             }
         });
+
+        function removeEmptyDivs() {
+            const textLayerDivs = pdfContainer.querySelectorAll('.textLayer');
+            textLayerDivs.forEach(div => {
+                if (!div.textContent.trim()) {
+                    div.remove();
+                }
+            });
+        }
+
 
         function loadPDF(url) {
             pdfjsLib.getDocument(url).promise.then(function (pdf) {
@@ -325,42 +342,12 @@
 
 
 
-        function processParagraph(container, text) {
-            const p = document.createElement('p');
-            p.textContent = text;
-            p.style.margin = '0';
-            container.appendChild(p);
-        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////// Functions to select potential References//////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-        function removeEmptyDivs() {
-            const textLayerDivs = pdfContainer.querySelectorAll('.textLayer');
-            textLayerDivs.forEach(div => {
-                if (!div.textContent.trim()) {
-                    div.remove();
-                }
-            });
-        }
-
-
-
-
-        function getSelectedText() {
-            let text = '';
-            if (window.getSelection) {
-                const selection = window.getSelection();
-                text = selection.toString();
-            } else if (document.selection && document.selection.type != "Control") {
-                text = range.text;
-            }
-            return text.trim();
-        }
-
-
-
-        ////// Functions to select potential References /////////////
 
         document.addEventListener("DOMContentLoaded", () => {
             let highlightCounter = 0; // Counter for unique IDs
@@ -525,6 +512,7 @@
                         }
 
                         if (startPoint) {
+                            startPoint.scrollIntoView({ behavior: 'smooth', block: 'start' });
                             let endPoint = null
                             if (startFontSize > normalFontSize) {
 
@@ -541,11 +529,30 @@
                                 }
 
 
+
                                 
                             } 
+                            if (!endPoint) { 
+                                for (let i = Array.from(divs).indexOf(startPoint) + 1; i < divs.length; i++) {
+                                    const divText = divs[i].textContent.trim().toLowerCase(); // Get the text and convert to lowercase
+                                    const Endtitles = [
+                                        'appendix',
+   
+                                    ];
+
+                                    if (Endtitles.some(Endtitles => divText.includes(Endtitles)))  {
+
+                                    // If we find a div with the same font size as startFontSize, set it as the endPoint
+                                        endPoint = divs[i - 1];
+                                        console.log('Found matching font size div at index:', i);
+                                        break;
+                                    }
+                                }
+
+                            }
 
 
-                            if (!endPoint) {
+                            if (!endPoint) {   /////////////////////////////////////////////////////////////////////////////////////////////// Check Appendix!!!!
                                 endPoint = divs[divs.length - 1]; // Last div element
                                 console.log('No matching font size found, reference section ends at the last div.');
                             }
@@ -587,46 +594,10 @@
             });
 
 
-            ///////////   JZjzgkjulewileiwfi /////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////Seperate Reference Section ////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-            // Add event listener for clicks on spans with class 'highlight'
-            document.addEventListener('click', function (e) {
-                if (e.target && e.target.matches('div.highlight')) {  // Adjusted to handle 'div.highlight' 
-                    // Get necessary attributes from the clicked div
-                    const divId = e.target.getAttribute('MyId');  // Getting the ID of the clicked div
-                    const query = getMergedTextByMyId(divId);
-                    let dataResults = e.target.getAttribute('data-results');  // Fetching the data-results attribute
-
-                    console.log('Query:', query);
-                    console.log('MyId:', divId);
-
-                    // If dataResults is not defined, make it an empty object "{}"
-                    if (!dataResults) {
-                        dataResults = '{}';  // Treat as an empty object
-                    }
-
-                    try {
-                        // Parse the data-results as JSON
-                        const data = JSON.parse(dataResults);
-
-                        // Check if data is valid (if data.message.items exists)
-                        if (data && data.message && data.message.items) {
-                            displaySearchResults(data, query, divId);  // Display the search results
-                        } else {
-                            console.log('No valid results to display for div ID:', divId);
-                            displaySearchResults({}, query, divId);  // Display empty results
-                        }
-                    } catch (error) {
-                        console.error('Error parsing data for div ID:', divId, error);
-                    }
-                }
-            });
-
-
-            function delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
 
 
             function Sudivide(selection) {
@@ -724,19 +695,19 @@
                                 // Get the left position of the first div as the reference for non-indented divs
                                 const nextRect = pElements[j + 1]?.getBoundingClientRect();
 
-                                
+
                                 if (nextRect && (Math.round(nextRect.left * 10) / 10 < Math.round(currentRect.left * 10) / 10) || j == pElements.length - 1) {
                                     shouldSeparate = true;
                                 }
 
-                                
+
                             }
 
                             if (shouldSeparate) {
                                 //Make_Reference(highlightCounter, pElements);
-                                
+
                                 counter = [];
-                                
+
 
 
                                 highlightCounter++;
@@ -744,10 +715,65 @@
                             }
                         }
                         const notificationElement = document.getElementById('notification');
-                        notificationElement.textContent = `Found ${highlightCounter} References` ;
+                        notificationElement.textContent = `Found ${highlightCounter} References`;
                     }
                 }
             }
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////INteraction and Visualization//////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+            // Add event listener for clicks on spans with class 'highlight'
+            document.addEventListener('click', function (e) {
+                if (e.target && e.target.matches('div.highlight')) {  // Adjusted to handle 'div.highlight' 
+                    // Get necessary attributes from the clicked div
+                    const divId = e.target.getAttribute('MyId');  // Getting the ID of the clicked div
+   
+                    const query = getMergedTextByMyId(divId);
+
+                    let dataResults = e.target.getAttribute('data-results');  // Fetching the data-results attribute
+
+                    console.log('Query:', query);
+                    console.log('MyId:', divId);
+
+                    // If dataResults is not defined, make it an empty object "{}"
+                    if (!dataResults) {
+                        dataResults = '{}';  // Treat as an empty object
+                    }
+
+                    try {
+                        // Parse the data-results as JSON
+                        const data = JSON.parse(dataResults);
+
+                        // Check if data is valid (if data.message.items exists)
+                        if (data && data.message && data.message.items) {
+                            displaySearchResults(data, query, divId);  // Display the search results
+                        } else {
+                            console.log('No valid results to display for div ID:', divId);
+                            displaySearchResults({}, query, divId);  // Display empty results
+                        }
+                    } catch (error) {
+                        console.error('Error parsing data for div ID:', divId, error);
+                    }
+
+
+
+
+                }
+            });
+
+
+            function delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+
+            
 
 
 
@@ -777,25 +803,16 @@
             }
 
 
-
-
-
-  
-
             function Make_Reference(highlightCounter, pElements) {
-                // Loop through the array of pElements (div elements)
-
-
-                // Optionally trigger further actions with the highlightCounter
-                triggerSearch(highlightCounter); // Assuming this handles all the highlighted divs
+                triggerSearch(highlightCounter); 
             }
 
 
-            document.getElementById('crossref-button').addEventListener('click', CrossrefSearch);
             function delay(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
 
+            document.getElementById('crossref-button').addEventListener('click', CrossrefSearch);
             // Updated CrossrefSearch function to introduce a delay between each call
             async function CrossrefSearch() {
                 for (let j = 0; j < highlightCounter; j++) {
@@ -827,12 +844,12 @@
                     fetch(apiUrl)
                         .then(response => response.json())
                         .then(data => {
-                            displaySearchResults(data, query, MyId);
+                            displaySearchResults(data, mergedText, MyId);
 
                             // Set data-results attribute for all matching divs
                             divs.forEach(div => {
                                 div.setAttribute('data-results', JSON.stringify(data));
-                                div.setAttribute('query', query);
+                                div.setAttribute('query', mergedText);
                                 div.setAttribute('MyId', MyId);
                             });
 
@@ -844,6 +861,40 @@
                         });
                 } else {
                     alert('No text found in the selected divs.');
+                }
+            }
+
+
+            document.getElementById('InText-button').addEventListener('click', InTextSearch);
+            function InTextSearch() { 
+                for (let j = 0; j < highlightCounter; j++) {
+                    const divs = document.querySelectorAll(`[MyId="${j}"]`)
+                    const highlightDivs = document.querySelectorAll('div.textLine');
+                    let matchCount = 0;
+                    const mergedText = getMergedTextByMyId(j);
+                    const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
+
+                    
+
+                    // Loop through all highlight divs and check if they contain the first word
+                    highlightDivs.forEach(div => {
+                        if (!(div.hasAttribute("myid")) && (div.textContent.includes(firstWord))) {
+                            //console.log(div.textContent)
+                            matchCount++;  // Increment the count if the first word is found
+                        }
+                    });
+
+                    if (matchCount === 0) {
+
+
+                        console.log(firstWord)
+                        console.log(matchCount)
+
+                        divs.forEach(div => {
+                            div.style.color = 'red';
+
+                        });
+                    }
                 }
             }
 
@@ -879,6 +930,32 @@
 
                 // Append the search string frame to the container
                 scholarContainer.appendChild(searchStringFrame);
+
+
+
+                
+
+                const firstWord = query.split(' ')[0].replace(/,$/, '');
+
+                // Insert logic to check all div.highlight elements
+                const highlightDivs = document.querySelectorAll('div.textLine');
+                let matchCount = 0;
+
+                // Loop through all highlight divs and check if they contain the first word
+                highlightDivs.forEach(div => {
+                    if (div.textContent.includes(firstWord)) {
+                        matchCount++;  // Increment the count if the first word is found
+                    }
+                });
+
+
+                const IntextFrame = document.createElement('div');
+                IntextFrame.className = 'IntextFrame';
+                IntextFrame.style.backgroundColor = "#FFFFFF";
+                IntextFrame.style.marginBottom = '20px'
+                console.log(matchCount)
+                IntextFrame.textContent = `Found ${matchCount} divs that contain the word: "${firstWord}"`;
+                scholarContainer.appendChild(IntextFrame)
 
                 if (data && data.message && data.message.items && data.message.items.length > 0) {
                     const results = data.message.items.slice(0, 3); // Limit to first 3 results

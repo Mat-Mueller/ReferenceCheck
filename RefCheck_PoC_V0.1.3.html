@@ -132,6 +132,18 @@
             font-weight: bold;
             padding: 2px;
         }
+
+        .collapsible-frame {
+            overflow-y: auto; /* Make content scrollable if it exceeds height */
+            max-height: 400px; /* Set the max height */
+            min-height: 400px; /* Set the minimum height */
+            transition: max-height 0.3s ease-out; /* Smooth transition */
+        }
+
+        .toggle-in-text-button {
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -1157,16 +1169,13 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 // Second frame for references (collapsible frame)
                 const ReferenceFrame = document.createElement('div');
                 ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
-                ReferenceFrame.style.overflowY = 'auto'; // Make content scrollable if it exceeds height
-                ReferenceFrame.style.maxHeight = '400px'; // Start with a height of 100px
-                ReferenceFrame.style.transition = 'max-height 0.3s ease-out'; // Smooth transition
-                ReferenceFrame.style.minHeight = '400px'; // Set minimum height to 100px
+                ReferenceFrame.style.maxHeight = '400px';
 
                 // Create the toggle button for expanding/collapsing
                 const toggleButton = document.createElement('button');
                 toggleButton.textContent = 'Show/Hide References';
-                toggleButton.style.cursor = 'pointer';
-                toggleButton.style.marginBottom = '10px';
+                toggleButton.className = 'toggle-in-text-button'
+
                 toggleButton.addEventListener('click', () => {
                     // Toggle the max-height between 100px and the full height of the content (to show/hide the reference frame)
                     if (ReferenceFrame.style.maxHeight === '400px') {
@@ -1215,15 +1224,13 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 // Third frame for in-text citations (collapsible frame)
                 const InTextCitFrame = document.createElement('div');
                 InTextCitFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
-                InTextCitFrame.style.overflowY = 'auto'; // Make content scrollable if it exceeds height
-                InTextCitFrame.style.maxHeight = '400px'; // Start with a height of 400px
-                InTextCitFrame.style.transition = 'max-height 0.3s ease-out'; // Smooth transition
+                InTextCitFrame.style.maxHeight = '400px';
 
                 // Create the toggle button for expanding/collapsing the in-text citation frame
                 const toggleInTextButton = document.createElement('button');
+                toggleInTextButton.className = 'toggle-in-text-button'
                 toggleInTextButton.textContent = 'Show/Hide In-Text Citations';
-                toggleInTextButton.style.cursor = 'pointer';
-                toggleInTextButton.style.marginBottom = '10px';
+
                 toggleInTextButton.addEventListener('click', () => {
                     // Toggle the max-height between 400px and the full height of the content
                     if (InTextCitFrame.style.maxHeight === '400px') {

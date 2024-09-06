@@ -786,7 +786,7 @@
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
 
-
+            /*
             document.getElementById('crossref-button').addEventListener('click', CrossrefSearch);
             // Go through Refs and trigger Crossref search
             async function CrossrefSearch() {
@@ -795,6 +795,8 @@
                     await delay(2000); // Wait for 2 seconds before the next call
                 }
             }
+            */
+
             function getMergedTextByMyId(MyId) {
                 const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
                 let mergedText = '';

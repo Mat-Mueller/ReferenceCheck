@@ -168,12 +168,12 @@
 
 
 
-        <button id="crossref-button">Crossref Search All</button>
+        <!--<button id="crossref-button">Crossref Search All</button> -->
 
-        <button id="InText-button">Do Intext Analysis</button>
+    <button id="InText-button">Do Intext Analysis</button>
 
 
-        <!--<button onclick="clearPDFAndReload()">Reload Page</button>-->
+    <!--<button onclick="clearPDFAndReload()">Reload Page</button>-->
         <div id="notification" style="
 
         margin-top: 10px;
@@ -839,6 +839,38 @@
                 }
             }
 
+            async function triggerSearch2(MyId) {
+                const mergedText = getMergedTextByMyId(MyId);
+                console.log(mergedText);
+
+                // Select all div elements with the specified MyId attribute
+                const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
+
+                if (mergedText.length > 0) {
+                    try {
+                        document.body.style.cursor = 'wait'; // Change cursor to wait
+                        const query = encodeURIComponent(mergedText);
+                        const apiUrl = `https://api.crossref.org/works?query.bibliographic=${query}&rows=3`;
+
+                        // Await the result of the fetch call
+                        const response = await fetch(apiUrl);
+                        const data = await response.json();
+
+                        console.log(data); // Log the response from the API
+                        document.body.style.cursor = 'default'; // Revert cursor to default
+
+                        return data; // Return the API data after it is fetched
+                    } catch (error) {
+                        console.error('Error fetching CrossRef data:', error);
+                        document.body.style.cursor = 'default'; // Revert cursor to default even if there's an error
+                        return null; // Return null in case of an error
+                    }
+                } else {
+                    alert('No text found in the selected divs.');
+                    return null; // Return null if no text is found
+                }
+            }
+
             function displaySearchResults(data, query, spanId) {
                 const scholarContainer = document.getElementById('scholar-container');
                 scholarContainer.innerHTML = ''; // Clear previous content
@@ -1171,10 +1203,15 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
                 ReferenceFrame.style.maxHeight = '400px';
 
+                // Create a container div to hold the buttons side by side
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.display = 'inline-block'; // Ensure buttons are on the same line
+
                 // Create the toggle button for expanding/collapsing
                 const toggleButton = document.createElement('button');
                 toggleButton.textContent = 'Show/Hide References';
-                toggleButton.className = 'toggle-in-text-button'
+                toggleButton.className = 'toggle-in-text-button';
+                toggleButton.style.marginRight = '10px'; // Add some space between the buttons
 
                 toggleButton.addEventListener('click', () => {
                     // Toggle the max-height between 100px and the full height of the content (to show/hide the reference frame)
@@ -1184,6 +1221,40 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         ReferenceFrame.style.maxHeight = '400px'; // Collapse back to minimum height
                     }
                 });
+
+                // Append the toggle button to the button container
+                buttonContainer.appendChild(toggleButton);
+
+                // Create the second button for CrossRef search
+                const crossRefAllButton = document.createElement('button');
+                crossRefAllButton.textContent = 'Search All CrossRef';
+                crossRefAllButton.className = 'crossref-all-button';
+
+                // Add event listener to trigger the search for all references when clicked
+                function sleep(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                }
+
+                // Add event listener to the CrossRef search button
+                crossRefAllButton.addEventListener('click', async () => {
+                    // Find all buttons with class 'crossref-search-button'
+                    const crossRefButtons = document.querySelectorAll('.crossref-search-button');
+
+                    // Iterate through each button and trigger its click event with a delay
+                    for (let i = 0; i < crossRefButtons.length; i++) {
+                        crossRefButtons[i].click(); // Trigger the individual click event
+
+                        // Introduce a delay of 1 second (1000 ms) between each request
+                        await sleep(1500);
+                    }
+                });
+                // Append the CrossRef search button to the button container
+                buttonContainer.appendChild(crossRefAllButton);
+
+                // Append the button container to the ReferenceFrame
+                ReferenceFrame.appendChild(buttonContainer);
+
+// Rest of your code follows (e.g., looping through references and appending them to ReferenceFrame)
 
                 // Append the toggle button inside the ReferenceFrame
                 ReferenceFrame.appendChild(toggleButton);
@@ -1217,9 +1288,94 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
                     SingleRef.style.marginBottom = '15px'; // Add space as needed
                     ReferenceFrameParagraph.appendChild(SingleRef);
-                    
-                    //;
 
+                    // Add the CrossRef search button
+                    const crossRefButton = document.createElement('button');
+                    crossRefButton.textContent = 'Search CrossRef';
+                    crossRefButton.className = 'crossref-search-button';
+                    crossRefButton.style.marginBottom = '15px'; // Add space below the button
+
+
+
+
+                    crossRefButton.addEventListener('click', async () => {
+                        const searchData = await triggerSearch2(j); // Wait for the search data
+                        const query = getMergedTextByMyId(j); // Get the merged text for comparison
+
+                        // Remove the button after it's clicked
+                        crossRefButton.remove();
+
+                        // If search data is available, process it and show results
+                        if (searchData && searchData.message && searchData.message.items && searchData.message.items.length > 0) {
+                            const results = searchData.message.items.slice(0, 3); // Get the first 3 results
+
+                            const resultsDiv = document.createElement('div'); // Create a div to contain results
+                            resultsDiv.className = 'crossref-results';
+                            resultsDiv.style.marginTop = '10px'; // Add margin above results
+
+                            let highestMatch = 0;
+
+                            // Loop through the first 3 results and add them to the resultsDiv
+                            results.forEach(item => {
+                                if (item.title && item.URL) { // Check if title and URL are present
+                                    const resultFrame = document.createElement('div');
+                                    resultFrame.className = 'result-frame';
+                                    resultFrame.style.backgroundColor = "#FFFFFF";
+
+                                    // Format authors
+                                    const formattedAuthors = formatAuthors(item.author);
+
+                                    // Create a single paragraph element
+                                    const resultParagraph = document.createElement('p');
+                                    resultParagraph.style.fontSize = '16px'; // Set font size
+                                    resultParagraph.style.backgroundColor = "#FFFFFF";
+
+                                    // Calculate the match percentage (based on your logic)
+                                    const matchPercentage = calculateMatchPercentage(item, query);
+
+                                    // Construct the inner HTML content without new lines
+                                    resultParagraph.innerHTML = `
+                    <strong>${matchPercentage}% Match</strong>. 
+                    ${formattedAuthors}. 
+                    (${getYear(item.issued)}). 
+                    <strong>${item.title[0]}</strong>. 
+                    ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}. 
+                    DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
+
+                                    resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
+
+                                    // Add empty line between results
+                                    resultFrame.style.marginBottom = '20px';
+
+                                    // Append the resultFrame to the resultsDiv
+                                    resultsDiv.appendChild(resultFrame);
+
+                                    // Track the highest match percentage
+                                    if (highestMatch < matchPercentage) {
+                                        highestMatch = matchPercentage;
+                                    }
+                                }
+                            });
+
+                            ReferenceFrameParagraph.appendChild(resultsDiv); // Append the resultsDiv to the ReferenceFrameParagraph
+
+                            // Apply color to ReferenceFrameParagraph based on highest match percentage
+                            const hue = (highestMatch / 100) * 120; // Calculate hue based on highest match percentage (0 to 120)
+                            ReferenceFrameParagraph.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+
+                        } else {
+                            const noResultsMsg = document.createElement('p');
+                            noResultsMsg.textContent = 'No CrossRef results found.';
+                            ReferenceFrameParagraph.appendChild(noResultsMsg);
+                        }
+                    });
+
+
+
+                    // Append the CrossRef button to the paragraph
+                    ReferenceFrameParagraph.appendChild(crossRefButton);
+
+                    // If no matches were found, highlight the text in red
                     if (matchCount === 0) {
                         ReferenceFrameParagraph.style.color = 'red';
                         divs.forEach(div => {
@@ -1227,7 +1383,9 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         });
                     }
 
+                    // Append the ReferenceFrameParagraph to the main ReferenceFrame
                     ReferenceFrame.appendChild(ReferenceFrameParagraph);
+
                 }
 
                 // Append the ReferenceFrame to the scholar container

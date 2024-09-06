@@ -1205,7 +1205,20 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
                     const ReferenceFrameParagraph = document.createElement('p');
                     ReferenceFrameParagraph.className = 'Reference-frame';
-                    ReferenceFrameParagraph.innerHTML = `${mergedText} has been found ${matchCount} times in the document.`;
+
+                    // Create first paragraph with inline style
+                    var SingleRef = document.createElement('p');
+                    SingleRef.innerHTML = mergedText;
+                    SingleRef.style.marginBottom = '15px'; // Add some space below
+                    ReferenceFrameParagraph.appendChild(SingleRef);
+
+                    // Create second paragraph with inline style
+                    SingleRef = document.createElement('p');
+                    SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
+                    SingleRef.style.marginBottom = '15px'; // Add space as needed
+                    ReferenceFrameParagraph.appendChild(SingleRef);
+                    
+                    //;
 
                     if (matchCount === 0) {
                         ReferenceFrameParagraph.style.color = 'red';

@@ -22,6 +22,15 @@
             background-color: #f0f0f0;
         }
 
+
+        .Reference-frame {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color:     #FFFFFF;
+        }
+
             .search-string-frame p, .result-frame p {
                 margin: 0;
                 font-size: 16px;
@@ -401,7 +410,7 @@
 
                             // Process the selected range
                             if (searchMode == 'manual') {
-                                Make_Reference(selection);
+                                triggerSearch(selection);
                             }
                             if (searchMode == 'automatic') {
                                 Sudivide(selection);
@@ -644,7 +653,7 @@
                                 pElements[j].style.backgroundColor = '#add8e6';
                                 pElements[j].classList.add('highlight');
                             }
-                            Make_Reference(highlightCounter, pElements);
+                            triggerSearch(highlightCounter);
                             highlightCounter++;
                             continue; // Skip to the next range if in manual mode
                         }
@@ -690,8 +699,6 @@
                             } else if (selectedCriterion === 'byParagraph') {
                                 const currentRect = pElements[j].getBoundingClientRect();
                                 const nextRect = pElements[j + 1]?.getBoundingClientRect();
-                                console.log(distances)
-                                console.log(mostCommonDistance)
 
                                 if (nextRect && (nextRect.top - currentRect.bottom > mostCommonDistance + 1) || j == pElements.length - 1) {
                                     shouldSeparate = true;
@@ -753,75 +760,23 @@
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////INteraction and Visualization//////////////////////////////////////////////////
+        ///////////////////////////////////INteraction, Analysis and Visualization////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-            // Add event listener for clicks on spans with class 'highlight'
-            document.addEventListener('click', function (e) {
-                if (e.target && e.target.matches('div.highlight')) {  // Adjusted to handle 'div.highlight' 
-                    // Get necessary attributes from the clicked div
-                    const divId = e.target.getAttribute('MyId');  // Getting the ID of the clicked div
-   
-                    const query = getMergedTextByMyId(divId);
 
-                    let dataResults = e.target.getAttribute('data-results');  // Fetching the data-results attribute
+        ///////////////////////////////////Crossref search ////////////////////////////////////////
 
-                    console.log('Query:', query);
-                    console.log('MyId:', divId);
-
-                    // If dataResults is not defined, make it an empty object "{}"
-                    if (!dataResults) {
-                        dataResults = '{}';  // Treat as an empty object
-                    }
-
-                    try {
-                        // Parse the data-results as JSON
-                        const data = JSON.parse(dataResults);
-
-                        // Check if data is valid (if data.message.items exists)
-                        if (data && data.message && data.message.items) {
-                            displaySearchResults(data, query, divId);  // Display the search results
-                        } else {
-                            console.log('No valid results to display for div ID:', divId);
-                            displaySearchResults({}, query, divId);  // Display empty results
-                        }
-                    } catch (error) {
-                        console.error('Error parsing data for div ID:', divId, error);
-                    }
-
-
-
-
-                }
-            });
 
 
             function delay(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
 
-
-            
-
-
-
-
-
-
-
-            function Make_Reference(highlightCounter, pElements) {
-                triggerSearch(highlightCounter); 
-            }
-
-
-            function delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
 
             document.getElementById('crossref-button').addEventListener('click', CrossrefSearch);
-            // Updated CrossrefSearch function to introduce a delay between each call
+            // Go through Refs and trigger Crossref search
             async function CrossrefSearch() {
                 for (let j = 0; j < highlightCounter; j++) {
                     triggerSearch(j);
@@ -872,123 +827,6 @@
                 }
             }
 
-
-            document.getElementById('InText-button').addEventListener('click', InTextSearch);
-            function InTextSearch() { 
-
-
-
-
-
-
-                // experimental
-
-
-                function identifyAndWrapCitations() {
-                    // Updated regex to handle "et al.", commas, and periods
-                    const citationPattern = /\(([^()]+?,\s*\d{4}(?:;\s*[^()]+?,\s*\d{4})*)\)/g;
-
-                    // Get all divs
-                    const allDivs = document.querySelectorAll('div');
-
-                    // Loop through each div to find citations
-                    allDivs.forEach(div => {
-                        let divText = div.innerHTML;  // Get the current div's HTML content
-
-                        // Replace all found citations with span-wrapped versions
-                        let modifiedText = divText.replace(citationPattern, function (match) {
-                            return `<span class="citation">${match}</span>`;  // Wrap the citation in a span
-                        });
-
-                        // Update the div's content with the modified text
-                        div.innerHTML = modifiedText;
-                    });
-
-                    const citationSpans = document.querySelectorAll('.citation');
-                    citationSpans.forEach(span => {
-                        span.addEventListener('click', function () {
-                            const citation = this.textContent;
-                            alert(`You clicked on the citation: ${citation}`);
-                            // You can replace the alert with any other action, such as redirecting to a different page, opening a modal, etc.
-                        });
-                    });
-                }
-
-
-
-                // Call the function to identify and wrap in-text citations
-                
-
-
-                const scholarContainer = document.getElementById('scholar-container');
-                scholarContainer.innerHTML = ''; // Clear previous content
-
-
-                // First Frame for Bla bla
-
-                const TextFrame = document.createElement('div');
-                TextFrame.className = 'search-string-frame';
-                const TextFrameParagraph = document.createElement('p');
-                TextFrameParagraph.innerHTML = " BLa BLa Bla"; ////// highlightCounter
-                TextFrame.appendChild(TextFrameParagraph);
-                scholarContainer.appendChild(TextFrame);
-                // second frame for references
-
-                const ReferenceFrame = document.createElement('div');
-                ReferenceFrame.className = 'search-string-frame';
-
-                for (let j = 0; j < highlightCounter; j++) {
-                    const divs = document.querySelectorAll(`[MyId="${j}"]`)
-                    const highlightDivs = document.querySelectorAll('div.textLine');
-                    let matchCount = 0;
-                    const mergedText = getMergedTextByMyId(j);
-                    const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
-
-
-
-                    // Loop through all highlight divs and check if they contain the first word
-                    highlightDivs.forEach(div => {
-                        if (!(div.hasAttribute("myid")) && (div.textContent.includes(firstWord))) {
-                            //console.log(div.textContent)
-                            matchCount++;  // Increment the count if the first word is found
-                        }
-                    });
-
-
-                    const ReferenceFrameParagraph = document.createElement('p');
-                    ReferenceFrameParagraph.innerHTML = mergedText;
-                    
-                    if (matchCount === 0) {
-
-
-                        console.log(firstWord)
-                        console.log(matchCount)
-                        ReferenceFrameParagraph.style.color = 'red'
-                        divs.forEach(div => {
-                            div.style.color = 'red';
-
-                        });
-                    }
-
-                    
-                    ReferenceFrame.appendChild(ReferenceFrameParagraph);
-
-                }
-
-
-
-                scholarContainer.appendChild(ReferenceFrame);
-
-                /// Third frame for Intext citations
-                //identifyAndWrapCitations();
-                const InTextCitFrame = document.createElement('div');
-                InTextCitFrame.className = 'search-string-frame';
-                const InTextCitFrameParagraph = document.createElement('p');
-                InTextCitFrameParagraph.innerHTML = " BLa BLa Bla"; ////// highlightCounter
-                InTextCitFrame.appendChild(InTextCitFrameParagraph);
-                scholarContainer.appendChild(InTextCitFrame);
-            }
-
             function displaySearchResults(data, query, spanId) {
                 const scholarContainer = document.getElementById('scholar-container');
                 scholarContainer.innerHTML = ''; // Clear previous content
@@ -1024,7 +862,7 @@
 
 
 
-                
+
 
                 const firstWord = query.split(' ')[0].replace(/,$/, '');
 
@@ -1069,11 +907,11 @@
 
                             // Construct the inner HTML content with clickable DOI and empty spaces as separators
                             resultParagraph.innerHTML = `<strong>${matchPercentage}% Match</strong>.
-         ${formattedAuthors}
-         (${getYear(item.issued)}).
-         ${item.title[0]}</strong>.
-         ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
-         DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
+${formattedAuthors}
+(${getYear(item.issued)}).
+${item.title[0]}</strong>.
+${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
+DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
                             resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
 
@@ -1151,10 +989,10 @@
                 // Format the authors and other components
                 const formattedAuthors = formatAuthors(item.author);
                 const title = `$${formattedAuthors}
-                             (${getYear(item.issued)}).
-                             <strong><a href="${item.URL}" target="_blank">${item.title[0]}</a></strong>.
-                             ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
-                             DOI: ${item.DOI}`;
+                    (${getYear(item.issued)}).
+                    <strong><a href="${item.URL}" target="_blank">${item.title[0]}</a></strong>.
+                    ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
+                    DOI: ${item.DOI}`;
 
                 // Clean and split title words
                 const titleWords = item.title[0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
@@ -1243,6 +1081,300 @@
                 }
                 return issued['date-parts'][0][0] || 'Unknown Year';
             }
+
+
+            // If clicked on a reference in the text.... Maybe Obsolete
+            document.addEventListener('click', function (e) {
+                if (e.target && e.target.matches('div.highlight')) {  // Adjusted to handle 'div.highlight' 
+                    // Get necessary attributes from the clicked div
+                    const divId = e.target.getAttribute('MyId');  // Getting the ID of the clicked div
+
+                    const query = getMergedTextByMyId(divId);
+
+                    let dataResults = e.target.getAttribute('data-results');  // Fetching the data-results attribute
+
+                    console.log('Query:', query);
+                    console.log('MyId:', divId);
+
+                    // If dataResults is not defined, make it an empty object "{}"
+                    if (!dataResults) {
+                        dataResults = '{}';  // Treat as an empty object
+                    }
+
+                    try {
+                        // Parse the data-results as JSON
+                        const data = JSON.parse(dataResults);
+
+                        // Check if data is valid (if data.message.items exists)
+                        if (data && data.message && data.message.items) {
+                            displaySearchResults(data, query, divId);  // Display the search results
+                        } else {
+                            console.log('No valid results to display for div ID:', divId);
+                            displaySearchResults({}, query, divId);  // Display empty results
+                        }
+                    } catch (error) {
+                        console.error('Error parsing data for div ID:', divId, error);
+                    }
+
+
+
+
+                }
+            });
+
+
+
+
+
+            //////////// If clicked on Do intext analysis
+            document.getElementById('InText-button').addEventListener('click', InTextSearch);
+            function InTextSearch() { 
+                
+                let citationList = [];  // Store all created spans here
+
+                // Call the function to identify and wrap in-text citations
+                identifyAndWrapCitations(citationList);
+
+                // Scholar container handling
+                const scholarContainer = document.getElementById('scholar-container');
+                scholarContainer.innerHTML = ''; // Clear previous content
+
+
+
+
+                // First Frame for "Bla bla"
+                const TextFrame = document.createElement('div');
+                TextFrame.className = 'search-string-frame';
+                const TextFrameParagraph = document.createElement('p');
+                TextFrameParagraph.innerHTML = `Found ${highlightCounter} References and ${citationList.length} in-text citations.`;
+                TextFrame.appendChild(TextFrameParagraph);
+                scholarContainer.appendChild(TextFrame);
+
+
+
+
+
+                // Second frame for references (collapsible frame)
+                const ReferenceFrame = document.createElement('div');
+                ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
+                ReferenceFrame.style.overflowY = 'auto'; // Make content scrollable if it exceeds height
+                ReferenceFrame.style.maxHeight = '400px'; // Start with a height of 100px
+                ReferenceFrame.style.transition = 'max-height 0.3s ease-out'; // Smooth transition
+                ReferenceFrame.style.minHeight = '400px'; // Set minimum height to 100px
+
+                // Create the toggle button for expanding/collapsing
+                const toggleButton = document.createElement('button');
+                toggleButton.textContent = 'Show/Hide References';
+                toggleButton.style.cursor = 'pointer';
+                toggleButton.style.marginBottom = '10px';
+                toggleButton.addEventListener('click', () => {
+                    // Toggle the max-height between 100px and the full height of the content (to show/hide the reference frame)
+                    if (ReferenceFrame.style.maxHeight === '400px') {
+                        ReferenceFrame.style.maxHeight = ReferenceFrame.scrollHeight + 'px'; // Expand to content height
+                    } else {
+                        ReferenceFrame.style.maxHeight = '400px'; // Collapse back to minimum height
+                    }
+                });
+
+                // Append the toggle button inside the ReferenceFrame
+                ReferenceFrame.appendChild(toggleButton);
+
+                // Loop through references and handle matches   ////////////////////////SHould use the citationslist.
+                for (let j = 0; j < highlightCounter; j++) {
+                    const divs = document.querySelectorAll(`[MyId="${j}"]`);
+                    const highlightDivs = document.querySelectorAll('div.textLine');
+                    let matchCount = 0;
+                    const mergedText = getMergedTextByMyId(j);
+                    const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
+
+                    // Loop through all highlight divs and check if they contain the first word
+                    highlightDivs.forEach(div => {
+                        if (!(div.hasAttribute("myid")) && (div.textContent.includes(firstWord))) {
+                            matchCount++;  // Increment the count if the first word is found
+                        }
+                    });
+
+                    const ReferenceFrameParagraph = document.createElement('p');
+                    ReferenceFrameParagraph.className = 'Reference-frame';
+                    ReferenceFrameParagraph.innerHTML = `${mergedText} has been found ${matchCount} times in the document.`;
+
+                    if (matchCount === 0) {
+                        ReferenceFrameParagraph.style.color = 'red';
+                        divs.forEach(div => {
+                            div.style.color = 'red';
+                        });
+                    }
+
+                    ReferenceFrame.appendChild(ReferenceFrameParagraph);
+                }
+
+                // Append the ReferenceFrame to the scholar container
+                scholarContainer.appendChild(ReferenceFrame);
+
+
+                // Third frame for in-text citations (collapsible frame)
+                const InTextCitFrame = document.createElement('div');
+                InTextCitFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
+                InTextCitFrame.style.overflowY = 'auto'; // Make content scrollable if it exceeds height
+                InTextCitFrame.style.maxHeight = '400px'; // Start with a height of 400px
+                InTextCitFrame.style.transition = 'max-height 0.3s ease-out'; // Smooth transition
+
+                // Create the toggle button for expanding/collapsing the in-text citation frame
+                const toggleInTextButton = document.createElement('button');
+                toggleInTextButton.textContent = 'Show/Hide In-Text Citations';
+                toggleInTextButton.style.cursor = 'pointer';
+                toggleInTextButton.style.marginBottom = '10px';
+                toggleInTextButton.addEventListener('click', () => {
+                    // Toggle the max-height between 400px and the full height of the content
+                    if (InTextCitFrame.style.maxHeight === '400px') {
+                        InTextCitFrame.style.maxHeight = InTextCitFrame.scrollHeight + 'px'; // Expand to content height
+                    } else {
+                        InTextCitFrame.style.maxHeight = '400px'; // Collapse back to 400px height
+                    }
+                });
+
+                // Append the toggle button inside the InTextCitFrame
+                InTextCitFrame.appendChild(toggleInTextButton);
+
+                // Loop through each citation and create a clickable list item
+                citationList.forEach(citation => {
+                    const InTextCitFrameParagraph = document.createElement('p');
+                    InTextCitFrameParagraph.className = 'Reference-frame';
+                    InTextCitFrameParagraph.innerHTML = citation.text;
+                    InTextCitFrameParagraph.style.cursor = 'pointer'; // Make it look clickable
+
+                    // When the citation in the list is clicked, scroll to the respective span in the document
+                    InTextCitFrameParagraph.addEventListener('click', () => {
+                        const citationElement = document.getElementById(citation.id);
+                        citationElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+
+                    InTextCitFrame.appendChild(InTextCitFrameParagraph);
+                });
+
+                // Append the InTextCitFrame to the scholar container
+                scholarContainer.appendChild(InTextCitFrame);
+
+            }
+
+
+
+
+
+
+
+
+
+
+            function identifyAndWrapCitations(citationList) {
+                // Regex to match a four-digit year (representing the year in a citation)
+                const citationPattern = /\d{4}/;
+                let inTextCitCounter = 0;
+                let ongoingCitation = '';  // Track ongoing citation when split across divs
+                let citationSpanId = '';   // Track the citation ID for split citations
+                let citationStarted = false;  // Track if a citation has started
+
+                // Get all divs with class 'textLine', excluding those with the attribute 'myid'
+                const allDivs = document.querySelectorAll('div.textLine:not([myid])');
+
+                // Loop through each div
+                allDivs.forEach((div) => {
+                    let divText = div.innerHTML.replace(/&amp;/g, '__AMP__');  // Temporarily replace & with __AMP__
+                    let modifiedText = divText;   // Initialize modified text for updating div content
+
+                    // Check if there's an open parenthesis or if we are in the middle of an ongoing citation
+                    if (divText.includes('(') || citationStarted) {
+                        let openParenthesisIndex = divText.indexOf('(');
+
+                        // If a new citation starts in this div
+                        if (!citationStarted && openParenthesisIndex !== -1) {
+                            citationStarted = true;  // Begin tracking the citation
+                            ongoingCitation = divText.substring(openParenthesisIndex); // Capture everything after the "("
+                            inTextCitCounter++;  // Increment citation counter
+                            citationSpanId = `citation-${inTextCitCounter}`;  // Unique ID for citation group
+
+                            // Preserve the text before the parenthesis
+                            modifiedText = divText.substring(0, openParenthesisIndex);
+                        } else if (citationStarted) {
+                            // Append this div's content if the citation is ongoing
+                            ongoingCitation += ' ' + divText;
+                            modifiedText = '';  // Clear the div content, as we're appending to the ongoing citation
+                        }
+
+                        // Look for the closing parenthesis ")"
+                        const closeParenthesisIndex = ongoingCitation.indexOf(')');
+                        if (closeParenthesisIndex !== -1) {
+                            const citationText = ongoingCitation.substring(0, closeParenthesisIndex + 1);  // Full citation text
+
+                            // Split the citation by semicolons and wrap each individual citation
+                            const citations = citationText.split(';');
+                            let citationWrapped = '';
+
+                            citations.forEach((citation, index) => {
+                                const cleanedCitation = citation.trim();
+                                // Check if the cleaned citation contains a four-digit year
+                                if (citationPattern.test(cleanedCitation)) {
+                                    const spanIdForCitation = `${citationSpanId}-${index + 1}`;
+                                    citationList.push({ id: spanIdForCitation, text: cleanedCitation });
+                                    citationWrapped += `<span id="${spanIdForCitation}" class="citation">${cleanedCitation}</span>`;
+                                    if (index < citations.length - 1) {
+                                        citationWrapped += '; ';  // Add semicolon between citations
+                                    }
+                                } else {
+                                    // If it's not a valid citation (no year), keep it as normal text
+                                    citationWrapped += cleanedCitation;
+                                    if (index < citations.length - 1) {
+                                        citationWrapped += '; ';  // Add semicolon between citations
+                                    }
+                                }
+                            });
+
+                            // Add the closing parenthesis to the citation
+                            citationWrapped += ')';
+
+                            // Add the remaining text after the citation in the same div
+                            modifiedText += citationWrapped + ongoingCitation.substring(closeParenthesisIndex + 1);
+
+                            // Reset citation tracking
+                            ongoingCitation = '';
+                            citationStarted = false;
+                        }
+                    }
+
+                    // Before updating the div's content, replace __AMP__ back with '&'
+                    modifiedText = modifiedText.replace(/__AMP__/g, '&');
+
+                    // Update the div's content with the modified text
+                    div.innerHTML = modifiedText;
+                });
+
+                // Add click events to all citation spans
+                const citationSpans = document.querySelectorAll('.citation');
+                citationSpans.forEach(span => {
+                    span.addEventListener('click', function () {
+                        const citation = this.textContent;
+                        alert(`You clicked on the citation: ${citation}`);
+                        // You can replace this with a modal, scroll function, or any other action
+                    });
+                });
+            }
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
 
         });
 

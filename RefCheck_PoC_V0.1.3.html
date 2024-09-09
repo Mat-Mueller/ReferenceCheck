@@ -1578,7 +1578,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             let lastWord = words[words.length - 1]; // Get the word before the span
 
                             // Check if the word before the last word is "and"
-                            if (words.length > 1 && words[words.length - 2].toLowerCase() === 'and') {
+                            if (words.length > 1 && ((words[words.length - 2].toLowerCase() === 'and') || (words[words.length - 2].toLowerCase() === '&') || (words[words.length - 1].toLowerCase() === 'al.'))){
                                 // Include both the second-to-last word and the last word
                                 let secondLastWord = words[words.length - 2];
                                 let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
@@ -1588,7 +1588,27 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                                 cleanedText = `${lastWord} ${cleanedText}`;
                             }
                         }
+                    } else {
+                        let words = cleanedText.replace(/(\d{4}).*/, '$1').split(" ");
+                        let lastWord = words[words.length - 2];
+
+                        if (lastWord === "al.,") {
+                            // Get the last three words if the last word is "al.,"
+                            words = words.slice(words.length - 4, words.length);
+                        } else if (words[words.length - 3] === "&" || words[words.length - 3] === "and") {
+                            // Get the last three words if the second-to-last word is "&" or "and"
+                            words = words.slice(words.length - 4, words.length);
+                        } else {
+                            // Get only the last word in other cases
+                            words = words.slice(words.length - 2, words.length);
+                        }
+
+ 
+
+                        cleanedText = words.join(" ")
+
                     }
+                    
 
                     // Set a new attribute 'cleanedCit' with the cleaned text
                     span.setAttribute('cleanedCit', cleanedText);
@@ -1596,7 +1616,17 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
             }
 
 
+            function findAllOccurrences(str, char) {
+                let positions = [];
+                let index = str.indexOf(char);
 
+                while (index !== -1) {
+                    positions.push(index);
+                    index = str.indexOf(char, index + 1);  // Move to the next occurrence
+                }
+
+                return positions;
+            }
 
 
             function identifyAndWrapCitations() {
@@ -1616,8 +1646,14 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     let modifiedText = divText;   // Initialize modified text for updating div content
 
                     // Check if there's an open parenthesis or if we are in the middle of an ongoing citation
+                    let positions = findAllOccurrences(divText, "(") 
+
+                    
                     if (divText.includes('(') || citationStarted) {
-                        let openParenthesisIndex = divText.indexOf('(');
+                        console.log(positions)
+                        let openParenthesisIndex    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        positions.forEach((h) => { 
+                         openParenthesisIndex = h;
 
                         // If a new citation starts in this div
                         if (!citationStarted && openParenthesisIndex !== -1) {
@@ -1668,7 +1704,10 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             ongoingCitation = '';
                             citationStarted = false;
                         }
-                    }
+                        })
+                        }
+
+                    
 
                     // Before updating the div's content, replace __AMP__ back with '&'
                     modifiedText = modifiedText.replace(/__AMP__/g, '&');

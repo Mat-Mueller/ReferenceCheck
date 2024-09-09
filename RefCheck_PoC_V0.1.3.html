@@ -1250,7 +1250,8 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     const mergedText = getMergedTextByMyId(j);
                     const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
 
-
+                    const ReferenceFrameParagraph = document.createElement('p');
+                    ReferenceFrameParagraph.className = 'Reference-frame';
 
                     // Loop through each span element
                     citationSpans.forEach((span) => {
@@ -1263,13 +1264,18 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             matchCount++
                             matchedSpans.push(span)
                             if (!span.hasAttribute('found')) { span.setAttribute('found', 'true') }
+                            span.addEventListener('click', () => {
+
+                                ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                
+                            });
                         }
+
 
                     });
 
 
-                    const ReferenceFrameParagraph = document.createElement('p');
-                    ReferenceFrameParagraph.className = 'Reference-frame';
+                    
 
                     // Create first paragraph with inline style
                     var SingleRef = document.createElement('p');
@@ -1558,24 +1564,27 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 // Loop through each span element
                 citationSpans.forEach((span) => {
                     let cleanedText = span.innerText.replace(/\(|\)/g, ''); // Remove parentheses
+                    console.log(cleanedText.split(" "))
 
+                    let precedingText
                     // Check if the cleanedText is just a number (e.g., a year like 1966)
                     if (/^\d+$/.test(cleanedText)) {
-                        let precedingText = getPreviousText(span);
-
+                        precedingText = getPreviousText(span)
+                        //} 
                         // If precedingText is found, split it into words
                         if (precedingText) {
+                            console.log(precedingText)
                             let words = precedingText.split(' ');
                             let lastWord = words[words.length - 1]; // Get the word before the span
 
-                            // Check if the word before the last word is "and" or "&"
-                            if (words.length > 1 && (words[words.length - 2].toLowerCase() === 'and' || words[words.length - 2] === '&')) {
+                            // Check if the word before the last word is "and"
+                            if (words.length > 1 && words[words.length - 2].toLowerCase() === 'and') {
                                 // Include both the second-to-last word and the last word
                                 let secondLastWord = words[words.length - 2];
                                 let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
                                 cleanedText = `${thirdLastWord ? thirdLastWord + ' ' : ''}${secondLastWord} ${lastWord} ${cleanedText}`;
                             } else {
-                                // If no "and" or "&" is present, just include the last word
+                                // If no "and" is present, just include the last word
                                 cleanedText = `${lastWord} ${cleanedText}`;
                             }
                         }
@@ -1585,7 +1594,6 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     span.setAttribute('cleanedCit', cleanedText);
                 });
             }
-
 
 
 
@@ -1669,18 +1677,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     div.innerHTML = modifiedText;
                 });
 
-                // Add click events to all citation spans
-                const citationSpans = document.querySelectorAll('.citation');
-                citationSpans.forEach(span => {
-                    // Add a click event to each citation
-                    span.addEventListener('click', function () {
-                        const citation = this.textContent;
-                        alert(`You clicked on the citation: ${citation}`);
-                        // You can replace this with a modal, scroll function, or any other action
-                    });
 
-
-                });
             }
 
 

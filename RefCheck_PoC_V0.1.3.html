@@ -1257,8 +1257,8 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         let cleanedText = span.getAttribute('cleanedCit');
 
                         let firstWordCit = cleanedText.split(' ')[0].replace(",","");
-                        console.log(firstWord.toLowerCase())
-                        console.log(firstWordCit.toLowerCase())
+                        //console.log(firstWord.toLowerCase())
+                        //console.log(firstWordCit.toLowerCase())
                         if (firstWord.toLowerCase() === firstWordCit.toLowerCase()) { /////////////// @ALL: müssen das Jahr noch berücksichtigen. Idealerweise mit sowas wie 2004a etc.
                             matchCount++
                             matchedSpans.push(span)
@@ -1283,7 +1283,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
                     SingleRef.style.marginBottom = '15px'; // Add space as needed
                     matchedSpans.forEach((span, index) => {
-                        console.log(span);
+                        //console.log(span);
 
                         // Create a link for each match
                         const link = document.createElement('a');
@@ -1453,6 +1453,14 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         spansToShow = document.querySelectorAll('span:not([found])'); // Show only problematic spans
                     }
 
+
+                    // Highlight unfound citations in red
+                    document.querySelectorAll('span:not([found])').forEach((span,index) =>{
+                        span.style.backgroundColor = 'red'
+
+                    })
+
+
                     // Loop through each span to create a clickable list item in the frame
                     spansToShow.forEach((span, index) => {
                         const cleanedCit = span.getAttribute('cleanedCit'); // Get the cleaned citation text
@@ -1521,22 +1529,66 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
 
 
-
             function cleanCitations() {
-                // Get all span elements with the class 'citation'
                 // Get all span elements with the class 'citation'
                 let citationSpans = document.querySelectorAll('span.citation');
 
+                // Helper function to get the preceding text, possibly from a previous div
+                function getPreviousText(span) {
+                    let node = span.previousSibling;
+                    let textContent = '';
+
+                    // Loop to find a valid text node or traverse to previous element siblings
+                    while (node === null || (node.nodeType !== Node.TEXT_NODE && node.nodeType !== Node.ELEMENT_NODE)) {
+                        node = node ? node.previousSibling : span.parentElement.previousSibling; // Traverse sibling or parent
+                    }
+
+                    // If it's a text node, extract text content
+                    if (node && node.nodeType === Node.TEXT_NODE) {
+                        textContent = node.textContent.trim();
+                    }
+                    // If it's an element node, extract the text content of the element (previous <div> or similar)
+                    else if (node && node.nodeType === Node.ELEMENT_NODE) {
+                        textContent = node.textContent.trim();
+                    }
+
+                    return textContent;
+                }
+
                 // Loop through each span element
                 citationSpans.forEach((span) => {
-                    // Get the inner text and remove parentheses using replace
-                    let cleanedText = span.innerText.replace(/\(|\)/g, '');
+                    let cleanedText = span.innerText.replace(/\(|\)/g, ''); // Remove parentheses
+
+                    // Check if the cleanedText is just a number (e.g., a year like 1966)
+                    if (/^\d+$/.test(cleanedText)) {
+                        let precedingText = getPreviousText(span);
+
+                        // If precedingText is found, split it into words
+                        if (precedingText) {
+                            let words = precedingText.split(' ');
+                            let lastWord = words[words.length - 1]; // Get the word before the span
+
+                            // Check if the word before the last word is "and"
+                            if (words.length > 1 && words[words.length - 2].toLowerCase() === 'and') {
+                                // Include both the second-to-last word and the last word
+                                let secondLastWord = words[words.length - 2];
+                                let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
+                                cleanedText = `${thirdLastWord ? thirdLastWord + ' ' : ''}${secondLastWord} ${lastWord} ${cleanedText}`;
+                            } else {
+                                // If no "and" is present, just include the last word
+                                cleanedText = `${lastWord} ${cleanedText}`;
+                            }
+                        }
+                    }
 
                     // Set a new attribute 'cleanedCit' with the cleaned text
                     span.setAttribute('cleanedCit', cleanedText);
                 });
-
             }
+
+
+
+
 
             function identifyAndWrapCitations() {
                 // Regex to match a four-digit year (representing the year in a citation)
@@ -1587,7 +1639,6 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                                 // Check if the cleaned citation contains a four-digit year
                                 if (citationPattern.test(cleanedCitation)) {
                                     const spanIdForCitation = `${citationSpanId}-${index + 1}`;
-                                    //citationList.push({ id: spanIdForCitation, text: cleanedCitation });
                                     citationWrapped += `<span id="${spanIdForCitation}" class="citation">${cleanedCitation}</span>`;
                                     if (index < citations.length - 1) {
                                         citationWrapped += '; ';  // Add semicolon between citations
@@ -1600,9 +1651,6 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                                     }
                                 }
                             });
-
-                            // Add the closing parenthesis to the citation
-                            //citationWrapped += ')';
 
                             // Add the remaining text after the citation in the same div
                             modifiedText += citationWrapped + ongoingCitation.substring(closeParenthesisIndex + 1);
@@ -1623,40 +1671,21 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 // Add click events to all citation spans
                 const citationSpans = document.querySelectorAll('.citation');
                 citationSpans.forEach(span => {
+                    // Add a click event to each citation
                     span.addEventListener('click', function () {
                         const citation = this.textContent;
                         alert(`You clicked on the citation: ${citation}`);
                         // You can replace this with a modal, scroll function, or any other action
                     });
+
+
                 });
             }
 
-            
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
+           
 
         });
-
-
-
-
-
-
-
-
 
 
 

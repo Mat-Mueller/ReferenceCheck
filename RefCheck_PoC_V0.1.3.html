@@ -1568,14 +1568,14 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             let words = precedingText.split(' ');
                             let lastWord = words[words.length - 1]; // Get the word before the span
 
-                            // Check if the word before the last word is "and"
-                            if (words.length > 1 && words[words.length - 2].toLowerCase() === 'and') {
+                            // Check if the word before the last word is "and" or "&"
+                            if (words.length > 1 && (words[words.length - 2].toLowerCase() === 'and' || words[words.length - 2] === '&')) {
                                 // Include both the second-to-last word and the last word
                                 let secondLastWord = words[words.length - 2];
                                 let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
                                 cleanedText = `${thirdLastWord ? thirdLastWord + ' ' : ''}${secondLastWord} ${lastWord} ${cleanedText}`;
                             } else {
-                                // If no "and" is present, just include the last word
+                                // If no "and" or "&" is present, just include the last word
                                 cleanedText = `${lastWord} ${cleanedText}`;
                             }
                         }
@@ -1585,6 +1585,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     span.setAttribute('cleanedCit', cleanedText);
                 });
             }
+
 
 
 

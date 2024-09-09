@@ -915,11 +915,12 @@
                 // Insert logic to check all div.highlight elements
                 const highlightDivs = document.querySelectorAll('div.textLine');
                 let matchCount = 0;
-
+                
                 // Loop through all highlight divs and check if they contain the first word
                 highlightDivs.forEach(div => {
                     if (div.textContent.includes(firstWord)) {
                         matchCount++;  // Increment the count if the first word is found
+                        
                     }
                 });
 
@@ -1171,35 +1172,19 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
 
 
-
-            //////////// If clicked on Do intext analysis
-            document.getElementById('InText-button').addEventListener('click', InTextSearch);
-            function InTextSearch() { 
-                
-                let citationList = [];  // Store all created spans here
-
-                // Call the function to identify and wrap in-text citations
-                identifyAndWrapCitations(citationList);
-
-                // Scholar container handling
-                const scholarContainer = document.getElementById('scholar-container');
-                scholarContainer.innerHTML = ''; // Clear previous content
-
-
-
-
+            function firstFrame() {
                 // First Frame for "Bla bla"
+                const scholarContainer = document.getElementById('scholar-container');
                 const TextFrame = document.createElement('div');
                 TextFrame.className = 'search-string-frame';
                 const TextFrameParagraph = document.createElement('p');
-                TextFrameParagraph.innerHTML = `Found ${highlightCounter} References and ${citationList.length} in-text citations.`;
+                TextFrameParagraph.innerHTML = `Found ${highlightCounter} References and ${document.querySelectorAll('span.citation').length} in-text citations.`;
                 TextFrame.appendChild(TextFrameParagraph);
                 scholarContainer.appendChild(TextFrame);
+            }
 
-
-
-
-
+            function secondFrame() {
+                const scholarContainer = document.getElementById('scholar-container');
                 // Second frame for references (collapsible frame)
                 const ReferenceFrame = document.createElement('div');
                 ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
@@ -1250,31 +1235,38 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         await sleep(1500);
                     }
                 });
-                // Append the CrossRef search button to the button container
                 buttonContainer.appendChild(crossRefAllButton);
-
-                // Append the button container to the ReferenceFrame
                 ReferenceFrame.appendChild(buttonContainer);
-
-// Rest of your code follows (e.g., looping through references and appending them to ReferenceFrame)
-
-                // Append the toggle button inside the ReferenceFrame
                 ReferenceFrame.appendChild(toggleButton);
 
-                // Loop through references and handle matches   ////////////////////////SHould use the citationslist.
+
+
+                let citationSpans = document.querySelectorAll('span.citation');
+
                 for (let j = 0; j < highlightCounter; j++) {
                     const divs = document.querySelectorAll(`[MyId="${j}"]`);
-                    const highlightDivs = document.querySelectorAll('div.textLine');
                     let matchCount = 0;
+                    let matchedSpans = [];
                     const mergedText = getMergedTextByMyId(j);
                     const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
 
-                    // Loop through all highlight divs and check if they contain the first word
-                    highlightDivs.forEach(div => {
-                        if (!(div.hasAttribute("myid")) && (div.textContent.includes(firstWord))) {
-                            matchCount++;  // Increment the count if the first word is found
+
+
+                    // Loop through each span element
+                    citationSpans.forEach((span) => {
+                        let cleanedText = span.getAttribute('cleanedCit');
+
+                        let firstWordCit = cleanedText.split(' ')[0].replace(",","");
+                        console.log(firstWord.toLowerCase())
+                        console.log(firstWordCit.toLowerCase())
+                        if (firstWord.toLowerCase() === firstWordCit.toLowerCase()) { /////////////// @ALL: müssen das Jahr noch berücksichtigen. Idealerweise mit sowas wie 2004a etc.
+                            matchCount++
+                            matchedSpans.push(span)
+                            if (!span.hasAttribute('found')) { span.setAttribute('found', 'true') }
                         }
+
                     });
+
 
                     const ReferenceFrameParagraph = document.createElement('p');
                     ReferenceFrameParagraph.className = 'Reference-frame';
@@ -1283,12 +1275,35 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     var SingleRef = document.createElement('p');
                     SingleRef.innerHTML = mergedText;
                     SingleRef.style.marginBottom = '15px'; // Add some space below
+
                     ReferenceFrameParagraph.appendChild(SingleRef);
 
                     // Create second paragraph with inline style
                     SingleRef = document.createElement('p');
                     SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
                     SingleRef.style.marginBottom = '15px'; // Add space as needed
+                    matchedSpans.forEach((span, index) => {
+                        console.log(span);
+
+                        // Create a link for each match
+                        const link = document.createElement('a');
+                        link.textContent = `${index + 1}`; // Display 1, 2, 3, etc.
+                        link.href = "#"; // Dummy href to make it clickable
+
+                        // Add an event listener to scroll to the span element when clicked
+                        link.addEventListener('click', (event) => {
+                            event.preventDefault(); // Prevent the default anchor behavior
+                            span.scrollIntoView({ behavior: 'smooth' }); // Scroll to the matched span
+                        });
+
+                        // Append the link to the paragraph without using innerHTML
+                        SingleRef.appendChild(link);
+
+                        // Add a comma and space after the link, except for the last one
+                        if (index < matchedSpans.length - 1) {
+                            SingleRef.appendChild(document.createTextNode(', ')); // Add a comma and space
+                        }
+                    });
                     ReferenceFrameParagraph.appendChild(SingleRef);
 
                     // Add the CrossRef search button
@@ -1296,9 +1311,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     crossRefButton.textContent = 'Search CrossRef';
                     crossRefButton.className = 'crossref-search-button';
                     crossRefButton.style.marginBottom = '15px'; // Add space below the button
-
-
-
+                    crossRefButton.id = `crossref-button-${j}`
 
                     crossRefButton.addEventListener('click', async () => {
                         const searchData = await triggerSearch2(j); // Wait for the search data
@@ -1394,46 +1407,111 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 scholarContainer.appendChild(ReferenceFrame);
 
 
-                // Third frame for in-text citations (collapsible frame)
+
+
+            }
+
+
+            function thirdFrame() {
+                const scholarContainer = document.getElementById('scholar-container');
+
+                // Create the third frame for in-text citations (collapsible frame)
                 const InTextCitFrame = document.createElement('div');
                 InTextCitFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
-                InTextCitFrame.style.maxHeight = '400px';
+                InTextCitFrame.style.maxHeight = '400px'; // Set initial max height
 
                 // Create the toggle button for expanding/collapsing the in-text citation frame
                 const toggleInTextButton = document.createElement('button');
-                toggleInTextButton.className = 'toggle-in-text-button'
+                toggleInTextButton.className = 'toggle-in-text-button';
                 toggleInTextButton.textContent = 'Show/Hide In-Text Citations';
 
+                // Toggle the frame height when the button is clicked
                 toggleInTextButton.addEventListener('click', () => {
-                    // Toggle the max-height between 400px and the full height of the content
                     if (InTextCitFrame.style.maxHeight === '400px') {
                         InTextCitFrame.style.maxHeight = InTextCitFrame.scrollHeight + 'px'; // Expand to content height
                     } else {
-                        InTextCitFrame.style.maxHeight = '400px'; // Collapse back to 400px height
+                        InTextCitFrame.style.maxHeight = '400px'; // Collapse back to initial height
                     }
                 });
 
-                // Append the toggle button inside the InTextCitFrame
-                InTextCitFrame.appendChild(toggleInTextButton);
+                // Create the "Show All/Show Problematic" button
+                const showToggleButton = document.createElement('button');
+                showToggleButton.textContent = 'Show Problematic'; // Default to show only problematics
+                let showAll = false; // Flag to track toggle state
 
-                // Loop through each citation and create a clickable list item
-                citationList.forEach(citation => {
-                    const InTextCitFrameParagraph = document.createElement('p');
-                    InTextCitFrameParagraph.className = 'Reference-frame';
-                    InTextCitFrameParagraph.innerHTML = citation.text;
-                    InTextCitFrameParagraph.style.cursor = 'pointer'; // Make it look clickable
+                // Function to render the spans based on the current filter (all or problematic)
+                const renderSpans = () => {
+                    // Clear existing paragraphs in InTextCitFrame (if any)
+                    const existingParagraphs = InTextCitFrame.querySelectorAll('.Reference-frame');
+                    existingParagraphs.forEach(paragraph => paragraph.remove());
 
-                    // When the citation in the list is clicked, scroll to the respective span in the document
-                    InTextCitFrameParagraph.addEventListener('click', () => {
-                        const citationElement = document.getElementById(citation.id);
-                        citationElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Determine which spans to show
+                    let spansToShow;
+                    if (showAll) {
+                        spansToShow = document.querySelectorAll('span.citation'); // Show all spans
+                    } else {
+                        spansToShow = document.querySelectorAll('span:not([found])'); // Show only problematic spans
+                    }
+
+                    // Loop through each span to create a clickable list item in the frame
+                    spansToShow.forEach((span, index) => {
+                        const cleanedCit = span.getAttribute('cleanedCit'); // Get the cleaned citation text
+
+                        if (cleanedCit) { // Only add if cleanedCit is available
+                            const InTextCitFrameParagraph = document.createElement('p');
+                            InTextCitFrameParagraph.className = 'Reference-frame';
+                            InTextCitFrameParagraph.innerHTML = cleanedCit; // Display the cleaned citation text
+                            InTextCitFrameParagraph.style.cursor = 'pointer'; // Make it look clickable
+
+                            // When the paragraph is clicked, scroll to the respective span in the document
+                            InTextCitFrameParagraph.addEventListener('click', () => {
+                                span.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to the span
+                            });
+
+                            // Append the paragraph to the InTextCitFrame
+                            InTextCitFrame.appendChild(InTextCitFrameParagraph);
+                        }
                     });
+                };
 
-                    InTextCitFrame.appendChild(InTextCitFrameParagraph);
+                // Add event listener to toggle between showing all and problematic
+                showToggleButton.addEventListener('click', () => {
+                    showAll = !showAll; // Toggle the state
+                    showToggleButton.textContent = showAll ? 'Show Problematic' : 'Show All'; // Update button text
+                    renderSpans(); // Re-render spans based on the new state
                 });
+
+                // Append the toggle buttons to the InTextCitFrame
+                InTextCitFrame.appendChild(toggleInTextButton);
+                InTextCitFrame.appendChild(showToggleButton);
 
                 // Append the InTextCitFrame to the scholar container
                 scholarContainer.appendChild(InTextCitFrame);
+
+                // Initial render showing only problematic spans
+                renderSpans();
+            }
+
+
+
+
+            //////////// If clicked on Do intext analysis
+            document.getElementById('InText-button').addEventListener('click', InTextSearch);
+            function InTextSearch() { 
+                
+                ///////// create first frame
+                const scholarContainer = document.getElementById('scholar-container');
+                scholarContainer.innerHTML = ''; // Clear previous content
+
+
+                identifyAndWrapCitations();
+                cleanCitations()
+
+                firstFrame()
+
+                secondFrame()
+
+                thirdFrame()
 
             }
 
@@ -1444,9 +1522,23 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
 
 
+            function cleanCitations() {
+                // Get all span elements with the class 'citation'
+                // Get all span elements with the class 'citation'
+                let citationSpans = document.querySelectorAll('span.citation');
 
+                // Loop through each span element
+                citationSpans.forEach((span) => {
+                    // Get the inner text and remove parentheses using replace
+                    let cleanedText = span.innerText.replace(/\(|\)/g, '');
 
-            function identifyAndWrapCitations(citationList) {
+                    // Set a new attribute 'cleanedCit' with the cleaned text
+                    span.setAttribute('cleanedCit', cleanedText);
+                });
+
+            }
+
+            function identifyAndWrapCitations() {
                 // Regex to match a four-digit year (representing the year in a citation)
                 const citationPattern = /\d{4}/;
                 let inTextCitCounter = 0;
@@ -1495,7 +1587,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                                 // Check if the cleaned citation contains a four-digit year
                                 if (citationPattern.test(cleanedCitation)) {
                                     const spanIdForCitation = `${citationSpanId}-${index + 1}`;
-                                    citationList.push({ id: spanIdForCitation, text: cleanedCitation });
+                                    //citationList.push({ id: spanIdForCitation, text: cleanedCitation });
                                     citationWrapped += `<span id="${spanIdForCitation}" class="citation">${cleanedCitation}</span>`;
                                     if (index < citations.length - 1) {
                                         citationWrapped += '; ';  // Add semicolon between citations
@@ -1510,7 +1602,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             });
 
                             // Add the closing parenthesis to the citation
-                            citationWrapped += ')';
+                            //citationWrapped += ')';
 
                             // Add the remaining text after the citation in the same div
                             modifiedText += citationWrapped + ongoingCitation.substring(closeParenthesisIndex + 1);

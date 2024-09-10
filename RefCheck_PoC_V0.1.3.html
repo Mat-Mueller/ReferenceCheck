@@ -1564,7 +1564,6 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 // Loop through each span element
                 citationSpans.forEach((span) => {
                     let cleanedText = span.innerText.replace(/\(|\)/g, ''); // Remove parentheses
-                    console.log(cleanedText.split(" "))
 
                     let precedingText
                     // Check if the cleanedText is just a number (e.g., a year like 1966)
@@ -1573,7 +1572,6 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         //} 
                         // If precedingText is found, split it into words
                         if (precedingText) {
-                            console.log(precedingText)
                             let words = precedingText.split(' ');
                             let lastWord = words[words.length - 1]; // Get the word before the span
 
@@ -1606,10 +1604,9 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
  
 
                         cleanedText = words.join(" ")
-                        console.log(words)
-                        console.log(cleanedText)
+
                     }
-                    console.log(cleanedText)
+
 
                     // Set a new attribute 'cleanedCit' with the cleaned text
                     span.setAttribute('cleanedCit', cleanedText);
@@ -1617,91 +1614,86 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
             }
 
 
-            function findAllOccurrences(str, char) {
-                let positions = [];
-                let index = str.indexOf(char);
-
-                while (index !== -1) {
-                    positions.push(index);
-                    index = str.indexOf(char, index + 1);  // Move to the next occurrence
-                }
-
-                return positions;
-            }
 
 
+
+            
             function identifyAndWrapCitations() {
                 // Regex to match a four-digit year (representing the year in a citation)
                 const citationPattern = /\d{4}/;
-                let inTextCitCounter = 0;
-                let ongoingCitation = '';  // Track ongoing citation when split across divs
-                let citationSpanId = '';   // Track the citation ID for split citations
-                let citationStarted = false;  // Track if a citation has started
+                let ongoingCitation = '';  // Track ongoing citation across divs
+                let citationStarted = false;  // Flag to indicate if a citation has started
+                let previousDiv = null;  // Track the previous div where citation started
 
-                // Get all divs with class 'textLine', excluding those with the attribute 'myid'
-                const allDivs = document.querySelectorAll('div.textLine:not([myid])');
+                // Get all divs with class 'textLine', excluding those with the attribute 'myid', and convert NodeList to an array
+                const allDivs = Array.from(document.querySelectorAll('div.textLine:not([myid])'));
 
-                // Loop through each div
-                allDivs.forEach((div) => {
+                // Loop through the array of divs using a traditional for loop with an index
+                for (let i = 0; i < allDivs.length; i++) {
+                    let div = allDivs[i];
                     let divText = div.innerHTML.replace(/&amp;/g, '__AMP__');  // Temporarily replace & with __AMP__
                     let modifiedText = divText;   // Initialize modified text for updating div content
+                    let citationCounter = 0;      // Track how many citations are in the div
 
-                    // Check if there's an open parenthesis or if we are in the middle of an ongoing citation
-                    let positions = findAllOccurrences(divText, "(") 
+                    // If we have an ongoing citation from a previous div, prepend it to the current div text
+                    if (citationStarted) {
+                        modifiedText = ongoingCitation + ' ' + divText;  // Prepend the ongoing citation to current div
+                        citationStarted = false;  // Reset the flag after concatenation
+                        ongoingCitation = '';     // Clear the ongoing citation
 
+                        // Remove only the incomplete citation part from the previous div (keep other text intact)
+                        previousDiv.innerHTML = previousDiv.innerHTML.substring(0, previousDiv.innerHTML.lastIndexOf('('));
+                    }
 
-                    if (divText.includes('(') || citationStarted) {
-                        let openParenthesisIndex = divText.indexOf('(');
+                    // Initialize indexes for finding parentheses
+                    let openParenthesisIndex = modifiedText.indexOf('(');
 
-                        // If a new citation starts in this div
-                        if (!citationStarted && openParenthesisIndex !== -1) {
-                            citationStarted = true;  // Begin tracking the citation
-                            ongoingCitation = divText.substring(openParenthesisIndex); // Capture everything after the "("
-                            inTextCitCounter++;  // Increment citation counter
-                            citationSpanId = `citation-${inTextCitCounter}`;  // Unique ID for citation group
+                    // Continue processing while there are parentheses in the text
+                    while (openParenthesisIndex !== -1) {
+                        let closeParenthesisIndex = modifiedText.indexOf(')', openParenthesisIndex);
 
-                            // Preserve the text before the parenthesis
-                            modifiedText = divText.substring(0, openParenthesisIndex);
-                        } else if (citationStarted) {
-                            // Append this div's content if the citation is ongoing
-                            ongoingCitation += ' ' + divText;
-                            modifiedText = '';  // Clear the div content, as we're appending to the ongoing citation
+                        // If no closing parenthesis is found in this div, continue in the next one
+                        if (closeParenthesisIndex === -1) {
+                            // Save the ongoing citation and move to the next div
+                            ongoingCitation = modifiedText.substring(openParenthesisIndex);  // Keep the incomplete citation
+                            citationStarted = true;  // Mark that the citation has started but is incomplete
+                            previousDiv = div;  // Store the current div as the one with the ongoing citation
+                            break;  // Exit the current div, as the rest will be handled in the next div
                         }
 
-                        // Look for the closing parenthesis ")"
-                        const closeParenthesisIndex = ongoingCitation.indexOf(')');
-                        if (closeParenthesisIndex !== -1) {
-                            const citationText = ongoingCitation.substring(0, closeParenthesisIndex + 1);  // Full citation text
+                        // Extract the full citation (including parentheses)
+                        let citationText = modifiedText.substring(openParenthesisIndex, closeParenthesisIndex + 1);
 
-                            // Split the citation by semicolons and wrap each individual citation
-                            const citations = citationText.split(';');
-                            let citationWrapped = '';
+                        // Split the citation by semicolons (for cases where there are multiple citations in one set of parentheses)
+                        let citations = citationText.split(';');
+                        let citationWrapped = '';
+                        citationCounter++;  // Increment the citation counter for this div
 
-                            citations.forEach((citation, index) => {
-                                const cleanedCitation = citation.trim();
-                                // Check if the cleaned citation contains a four-digit year
-                                if (citationPattern.test(cleanedCitation)) {
-                                    const spanIdForCitation = `${citationSpanId}-${index + 1}`;
-                                    citationWrapped += `<span id="${spanIdForCitation}" class="citation">${cleanedCitation}</span>`;
-                                    if (index < citations.length - 1) {
-                                        citationWrapped += '; ';  // Add semicolon between citations
-                                    }
-                                } else {
-                                    // If it's not a valid citation (no year), keep it as normal text
-                                    citationWrapped += cleanedCitation;
-                                    if (index < citations.length - 1) {
-                                        citationWrapped += '; ';  // Add semicolon between citations
-                                    }
+                        // Wrap each citation individually
+                        citations.forEach((citation, index) => {
+                            const cleanedCitation = citation.trim();
+
+                            // Check if the cleaned citation contains a four-digit year
+                            if (citationPattern.test(cleanedCitation)) {
+                                let spanId = `citation-${i + 1}-${citationCounter}-${index + 1}`;
+                                citationWrapped += `<span id="${spanId}" class="citation">${cleanedCitation}</span>`;
+                                if (index < citations.length - 1) {
+                                    citationWrapped += '; ';  // Add semicolon between citations
                                 }
-                            });
+                            } else {
+                                // If it's not a valid citation (no year), keep it as normal text
+                                citationWrapped += cleanedCitation;
+                                if (index < citations.length - 1) {
+                                    citationWrapped += '; ';  // Add semicolon between citations
+                                }
+                            }
+                        });
 
-                            // Add the remaining text after the citation in the same div
-                            modifiedText += citationWrapped + ongoingCitation.substring(closeParenthesisIndex + 1);
+                        // Replace the citation in the text with the wrapped version
+                        modifiedText = modifiedText.substring(0, openParenthesisIndex) + citationWrapped + modifiedText.substring(closeParenthesisIndex + 1);
 
-                            // Reset citation tracking
-                            ongoingCitation = '';
-                            citationStarted = false;
-                        }
+                        // Look for the next opening parenthesis after the current citation
+                        openParenthesisIndex = modifiedText.indexOf('(', closeParenthesisIndex + citationWrapped.length);
                     }
 
                     // Before updating the div's content, replace __AMP__ back with '&'
@@ -1709,10 +1701,17 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
                     // Update the div's content with the modified text
                     div.innerHTML = modifiedText;
-                });
-
-
+                }
             }
+
+
+
+
+
+
+
+
+         
 
 
            

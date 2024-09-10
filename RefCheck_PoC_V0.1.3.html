@@ -1606,9 +1606,10 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
  
 
                         cleanedText = words.join(" ")
-
+                        console.log(words)
+                        console.log(cleanedText)
                     }
-                    
+                    console.log(cleanedText)
 
                     // Set a new attribute 'cleanedCit' with the cleaned text
                     span.setAttribute('cleanedCit', cleanedText);
@@ -1648,12 +1649,9 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     // Check if there's an open parenthesis or if we are in the middle of an ongoing citation
                     let positions = findAllOccurrences(divText, "(") 
 
-                    
+
                     if (divText.includes('(') || citationStarted) {
-                        console.log(positions)
-                        let openParenthesisIndex    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        positions.forEach((h) => { 
-                         openParenthesisIndex = h;
+                        let openParenthesisIndex = divText.indexOf('(');
 
                         // If a new citation starts in this div
                         if (!citationStarted && openParenthesisIndex !== -1) {
@@ -1704,10 +1702,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             ongoingCitation = '';
                             citationStarted = false;
                         }
-                        })
-                        }
-
-                    
+                    }
 
                     // Before updating the div's content, replace __AMP__ back with '&'
                     modifiedText = modifiedText.replace(/__AMP__/g, '&');

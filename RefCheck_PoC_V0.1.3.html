@@ -1663,7 +1663,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
                         // Extract the full citation (including parentheses)
                         let citationText = modifiedText.substring(openParenthesisIndex, closeParenthesisIndex + 1);
-
+                        console.log(citationText)
                         // Split the citation by semicolons (for cases where there are multiple citations in one set of parentheses)
                         let citations = citationText.split(';');
                         let citationWrapped = '';
@@ -1690,10 +1690,13 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         });
 
                         // Replace the citation in the text with the wrapped version
+                        console.log(modifiedText)
+                        console.log(modifiedText.substring(0, openParenthesisIndex), "!", citationWrapped, "!", modifiedText.substring(closeParenthesisIndex + 1))
                         modifiedText = modifiedText.substring(0, openParenthesisIndex) + citationWrapped + modifiedText.substring(closeParenthesisIndex + 1);
 
                         // Look for the next opening parenthesis after the current citation
                         openParenthesisIndex = modifiedText.indexOf('(', closeParenthesisIndex + citationWrapped.length);
+                        console.log(openParenthesisIndex)
                     }
 
                     // Before updating the div's content, replace __AMP__ back with '&'
@@ -1703,8 +1706,6 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     div.innerHTML = modifiedText;
                 }
             }
-
-
 
 
 

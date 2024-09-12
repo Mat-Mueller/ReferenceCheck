@@ -1626,7 +1626,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             }
                         }
 
-                        if (lastWord.replace(",", "") === "al.") {
+                        if (lastWord === "al." || lastWord === "al.," ) {
                             // Get the last three words if the last word is "al.,"
                             words = words.slice(words.length - 4, words.length);
                         } else if (words[words.length - 3] === "&" || words[words.length - 3] === "and" || words[words.length - 3] === "und") {

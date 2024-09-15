@@ -295,12 +295,6 @@
             startAnalysisButton.style.margin = '0 auto';
             startAnalysisButton.style.display = 'block';
 
-            // Center the button within the scholar-container
-            /*scholarContainer.style.display = 'flex';
-            scholarContainer.style.justifyContent = 'center';
-            scholarContainer.style.alignItems = 'center';
-            scholarContainer.style.height = '100%';
-            */
             // Append the button to scholar-container
             scholarContainer.appendChild(startAnalysisButton);
 
@@ -311,26 +305,7 @@
             });
         }
 
-        function analyzePageForThreshold(page) {
-            return page.getTextContent().then(function (textContent) {
-                let yDiffs = [];
 
-                let prevY = null;
-                textContent.items.forEach(function (textItem) {
-                    const currentY = textItem.transform[5];
-                    if (prevY !== null) {
-                        const yDiff = Math.abs(currentY - prevY);
-                        yDiffs.push(yDiff);
-                        console.log(yDiff)
-                        console.log(textItem)
-                    }
-                    prevY = currentY;
-                });
-
-                // Find the most common y-difference
-                return findMostFrequentValue(yDiffs);
-            });
-        }
 
         function findMostFrequentValue(arr) {
             const frequencyMap = {};
@@ -655,10 +630,6 @@
                 return nearestDiv;
             }
 
-            //const selectionMode = document.getElementById('selectionMode');
-
-            // Add event listener for change on the select element
-            //selectionMode.addEventListener('change', findReferenceSection())
 
 
             function findReferenceSection(selectedValue) {
@@ -964,20 +935,9 @@
 
 
 
-            function delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
 
-            /*
-            document.getElementById('crossref-button').addEventListener('click', CrossrefSearch);
-            // Go through Refs and trigger Crossref search
-            async function CrossrefSearch() {
-                for (let j = 0; j < highlightCounter; j++) {
-                    triggerSearch(j);
-                    await delay(2000); // Wait for 2 seconds before the next call
-                }
-            }
-            */
+
+            
 
             function getMergedTextByMyId(MyId) {
                 const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
@@ -1039,6 +999,13 @@
                         // Await the result of the fetch call
                         const response = await fetch(apiUrl);
                         const data = await response.json();
+                        const rateLimit = response.headers.get('X-Rate-Limit-Limit');
+                        const rateLimitRemaining = response.headers.get('X-Rate-Limit-Remaining');
+                        const rateLimitInterval = response.headers.get('X-Rate-Limit-Interval');
+
+                        console.log(`Rate Limit: ${rateLimit}`);
+                        console.log(`Rate Limit Remaining: ${rateLimitRemaining}`);
+                        console.log(`Rate Limit Interval: ${rateLimitInterval}`);
 
                         console.log(data); // Log the response from the API
                         document.body.style.cursor = 'default'; // Revert cursor to default
@@ -1312,44 +1279,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
             }
 
 
-            // If clicked on a reference in the text.... Maybe Obsolete
-            document.addEventListener('click', function (e) {
-                if (e.target && e.target.matches('div.highlight')) {  // Adjusted to handle 'div.highlight' 
-                    // Get necessary attributes from the clicked div
-                    const divId = e.target.getAttribute('MyId');  // Getting the ID of the clicked div
-
-                    const query = getMergedTextByMyId(divId);
-
-                    let dataResults = e.target.getAttribute('data-results');  // Fetching the data-results attribute
-
-                    console.log('Query:', query);
-                    console.log('MyId:', divId);
-
-                    // If dataResults is not defined, make it an empty object "{}"
-                    if (!dataResults) {
-                        dataResults = '{}';  // Treat as an empty object
-                    }
-
-                    try {
-                        // Parse the data-results as JSON
-                        const data = JSON.parse(dataResults);
-
-                        // Check if data is valid (if data.message.items exists)
-                        if (data && data.message && data.message.items) {
-                            displaySearchResults(data, query, divId);  // Display the search results
-                        } else {
-                            console.log('No valid results to display for div ID:', divId);
-                            displaySearchResults({}, query, divId);  // Display empty results
-                        }
-                    } catch (error) {
-                        console.error('Error parsing data for div ID:', divId, error);
-                    }
-
-
-
-
-                }
-            });
+           
 
 
 
@@ -1414,7 +1344,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         crossRefButtons[i].click(); // Trigger the individual click event
 
                         // Introduce a delay of 1 second (1000 ms) between each request
-                        await sleep(1500);
+                        await sleep(1000);
                     }
                 });
                 buttonContainer.appendChild(crossRefAllButton);

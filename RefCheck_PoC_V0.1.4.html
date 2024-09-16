@@ -176,12 +176,15 @@
     </style>
 </head>
 <body>
-    <div id="controls">
-        <img src="Logo.png" alt="Icon" id="icon">
+    <div id="controls" style="display: flex; justify-content: center; align-items: center;">
+        <img src="Logo.png" alt="Icon" id="icon" style="margin-right: 10px;">
         PDF Citation Analyzer
-
-        <div id="notification" style=" margin-top: 10px; display: none; border: 2px solid white; width: 300px; /* Fixed width */ padding: 10px; /* Padding inside the box */ text-align: center; ">Hier Kann Text Stehen</div>
+        <div id="notification" style="margin-top: 10px; display: none; border: 2px solid white; width: 300px; padding: 10px; text-align: center;">
+            Hier Kann Text Stehen
+        </div>
     </div>
+
+
     <div id="viewer">
 
         <div class="frame" id="pdf-container" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
@@ -200,13 +203,13 @@
 
 
 
-    <script type = "module" >
-    import * as pdfjsLib from 'https://mozilla.github.io/pdf.js/build/pdf.mjs';
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.mjs';
+    <script type="module">
+        import * as pdfjsLib from 'https://mozilla.github.io/pdf.js/build/pdf.mjs';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.mjs';
         const pdfContainer = document.getElementById('pdf-container');
         let pdfDocument = null;
         let searchMode = 'automatic'; // Initial search mode
-        
+
 
 
 
@@ -224,7 +227,7 @@
             window.handleDragOver = function (event) {
                 event.preventDefault();
                 event.dataTransfer.dropEffect = 'copy'; // Indicates a copy action
-            }  ;
+            };
 
             window.handleDrop = function (event) {
                 event.preventDefault();
@@ -264,9 +267,9 @@
 
                 // First part of the content (before "How It Works")
                 const overviewHTML = `
-        <h2>PDF Citation Analyzer</h2>
-        <p>This software allows users to upload and interact with PDFs for citation analysis and validation using the CrossRef API. It helps identify and analyze references in PDF documents.</p>
-    `;
+                <h2>PDF Citation Analyzer</h2>
+                <p>This software allows users to upload and interact with PDFs for citation analysis and validation using the CrossRef API. It helps identify and analyze references in PDF documents.</p>
+            `;
 
                 // Set the innerHTML for the first div (Overview)
                 overviewFrame.innerHTML = overviewHTML;
@@ -283,14 +286,14 @@
                 featuresTitle.textContent = 'Features';
 
                 const featuresList = `
-        <ul>
-            <li>Upload PDF files for analysis</li>
-            <li>Automatic and manual reference section detection</li>
-            <li>CrossRef API integration for reference validation</li>
-            <li>In-text citation highlighting and matching</li>
-            <li>Google Scholar search for additional reference lookup</li>
-        </ul>
-    `;
+                <ul>
+                    <li>Upload PDF files for analysis</li>
+                    <li>Automatic and manual reference section detection</li>
+                    <li>CrossRef API integration for reference validation</li>
+                    <li>In-text citation highlighting and matching</li>
+                    <li>Google Scholar search for additional reference lookup</li>
+                </ul>
+            `;
 
                 // Append features content to the frame
                 featuresFrame.appendChild(featuresTitle);
@@ -359,32 +362,32 @@
 
 
 
-        function clearPDFAndReload() {
-            const pdfContainer = document.getElementById('pdf-container');
-            pdfContainer.innerHTML = ''; // Clear the PDF container
+            function clearPDFAndReload() {
+                const pdfContainer = document.getElementById('pdf-container');
+                pdfContainer.innerHTML = ''; // Clear the PDF container
 
-            window.location.reload(true); // Reload the page from the server
-        }
-
-
-
-        /*
-        document.getElementById('pdf-upload').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file && file.type === 'application/pdf') {
-                const fileURL = URL.createObjectURL(file);
-                loadPDF(fileURL);
+                window.location.reload(true); // Reload the page from the server
             }
-        });
-        */
-        function removeEmptyDivs() {
-            const textLayerDivs = pdfContainer.querySelectorAll('.textLayer');
-            textLayerDivs.forEach(div => {
-                if (!div.textContent.trim()) {
-                    div.remove();
+
+
+
+            /*
+            document.getElementById('pdf-upload').addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (file && file.type === 'application/pdf') {
+                    const fileURL = URL.createObjectURL(file);
+                    loadPDF(fileURL);
                 }
             });
-        }
+            */
+            function removeEmptyDivs() {
+                const textLayerDivs = pdfContainer.querySelectorAll('.textLayer');
+                textLayerDivs.forEach(div => {
+                    if (!div.textContent.trim()) {
+                        div.remove();
+                    }
+                });
+            }
 
 
             async function loadPDF(url) {
@@ -407,50 +410,50 @@
             }
 
 
-        function addStartAnalysisButton() {
-            // Clear any existing content in scholar-container
-            const scholarContainer = document.getElementById("scholar-container")
-            scholarContainer.innerHTML = '';
+            function addStartAnalysisButton() {
+                // Clear any existing content in scholar-container
+                const scholarContainer = document.getElementById("scholar-container")
+                scholarContainer.innerHTML = '';
 
-            // Create the button
-            const startAnalysisButton = document.createElement('button');
-            startAnalysisButton.innerText = "Start Analysis";
-            startAnalysisButton.style.padding = '10px 20px';
-            startAnalysisButton.style.fontSize = '18px';
-            startAnalysisButton.style.margin = '0 auto';
-            startAnalysisButton.style.display = 'block';
+                // Create the button
+                const startAnalysisButton = document.createElement('button');
+                startAnalysisButton.innerText = "Start Analysis";
+                startAnalysisButton.style.padding = '10px 20px';
+                startAnalysisButton.style.fontSize = '18px';
+                startAnalysisButton.style.margin = '0 auto';
+                startAnalysisButton.style.display = 'block';
 
-            // Append the button to scholar-container
-            scholarContainer.appendChild(startAnalysisButton);
+                // Append the button to scholar-container
+                scholarContainer.appendChild(startAnalysisButton);
 
-            // Add event listener for button click
-            startAnalysisButton.addEventListener('click', function () {
-                // Call your analysis function here
-                startAnalysis();
-            });
-        }
+                // Add event listener for button click
+                startAnalysisButton.addEventListener('click', function () {
+                    // Call your analysis function here
+                    startAnalysis();
+                });
+            }
 
 
 
-        function findMostFrequentValue(arr) {
-            const frequencyMap = {};
-            let maxFrequency = 0;
-            let mostFrequentValue = null;
+            function findMostFrequentValue(arr) {
+                const frequencyMap = {};
+                let maxFrequency = 0;
+                let mostFrequentValue = null;
 
-            arr.forEach(value => {
-                if (value in frequencyMap) {
-                    frequencyMap[value]++;
-                } else {
-                    frequencyMap[value] = 1;
-                }
-                if (frequencyMap[value] > maxFrequency) {
-                    maxFrequency = frequencyMap[value];
-                    mostFrequentValue = value;
-                }
-            });
+                arr.forEach(value => {
+                    if (value in frequencyMap) {
+                        frequencyMap[value]++;
+                    } else {
+                        frequencyMap[value] = 1;
+                    }
+                    if (frequencyMap[value] > maxFrequency) {
+                        maxFrequency = frequencyMap[value];
+                        mostFrequentValue = value;
+                    }
+                });
 
-            return mostFrequentValue + 1;
-        }
+                return mostFrequentValue + 1;
+            }
 
 
             async function renderAllPages() {
@@ -527,16 +530,16 @@
 
 
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////// Functions to select potential References//////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////// Functions to select potential References//////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
 
 
-        
+
             async function startAnalysis() {
                 // Clear previous analysis results or messages
                 const scholarContainer = document.getElementById("scholar-container");
@@ -652,7 +655,7 @@
 
 
 
-                
+
 
                 // Call the Sudivide function for both "byParagraph" and "byIndent"
                 const paragraphCount = Sudivide(referenceFound, "byParagraph");
@@ -677,7 +680,7 @@
                 indentButton.style.cssText = buttonStyle; // Apply same style as paragraphButton
                 buttonContainer.appendChild(indentButton);
 
-// Append buttonContainer to the desired DOM element
+                // Append buttonContainer to the desired DOM element
 
 
                 // Append the button container below the success message
@@ -705,11 +708,11 @@
             document.addEventListener("mouseup", function (e) {
                 const selectionMode = document.getElementById('selectionMode').value;
 
-                
+
                 if (selectionMode === 'manual' || selectionMode === 'automatic') {
                     Sudivide(window.getSelection());
                 }
-                
+
             });
             */
 
@@ -758,7 +761,7 @@
                     });
                 });
             }
-            
+
 
 
             function findNearestTextDivBelow(x, y) {
@@ -811,136 +814,136 @@
                 //const selectedValue = selectionMode.value;
 
                 // Check if "byTitle" is selected
-                
-                    // Do something when "byTitle" is selected
-                    console.log('byTitle selected! Performing action...');
 
-                    // Reset the select element back to its default option
-                    const titles = [
-                        'references',
-                        'références',
-                        'rÉférences',
-                        'r´ef´erences',
-                        'bibliography',
-                        'bibliographie',
-                        'literaturverzeichnis',
-                        'citations',
-                        'refs',
-                        'publications',
-                        'réfs',
-                        'rÉfs',
-                        'reference',
-                        'référence',
-                        'rÉférence'
-                    ];
+                // Do something when "byTitle" is selected
+                console.log('byTitle selected! Performing action...');
 
-                    
-                        const divs = document.querySelectorAll('div.textLine'); // Get all div elements with class "textLine"
-                        let startPoint = null;
-                        let startFontSize
-                        let normalFontSize
-                        // Iterate through all divs to find the start of the reference section
-                        for (let i = 0; i < divs.length; i++) {
-                            const divText = divs[i].textContent.replace(/^[0-9.,: ]+/g, '').trim().toLowerCase(); // Get the text and convert to lowercase
-                            // Check if any of the keywords matches the div text
-                            if (titles.some(title => divText === title.toLowerCase())) {
-                                console.log('Reference section found at div index:', i);
-                                console.log('Text:', divs[i].textContent.trim());
+                // Reset the select element back to its default option
+                const titles = [
+                    'references',
+                    'références',
+                    'rÉférences',
+                    'r´ef´erences',
+                    'bibliography',
+                    'bibliographie',
+                    'literaturverzeichnis',
+                    'citations',
+                    'refs',
+                    'publications',
+                    'réfs',
+                    'rÉfs',
+                    'reference',
+                    'référence',
+                    'rÉférence'
+                ];
 
-                                // Set the start point of the reference section
-                                startPoint = divs[i + 1];
-                                startFontSize = window.getComputedStyle(divs[i]).fontSize;
-                                normalFontSize = window.getComputedStyle(startPoint).fontSize;
-                                console.log(startFontSize)
-                                console.log(normalFontSize)
-                                // Optionally, highlight the start of the reference section
-                                startPoint.style.backgroundColor = 'yellow'; // Highlight the start of the reference section
 
-                                break; // Stop after finding the first match
+                const divs = document.querySelectorAll('div.textLine'); // Get all div elements with class "textLine"
+                let startPoint = null;
+                let startFontSize
+                let normalFontSize
+                // Iterate through all divs to find the start of the reference section
+                for (let i = 0; i < divs.length; i++) {
+                    const divText = divs[i].textContent.replace(/^[0-9.,: ]+/g, '').trim().toLowerCase(); // Get the text and convert to lowercase
+                    // Check if any of the keywords matches the div text
+                    if (titles.some(title => divText === title.toLowerCase())) {
+                        console.log('Reference section found at div index:', i);
+                        console.log('Text:', divs[i].textContent.trim());
+
+                        // Set the start point of the reference section
+                        startPoint = divs[i + 1];
+                        startFontSize = window.getComputedStyle(divs[i]).fontSize;
+                        normalFontSize = window.getComputedStyle(startPoint).fontSize;
+                        console.log(startFontSize)
+                        console.log(normalFontSize)
+                        // Optionally, highlight the start of the reference section
+                        startPoint.style.backgroundColor = 'yellow'; // Highlight the start of the reference section
+
+                        break; // Stop after finding the first match
+                    }
+                }
+
+                if (startPoint) {
+                    startPoint.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    let endPoint = null
+                    if (startFontSize > normalFontSize) {
+
+
+                        for (let i = Array.from(divs).indexOf(startPoint) + 1; i < divs.length; i++) {
+                            const currentFontSize = window.getComputedStyle(divs[i]).fontSize;
+
+                            // If we find a div with the same font size as startFontSize, set it as the endPoint
+                            if (currentFontSize === startFontSize) {
+                                endPoint = divs[i - 1];
+                                console.log('Found matching font size div at index:', i);
+                                break;
                             }
                         }
 
-                        if (startPoint) {
-                            startPoint.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            let endPoint = null
-                            if (startFontSize > normalFontSize) {
-
-                                
-                                for (let i = Array.from(divs).indexOf(startPoint) + 1; i < divs.length; i++) {
-                                    const currentFontSize = window.getComputedStyle(divs[i]).fontSize;
-
-                                    // If we find a div with the same font size as startFontSize, set it as the endPoint
-                                    if (currentFontSize === startFontSize) {
-                                        endPoint = divs[i - 1];
-                                        console.log('Found matching font size div at index:', i);
-                                        break;
-                                    }
-                                }
 
 
 
-                                
-                            } 
-                            if (!endPoint) { 
-                                for (let i = Array.from(divs).indexOf(startPoint) + 1; i < divs.length; i++) {
-                                    const divText = divs[i].textContent.trim().toLowerCase(); // Get the text and convert to lowercase
-                                    const Endtitles = [
-                                        'appendix',
-   
-                                    ];
+                    }
+                    if (!endPoint) {
+                        for (let i = Array.from(divs).indexOf(startPoint) + 1; i < divs.length; i++) {
+                            const divText = divs[i].textContent.trim().toLowerCase(); // Get the text and convert to lowercase
+                            const Endtitles = [
+                                'appendix',
 
-                                    if (Endtitles.some(Endtitles => divText.includes(Endtitles)))  {
+                            ];
 
-                                    // If we find a div with the same font size as startFontSize, set it as the endPoint
-                                        endPoint = divs[i - 1];
-                                        console.log('Found matching font size div at index:', i);
-                                        break;
-                                    }
-                                }
+                            if (Endtitles.some(Endtitles => divText.includes(Endtitles))) {
 
+                                // If we find a div with the same font size as startFontSize, set it as the endPoint
+                                endPoint = divs[i - 1];
+                                console.log('Found matching font size div at index:', i);
+                                break;
                             }
-
-
-                            if (!endPoint) {   /////////////////////////////////////////////////////////////////////////////////////////////// Check Appendix!!!!
-                                endPoint = divs[divs.length - 1]; // Last div element
-                                console.log('No matching font size found, reference section ends at the last div.');
-                            }
-                                // Assume the last div in the document is the end of the reference section
-                                console.log('Reference section ends at the last div.');
-
-                                // Create a Range and Selection for the reference section
-                                const range = document.createRange();
-                                const selection = window.getSelection();
-
-                                // Set the start of the range at the first child of the start div
-                                range.setStart(startPoint.firstChild || startPoint, 0);
-
-                                // Set the end of the range at the last child of the last div
-                                range.setEnd(endPoint.lastChild || endPoint, endPoint.textContent.length);
-
-                                // Clear existing selections
-                                selection.removeAllRanges();
-
-                                // Add the newly created range to the selection
-                                selection.addRange(range);
-
-                                // Call the Sudivide function with the selection
-                                return selection;
-                            
-                                
-                        } else {
-                            console.log('Reference section not found.');
-                            return null
                         }
+
+                    }
+
+
+                    if (!endPoint) {   /////////////////////////////////////////////////////////////////////////////////////////////// Check Appendix!!!!
+                        endPoint = divs[divs.length - 1]; // Last div element
+                        console.log('No matching font size found, reference section ends at the last div.');
+                    }
+                    // Assume the last div in the document is the end of the reference section
+                    console.log('Reference section ends at the last div.');
+
+                    // Create a Range and Selection for the reference section
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+
+                    // Set the start of the range at the first child of the start div
+                    range.setStart(startPoint.firstChild || startPoint, 0);
+
+                    // Set the end of the range at the last child of the last div
+                    range.setEnd(endPoint.lastChild || endPoint, endPoint.textContent.length);
+
+                    // Clear existing selections
+                    selection.removeAllRanges();
+
+                    // Add the newly created range to the selection
+                    selection.addRange(range);
+
+                    // Call the Sudivide function with the selection
+                    return selection;
+
+
+                } else {
+                    console.log('Reference section not found.');
+                    return null
+                }
 
 
 
             };
 
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////Seperate Reference Section ////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////Seperate Reference Section ////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -1062,7 +1065,7 @@
                     }
                     return highlightCounter
                 }
-                
+
             }
 
             // Function to find the most common distance
@@ -1091,20 +1094,20 @@
 
 
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////INteraction, Analysis and Visualization////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////INteraction, Analysis and Visualization////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
-        ///////////////////////////////////Crossref search ////////////////////////////////////////
+            ///////////////////////////////////Crossref search ////////////////////////////////////////
 
 
 
 
 
-            
+
 
             function getMergedTextByMyId(MyId) {
                 const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
@@ -1231,12 +1234,12 @@
                 // Insert logic to check all div.highlight elements
                 const highlightDivs = document.querySelectorAll('div.textLine');
                 let matchCount = 0;
-                
+
                 // Loop through all highlight divs and check if they contain the first word
                 highlightDivs.forEach(div => {
                     if (div.textContent.includes(firstWord)) {
                         matchCount++;  // Increment the count if the first word is found
-                        
+
                     }
                 });
 
@@ -1352,10 +1355,10 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 // Format the authors and other components
                 const formattedAuthors = formatAuthors(item.author);
                 const title = `$${formattedAuthors}
-                    (${getYear(item.issued)}).
-                    <strong><a href="${item.URL}" target="_blank">${item.title[0]}</a></strong>.
-                    ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
-                    DOI: ${item.DOI}`;
+                            (${getYear(item.issued)}).
+                            <strong><a href="${item.URL}" target="_blank">${item.title[0]}</a></strong>.
+                            ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
+                            DOI: ${item.DOI}`;
 
                 // Clean and split title words
                 const titleWords = item.title[0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
@@ -1446,7 +1449,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
             }
 
 
-           
+
 
 
 
@@ -1474,7 +1477,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 const referenceTitle = document.createElement('p');
                 referenceTitle.innerHTML = '<strong>References:</strong>';
                 referenceTitle.style.marginBottom = '15px'
-                
+
 
 
                 // Create a container div to hold the buttons side by side
@@ -1526,7 +1529,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 referenceTitle.appendChild(buttonContainer);
                 referenceTitle.appendChild(toggleButton);
 
-                ReferenceFrame.appendChild(referenceTitle); 
+                ReferenceFrame.appendChild(referenceTitle);
 
 
                 let citationSpans = document.querySelectorAll('span.citation');
@@ -1549,10 +1552,10 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     citationSpans.forEach((span) => {
                         let cleanedText = span.getAttribute('cleanedCit');
                         let SpanYear = span.getAttribute('year');   ///// Spanier ;-)
-                        let firstWordCit = cleanedText.split(' ')[0].replace(",","");
+                        let firstWordCit = cleanedText.split(' ')[0].replace(",", "");
                         //console.log(firstWord.toLowerCase())
                         //console.log(firstWordCit.toLowerCase())
-                        if (firstWord.toLowerCase() === firstWordCit.toLowerCase() && MyYear === SpanYear) { 
+                        if (firstWord.toLowerCase() === firstWordCit.toLowerCase() && MyYear === SpanYear) {
 
                             matchCount++
                             matchedSpans.push(span)
@@ -1560,7 +1563,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             span.addEventListener('click', () => {
 
                                 ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                
+
                             });
                         }
 
@@ -1568,7 +1571,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     });
 
 
-                    
+
 
                     // Create first paragraph with inline style
                     var SingleRef = document.createElement('p');
@@ -1603,7 +1606,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             SingleRef.appendChild(document.createTextNode(', ')); // Add a comma and space
                         }
                     });
-                    
+
 
                     // Add the CrossRef search button
                     const crossRefButton = document.createElement('button');
@@ -1650,12 +1653,12 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
                                     // Construct the inner HTML content without new lines
                                     resultParagraph.innerHTML = `
-                    <strong>${matchPercentage}% Match</strong>. 
-                    ${formattedAuthors}. 
-                    (${getYear(item.issued)}). 
-                    <strong>${item.title[0]}</strong>. 
-                    ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}. 
-                    DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
+                            <strong>${matchPercentage}% Match</strong>.
+                            ${formattedAuthors}.
+                            (${getYear(item.issued)}).
+                            <strong>${item.title[0]}</strong>.
+                            ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}.
+                            DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
                                     resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
 
@@ -1755,7 +1758,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
 
                     // Highlight unfound citations in red
-                    document.querySelectorAll('span:not([found])').forEach((span,index) =>{
+                    document.querySelectorAll('span:not([found])').forEach((span, index) => {
                         span.style.backgroundColor = 'red'
 
                     })
@@ -1805,8 +1808,8 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
             //////////// If clicked on Do intext analysis
             //document.getElementById('InText-button').addEventListener('click', InTextSearch);
-            function InTextSearch() { 
-                                //const scholarContainer = document.getElementById("scholar-container")
+            function InTextSearch() {
+                //const scholarContainer = document.getElementById("scholar-container")
 
                 console.log("doing intext search etc.")
                 ///////// create first frame
@@ -1847,7 +1850,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     // If no text content is found or node is not valid, move to the previous div with class 'textLine'
                     if (textContent === "") {
                         let previousDiv = span.parentElement.previousElementSibling;
-                        
+
                         // Loop to find the previous sibling div with class 'textLine'
                         while (previousDiv && !previousDiv.classList.contains('textLine')) {
                             previousDiv = previousDiv.previousElementSibling;
@@ -2031,10 +2034,10 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
 
 
-         
 
 
-           
+
+
 
         });
 

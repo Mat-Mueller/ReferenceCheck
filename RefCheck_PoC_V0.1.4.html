@@ -371,23 +371,6 @@
 
 
 
-            /*
-            document.getElementById('pdf-upload').addEventListener('change', function (event) {
-                const file = event.target.files[0];
-                if (file && file.type === 'application/pdf') {
-                    const fileURL = URL.createObjectURL(file);
-                    loadPDF(fileURL);
-                }
-            });
-            */
-            function removeEmptyDivs() {
-                const textLayerDivs = pdfContainer.querySelectorAll('.textLayer');
-                textLayerDivs.forEach(div => {
-                    if (!div.textContent.trim()) {
-                        div.remove();
-                    }
-                });
-            }
 
 
             async function loadPDF(url) {
@@ -410,50 +393,8 @@
             }
 
 
-            function addStartAnalysisButton() {
-                // Clear any existing content in scholar-container
-                const scholarContainer = document.getElementById("scholar-container")
-                scholarContainer.innerHTML = '';
-
-                // Create the button
-                const startAnalysisButton = document.createElement('button');
-                startAnalysisButton.innerText = "Start Analysis";
-                startAnalysisButton.style.padding = '10px 20px';
-                startAnalysisButton.style.fontSize = '18px';
-                startAnalysisButton.style.margin = '0 auto';
-                startAnalysisButton.style.display = 'block';
-
-                // Append the button to scholar-container
-                scholarContainer.appendChild(startAnalysisButton);
-
-                // Add event listener for button click
-                startAnalysisButton.addEventListener('click', function () {
-                    // Call your analysis function here
-                    startAnalysis();
-                });
-            }
 
 
-
-            function findMostFrequentValue(arr) {
-                const frequencyMap = {};
-                let maxFrequency = 0;
-                let mostFrequentValue = null;
-
-                arr.forEach(value => {
-                    if (value in frequencyMap) {
-                        frequencyMap[value]++;
-                    } else {
-                        frequencyMap[value] = 1;
-                    }
-                    if (frequencyMap[value] > maxFrequency) {
-                        maxFrequency = frequencyMap[value];
-                        mostFrequentValue = value;
-                    }
-                });
-
-                return mostFrequentValue + 1;
-            }
 
 
             async function renderAllPages() {
@@ -991,11 +932,6 @@
                             continue; // Skip to the next range if in manual mode
                         }
 
-
-
-
-
-
                         // Calculate distances between consecutive DIVs if "byParagraph" is selected
                         let distances = [];
                         if (selectedCriterion === 'byParagraph') {
@@ -1014,11 +950,15 @@
                         let mergedContent = "";
                         const yearRegex = /(?<=^|\s|\()(19[4-9]\d|20[0-2]\d|2030)(?=$|\s|\)|\.|,)/;
                         let counter = [];
+                        let currentColor = ["#7b92ed", "#83ed7b"]
+                        let colorCounter = 0
                         const firstRect = pElements[0].getBoundingClientRect();
                         for (let j = 0; j < pElements.length; j++) {
+
+
                             mergedContent += " " + pElements[j].textContent.trim();
                             pElements[j].setAttribute("myID", highlightCounter);
-                            pElements[j].style.backgroundColor = '#add8e6';
+                            pElements[j].style.backgroundColor = currentColor[colorCounter]
                             pElements[j].classList.add('highlight');
                             counter.push(j);
 
@@ -1053,10 +993,8 @@
                                 //Make_Reference(highlightCounter, pElements);
 
                                 counter = [];
-
-
-
                                 highlightCounter++;
+
                                 //await delay(2000); // Optional delay for any async tasks like highlighting
                             }
                         }
@@ -1118,40 +1056,7 @@
                 return mergedText.trim();
             }
 
-            function triggerSearch(MyId) {
-                const mergedText = getMergedTextByMyId(MyId);
-                console.log(mergedText);
 
-                // Select all div elements with the specified MyId attribute
-                const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
-
-                if (mergedText.length > 0) {
-                    document.body.style.cursor = 'wait'; // Change cursor to wait
-                    const query = encodeURIComponent(mergedText);
-                    const apiUrl = `https://api.crossref.org/works?query.bibliographic=${query}&rows=3`;
-
-                    fetch(apiUrl)
-                        .then(response => response.json())
-                        .then(data => {
-                            displaySearchResults(data, mergedText, MyId);
-
-                            // Set data-results attribute for all matching divs
-                            divs.forEach(div => {
-                                div.setAttribute('data-results', JSON.stringify(data));
-                                div.setAttribute('query', mergedText);
-                                div.setAttribute('MyId', MyId);
-                            });
-
-                            document.body.style.cursor = 'default'; // Revert cursor to default
-                        })
-                        .catch(error => {
-                            console.error('Error fetching CrossRef data:', error);
-                            document.body.style.cursor = 'default'; // Revert cursor to default even if there's an error
-                        });
-                } else {
-                    alert('No text found in the selected divs.');
-                }
-            }
 
             async function triggerSearch2(MyId) {
                 const mergedText = getMergedTextByMyId(MyId);
@@ -1192,154 +1097,7 @@
                 }
             }
 
-            function displaySearchResults(data, query, spanId) {
-                const scholarContainer = document.getElementById('scholar-container');
-                scholarContainer.innerHTML = ''; // Clear previous content
-
-                // Create a frame for the search string
-                const searchStringFrame = document.createElement('div');
-                searchStringFrame.className = 'search-string-frame';
-
-                // Create a paragraph element to display the search string
-                const searchStringParagraph = document.createElement('p');
-                searchStringParagraph.innerHTML = `<strong>Search String:</strong> ${decodeURIComponent(query)}`;
-                searchStringFrame.appendChild(searchStringParagraph);
-
-                // Create a button to search on Google Scholar
-                const searchButton = document.createElement('button');
-                searchButton.textContent = 'Search on Google Scholar';
-
-                // Add margin to move the button slightly down from the search string
-                searchButton.style.margin = '10px 0 0 10px'; // Top margin of 10px to move it down, and left margin of 10px for spacing
-
-                // Set up the click event to open Google Scholar search
-                searchButton.onclick = function () {
-                    const cleanedQuery = decodeURIComponent(query).replace(/%2C/g, ','); // Replace encoded commas with actual commas
-                    const scholarSearchURL = `https://scholar.google.com/scholar?q=${encodeURIComponent(cleanedQuery)}`;
-                    window.open(scholarSearchURL, '_blank'); // Open the URL in a new tab
-                };
-
-                // Append the button to the search string frame
-                searchStringFrame.appendChild(searchButton);
-
-                // Append the search string frame to the container
-                scholarContainer.appendChild(searchStringFrame);
-
-
-
-
-
-                const firstWord = query.split(' ')[0].replace(/,$/, '');
-
-                // Insert logic to check all div.highlight elements
-                const highlightDivs = document.querySelectorAll('div.textLine');
-                let matchCount = 0;
-
-                // Loop through all highlight divs and check if they contain the first word
-                highlightDivs.forEach(div => {
-                    if (div.textContent.includes(firstWord)) {
-                        matchCount++;  // Increment the count if the first word is found
-
-                    }
-                });
-
-
-                const IntextFrame = document.createElement('div');
-                IntextFrame.className = 'IntextFrame';
-                IntextFrame.style.backgroundColor = "#FFFFFF";
-                IntextFrame.style.marginBottom = '20px'
-                console.log(matchCount)
-                IntextFrame.textContent = `Found ${matchCount} divs that contain the word: "${firstWord}"`;
-                scholarContainer.appendChild(IntextFrame)
-
-                if (data && data.message && data.message.items && data.message.items.length > 0) {
-                    const results = data.message.items.slice(0, 3); // Limit to first 3 results
-
-                    let highestMatch = 0;
-                    results.forEach(item => { //// sort based on match
-                        if (item.title && item.URL) { // Check if title and URL are present
-                            const resultFrame = document.createElement('div');
-                            resultFrame.className = 'result-frame';
-                            resultFrame.style.backgroundColor = "#FFFFFF";
-
-                            // Format authors
-                            const formattedAuthors = formatAuthors(item.author);
-
-                            // Create a single paragraph element
-                            const resultParagraph = document.createElement('p');
-                            resultParagraph.style.fontSize = '16px'; // Set font size
-                            resultParagraph.style.backgroundColor = "#FFFFFF";
-                            const matchPercentage = calculateMatchPercentage(item, query);
-
-                            // Construct the inner HTML content with clickable DOI and empty spaces as separators
-                            resultParagraph.innerHTML = `<strong>${matchPercentage}% Match</strong>.
-${formattedAuthors}
-(${getYear(item.issued)}).
-${item.title[0]}</strong>.
-${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}
-DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
-
-                            resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
-
-                            // Add empty line between results
-                            resultFrame.style.marginBottom = '20px';
-
-                            scholarContainer.appendChild(resultFrame);
-
-                            // Highlight corresponding span based on match percentage
-                            highlightSpan(spanId, matchPercentage);
-
-                            if (highestMatch < matchPercentage) { highestMatch = matchPercentage }
-                        }
-                    });
-
-                    highlightSpan(spanId, highestMatch);
-
-                    if (scholarContainer.children.length === 0) {
-                        const noResultsMsg = document.createElement('p');
-                        noResultsMsg.textContent = 'No results found.';
-                        scholarContainer.appendChild(noResultsMsg);
-                    }
-                } else {
-                    const noResultsMsg = document.createElement('p');
-                    noResultsMsg.textContent = 'No results found.';
-                    scholarContainer.appendChild(noResultsMsg);
-
-                    // Create the button to retry the search
-                    const retryButton = document.createElement('button');
-                    retryButton.textContent = 'Retry CrossRef Search';
-                    retryButton.style.marginTop = '5px'; // Add some space above the button
-
-                    // Set up the click event to trigger TriggerSearch()
-                    retryButton.onclick = function () {
-                        triggerSearch(spanId); // Call TriggerSearch with the query
-                    };
-
-                    // Append the retry button to the container
-                    scholarContainer.appendChild(retryButton);
-                }
-            }
-
-
-
-
-
-
-            function highlightSpan(MyId, matchPercentage) {
-                // Select all div elements with the specified MyId attribute
-                const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
-
-                if (divs.length > 0) {
-                    // Calculate hue value based on match percentage
-                    const hue = (matchPercentage / 100) * 120; // Hue ranges from 0 (green) to 120 (red)
-
-                    // Apply the background color to each matching div
-                    divs.forEach(div => {
-                        div.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
-                    });
-                }
-            }
-
+           
 
             function calculateMatchPercentage(item, query) {
                 // Decode the query string first
@@ -1472,13 +1230,10 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
                 ReferenceFrame.style.maxHeight = '400px';
 
-
                 // Create and add headline for references
                 const referenceTitle = document.createElement('p');
                 referenceTitle.innerHTML = '<strong>References:</strong>';
                 referenceTitle.style.marginBottom = '15px'
-
-
 
                 // Create a container div to hold the buttons side by side
                 const buttonContainer = document.createElement('div');
@@ -1541,7 +1296,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     const mergedText = getMergedTextByMyId(j);
                     const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
                     console.log(mergedText)
-                    var MyYear = mergedText.match(/\b\d{4}\b/)
+                    var MyYear = mergedText.match(/\b\d{4}[a-zA-Z]?\b/)
                     if (MyYear) {
                         MyYear = MyYear[0]
                     }
@@ -1900,7 +1655,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             }
                         }
                     } else {
-                        let words = cleanedText.replace(/(\d{4}).*/, '$1').split(" ");
+                        let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').split(" ");
                         let lastWord = words[words.length - 2];
                         if (words.length < 5) {
                             let precedingText = getPreviousText(span);
@@ -1934,7 +1689,7 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     span.setAttribute('cleanedCit', cleanedText.replace("(", ""));
                     span.setAttribute('title', cleanedText);
                     // Find the first 4-digit year in the cleanedText
-                    let yearMatch = cleanedText.match(/\b\d{4}\b/);
+                    let yearMatch = cleanedText.match(/\b\d{4}[a-zA-Z]?\b/);
                     if (yearMatch) {
                         span.setAttribute('year', yearMatch[0]);
                     }

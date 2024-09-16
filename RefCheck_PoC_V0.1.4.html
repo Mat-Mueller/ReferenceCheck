@@ -144,6 +144,35 @@
             cursor: pointer;
             margin-bottom: 10px;
         }
+
+        #dragArea {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed #4a90e2;
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            justify-content: center; /* Center items vertically */
+            align-items: center; /* Center items horizontally */
+            font-size: 16px;
+            color: #333;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box; /* Ensure padding is included in width/height */
+        }
+        #pdf-upload {
+            margin-bottom: 10px; /* Add space between the button and the text */
+            padding: 10px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            #pdf-upload:hover {
+                background-color: #3b78c4;
+            }
     </style>
 </head>
 <body>
@@ -177,7 +206,10 @@
     <div id="viewer">
 
         <div class="frame" id="pdf-container" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
-            Drag and drop a PDF here or use the file upload button.
+            <div id="dragArea">
+                <input type="file" id="pdf-upload" accept="application/pdf">
+                Drag and drop a PDF here or use the file upload button.
+            </div>
         </div>
         <div class="frame" id="scholar-container">
             <!-- Results will be displayed here -->
@@ -209,37 +241,36 @@
         document.addEventListener("DOMContentLoaded", () => {
             let Refselection = null;
             let selectionMode = "";
-        // Assign functions to window to make them globally accessible
-        window.handleDragOver = function (event) {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = 'copy'; // Indicates a copy action
-        };
+            // Assign functions to window to make them globally accessible
+            window.handleDragOver = function (event) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'copy'; // Indicates a copy action
+            }  ;
 
-        window.handleDrop = function (event) {
-            event.preventDefault();
-            event.stopPropagation(); // Prevent the browser from opening the file
+            window.handleDrop = function (event) {
+                event.preventDefault();
+                event.stopPropagation();
 
-            const file = event.dataTransfer.files[0];  // Get the dropped file
+                const file = event.dataTransfer.files[0];  // Get the dropped file
+                handleFile(file);  // Use the same logic for handling file input or drag-and-drop
+            };
 
-            if (file && file.type === 'application/pdf') {
-                const fileURL = URL.createObjectURL(file);  // Create a URL for the dropped PDF
-                loadPDF(fileURL);  // Call your existing loadPDF function to display the PDF
-            } else {
-                alert('Please drop a valid PDF file.');
+            // Handle file input button
+            const fileInput = document.getElementById('pdf-upload');
+            fileInput.addEventListener('change', function (event) {
+                const file = event.target.files[0];  // Get the file from the input button
+                handleFile(file);  // Handle the file in the same way as drag-and-drop
+            });
+
+            // Handle file processing for both drag-and-drop and input button
+            function handleFile(file) {
+                if (file && file.type === 'application/pdf') {
+                    const fileURL = URL.createObjectURL(file);  // Create a URL for the file
+                    loadPDF(fileURL);  // Call loadPDF function to render the PDF
+                } else {
+                    alert('Please select a valid PDF file.');
+                }
             }
-        };
-
-
-
-        // Prevent default behavior for the entire document (to stop the browser from opening the PDF file)
-        document.addEventListener('dragover', function (event) {
-            event.preventDefault();
-        }, false);
-
-        document.addEventListener('drop', function (event) {
-            event.preventDefault();
-        }, false);
-
 
 
 
@@ -276,7 +307,7 @@
                 pdfDocument = pdf;
                 document.getElementById('pdf-container').innerHTML = ''; // Clear previous content
                 renderAllPages();
-                removeEmptyDivs()
+                //removeEmptyDivs()
                 addStartAnalysisButton();
             });
 

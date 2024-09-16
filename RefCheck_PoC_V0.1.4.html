@@ -178,29 +178,8 @@
 <body>
     <div id="controls">
         <img src="Logo.png" alt="Icon" id="icon">
-        <!--
-        <input type="file" id="pdf-upload" accept="application/pdf">
-        <select id="separationCriteria">
-            <option value="" disabled selected>Separation Criteria:</option>
-            <option value="byYear">By Year</option>
-            <option value="byParagraph">By Paragraph</option>
-            <option value="byIndent">By Indent</option>
-            <option value="None">None</option>
-        </select>
+        PDF Citation Analyzer
 
-        <select id="selectionMode">
-            <option value="" disabled selected>Reference Section:</option>
-            <option value="byTitle">By Headline</option>
-            <option value="manual">Manual Select</option>
-            <option value="clickSelect">Start/End Select</option>
-        </select>
-
-
-    <button id="crossref-button">Crossref Search All</button>
-
-        <button id="InText-button">Do Intext Analysis</button>
-
-        <button onclick="clearPDFAndReload()">Reload Page</button>-->
         <div id="notification" style=" margin-top: 10px; display: none; border: 2px solid white; width: 300px; /* Fixed width */ padding: 10px; /* Padding inside the box */ text-align: center; ">Hier Kann Text Stehen</div>
     </div>
     <div id="viewer">
@@ -272,6 +251,112 @@
                 }
             }
 
+            displaySoftwareDescription()
+
+            function displaySoftwareDescription() {
+                const scholarContainer = document.getElementById('scholar-container');
+
+                // First div: Software overview
+                const overviewFrame = document.createElement('div');
+                overviewFrame.className = 'search-string-frame'; // Use similar class names for styling
+                overviewFrame.style.padding = '15px'; // Add padding for better visual separation
+                overviewFrame.style.lineHeight = '1.6'; // Improve readability with better line height
+
+                // First part of the content (before "How It Works")
+                const overviewHTML = `
+        <h2>PDF Citation Analyzer</h2>
+        <p>This software allows users to upload and interact with PDFs for citation analysis and validation using the CrossRef API. It helps identify and analyze references in PDF documents.</p>
+    `;
+
+                // Set the innerHTML for the first div (Overview)
+                overviewFrame.innerHTML = overviewHTML;
+
+                // Result frame for Features
+                const featuresFrame = document.createElement('div');
+                featuresFrame.className = 'result-frame';
+                featuresFrame.style.backgroundColor = "#FFFFFF";
+                featuresFrame.style.marginBottom = '15px'; // Add margin between steps
+                featuresFrame.style.padding = '10px'; // Add padding inside each step frame
+                featuresFrame.style.border = '1px solid #ddd'; // Optional: Add a light border
+
+                const featuresTitle = document.createElement('h3');
+                featuresTitle.textContent = 'Features';
+
+                const featuresList = `
+        <ul>
+            <li>Upload PDF files for analysis</li>
+            <li>Automatic and manual reference section detection</li>
+            <li>CrossRef API integration for reference validation</li>
+            <li>In-text citation highlighting and matching</li>
+            <li>Google Scholar search for additional reference lookup</li>
+        </ul>
+    `;
+
+                // Append features content to the frame
+                featuresFrame.appendChild(featuresTitle);
+                featuresFrame.innerHTML += featuresList;
+
+                // Second div: How it works section with custom result frame
+                const howItWorksFrame = document.createElement('div');
+                howItWorksFrame.className = 'search-string-frame'; // Use similar class names for styling
+                howItWorksFrame.style.padding = '15px'; // Add padding for better visual separation
+                howItWorksFrame.style.lineHeight = '1.6'; // Improve readability with better line height
+
+                // Steps are wrapped in custom-styled resultFrame divs
+                const steps = [
+                    {
+                        title: 'Step 1: Uploading a PDF',
+                        description: 'You can upload a PDF either by dragging and dropping it into the designated area or using the file upload button. Once uploaded, the system processes and renders the PDF using the PDF.js library.'
+                    },
+                    {
+                        title: 'Step 2 & 3: Reference Section Detection and Analyzing References',
+                        description: 'The software can automatically or manually identify the reference section. After that, the reference section is analyzed, and references are separated by paragraph or indentation, depending on the structure of the document.'
+                    },
+                    {
+                        title: 'Step 4: CrossRef Search',
+                        description: 'Once references are separated, the tool performs CrossRef lookups to validate citations. The results are displayed within the document for easy review.'
+                    },
+                    {
+                        title: 'Step 5: Citation Highlighting',
+                        description: 'In-text citations are detected and matched with the references. The tool highlights both the in-text citation and its corresponding reference in the reference section.'
+                    },
+                    {
+                        title: 'Step 6: Google Scholar Search',
+                        description: 'For references where CrossRef doesn’t provide sufficient information, the tool offers a Google Scholar search option for extended citation lookup.'
+                    }
+                ];
+
+                // Add steps to the second div using resultFrame
+                steps.forEach(step => {
+                    const resultFrame = document.createElement('div');
+                    resultFrame.className = 'result-frame';
+                    resultFrame.style.backgroundColor = "#FFFFFF";
+                    resultFrame.style.marginBottom = '15px'; // Add margin between steps
+                    resultFrame.style.padding = '10px'; // Add padding inside each step frame
+                    resultFrame.style.border = '1px solid #ddd'; // Optional: Add a light border
+
+                    const stepTitle = document.createElement('h4');
+                    stepTitle.textContent = step.title;
+
+                    const stepDescription = document.createElement('p');
+                    stepDescription.textContent = step.description;
+
+                    // Append title and description to the resultFrame
+                    resultFrame.appendChild(stepTitle);
+                    resultFrame.appendChild(stepDescription);
+
+                    // Append each resultFrame to the howItWorksFrame
+                    howItWorksFrame.appendChild(resultFrame);
+                });
+
+                // Append the overview, features, and how it works frames to the scholar container
+                overviewFrame.appendChild(featuresFrame)
+                scholarContainer.appendChild(overviewFrame);
+                //scholarContainer.appendChild(featuresFrame);
+                scholarContainer.appendChild(howItWorksFrame);
+            }
+
+
 
 
         function clearPDFAndReload() {
@@ -302,16 +387,25 @@
         }
 
 
-        function loadPDF(url) {
-            pdfjsLib.getDocument(url).promise.then(function (pdf) {
-                pdfDocument = pdf;
-                document.getElementById('pdf-container').innerHTML = ''; // Clear previous content
-                renderAllPages();
-                //removeEmptyDivs()
-                addStartAnalysisButton();
-            });
+            async function loadPDF(url) {
+                try {
+                    // Load the PDF document
+                    const pdf = await pdfjsLib.getDocument(url).promise;
+                    pdfDocument = pdf;
 
-        }
+                    // Clear the previous content
+                    document.getElementById('pdf-container').innerHTML = '';
+
+                    // Wait for all pages to be rendered
+                    await renderAllPages();
+
+                    // Start analysis after rendering all pages
+                    startAnalysis();
+                } catch (error) {
+                    console.error("Error loading or rendering PDF:", error);
+                }
+            }
+
 
         function addStartAnalysisButton() {
             // Clear any existing content in scholar-container
@@ -359,9 +453,9 @@
         }
 
 
-        function renderAllPages() {
-            for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
-                pdfDocument.getPage(pageNum).then(function (page) {
+            async function renderAllPages() {
+                for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
+                    const page = await pdfDocument.getPage(pageNum); // Wait for the page to be loaded
                     const viewport = page.getViewport({ scale: 1.5 });
                     const textLayerDiv = document.createElement('div');
                     textLayerDiv.className = 'textLayer';
@@ -373,59 +467,59 @@
 
                     pdfContainer.appendChild(textLayerDiv);
 
-                    page.getTextContent().then(function (textContent) {
-                        let lines = []; // Array to store lines with their Y coordinate
+                    const textContent = await page.getTextContent(); // Wait for text content to be retrieved
 
-                        textContent.items.forEach(function (textItem) {
-                            const currentY = textItem.transform[5]; // Y coordinate
-                            const currentX = textItem.transform[4]; // X coordinate
-                            const lineText = textItem.str;
-                            const fontSize = textItem.transform[0]; // Extract font size
-                            const fontName = textItem.fontName; // Extract font name (for bold, italic, etc.)
+                    let lines = []; // Array to store lines with their Y coordinate
 
-                            let line = lines.find(line => Math.abs(line.y - currentY) < 2); // Find line with a similar Y coordinate
+                    textContent.items.forEach(function (textItem) {
+                        const currentY = textItem.transform[5]; // Y coordinate
+                        const currentX = textItem.transform[4]; // X coordinate
+                        const lineText = textItem.str;
+                        const fontSize = textItem.transform[0]; // Extract font size
+                        const fontName = textItem.fontName; // Extract font name (for bold, italic, etc.)
 
-                            if (!line) {
-                                line = {
-                                    text: '',
-                                    x: currentX,
-                                    y: currentY,
-                                    fontSize: fontSize, // Store font size for the line
-                                    fontName: fontName // Store font name for the line
-                                };
-                                lines.push(line);
-                            }
+                        let line = lines.find(line => Math.abs(line.y - currentY) < 2); // Find line with a similar Y coordinate
 
-                            line.text += lineText // + ' '; // Concatenate text on the same line
-                        });
+                        if (!line) {
+                            line = {
+                                text: '',
+                                x: currentX,
+                                y: currentY,
+                                fontSize: fontSize, // Store font size for the line
+                                fontName: fontName // Store font name for the line
+                            };
+                            lines.push(line);
+                        }
 
-                        // Sort lines by their Y coordinate (descending order)
-                        lines.sort((a, b) => b.y - a.y);
-
-                        // Render all lines
-                        lines.forEach(function (line) {
-                            const lineElement = document.createElement('div');
-                            lineElement.textContent = line.text.replace(/\s+/g, ' ').trim(); // Remove any trailing space
-                            lineElement.className = 'textLine';
-                            lineElement.style.position = 'absolute';
-                            lineElement.style.whiteSpace = 'pre'; // Preserve whitespace
-                            lineElement.style.left = `${line.x}px`; // Set X position based on the first text item
-                            lineElement.style.top = `${(viewport.height - line.y * 1.5)}px`; // Set Y position (inverted)
-                            lineElement.style.margin = '0'; // Ensure no margin is added
-                            lineElement.style.padding = '0'; // Ensure no padding is added
-
-                            // Apply font size and font weight (bold) if applicable
-                            lineElement.style.fontSize = `${line.fontSize}px`; // Set font size
-                            if (line.fontName && line.fontName.toLowerCase().includes('bold')) {
-                                lineElement.style.fontWeight = 'bold'; // Set bold style if the font name contains "bold"
-                            }
-
-                            textLayerDiv.appendChild(lineElement);
-                        });
+                        line.text += lineText;
                     });
-                });
+
+                    // Sort lines by their Y coordinate (descending order)
+                    lines.sort((a, b) => b.y - a.y);
+
+                    // Render all lines
+                    lines.forEach(function (line) {
+                        const lineElement = document.createElement('div');
+                        lineElement.textContent = line.text.replace(/\s+/g, ' ').trim(); // Remove any trailing space
+                        lineElement.className = 'textLine';
+                        lineElement.style.position = 'absolute';
+                        lineElement.style.whiteSpace = 'pre'; // Preserve whitespace
+                        lineElement.style.left = `${line.x}px`; // Set X position based on the first text item
+                        lineElement.style.top = `${(viewport.height - line.y * 1.5)}px`; // Set Y position (inverted)
+                        lineElement.style.margin = '0'; // Ensure no margin is added
+                        lineElement.style.padding = '0'; // Ensure no padding is added
+
+                        // Apply font size and font weight (bold) if applicable
+                        lineElement.style.fontSize = `${line.fontSize}px`; // Set font size
+                        if (line.fontName && line.fontName.toLowerCase().includes('bold')) {
+                            lineElement.style.fontWeight = 'bold'; // Set bold style if the font name contains "bold"
+                        }
+
+                        textLayerDiv.appendChild(lineElement);
+                    });
+                }
             }
-        }
+
 
 
 
@@ -443,7 +537,6 @@
 
 
         
-
             async function startAnalysis() {
                 // Clear previous analysis results or messages
                 const scholarContainer = document.getElementById("scholar-container");
@@ -453,37 +546,58 @@
                 let referenceFound = findReferenceSection("byTitle");
 
                 if (referenceFound) {
-                    // Display a success message and ask if the user wants to continue
-                    const successMessage = document.createElement('p');
-                    successMessage.innerHTML = 'Reference section found and highlighted!<br>Do you want to continue?';
-                    scholarContainer.appendChild(successMessage);
+                    // Create a frame for the success message
+                    const TextFrame = document.createElement('div');
+                    TextFrame.className = 'search-string-frame';
+                    TextFrame.style.marginBottom = '20px'; // Add bigger space between the message and the following content
 
-                    // Create Yes/No buttons
+                    // Create paragraph for the reference section found message
+                    const TextFrameParagraph = document.createElement('p');
+                    TextFrameParagraph.innerHTML = 'Reference section found and highlighted!';
+
+                    // Add the paragraph to the text frame
+                    TextFrame.appendChild(TextFrameParagraph);
+
+
+
+                    // Create Continue/Set Manually buttons
                     const buttonContainer = document.createElement('div');
                     buttonContainer.style.marginTop = '10px'; // Add space above the buttons
 
-                    const yesButton = document.createElement('button');
-                    yesButton.innerText = 'Yes';
-                    yesButton.style.marginRight = '10px'; // Add some spacing between buttons
-                    buttonContainer.appendChild(yesButton);
+                    const buttonStyle = 'background-color: white; color: black; width: 100px;border-radius: 5px; padding: 10px; cursor: pointer;'; // Shared style for both buttons
 
-                    const noButton = document.createElement('button');
-                    noButton.innerText = 'No';
-                    buttonContainer.appendChild(noButton);
+                    const continueButton = document.createElement('button');
+                    continueButton.innerText = 'Continue';
+                    continueButton.style.cssText = buttonStyle + 'margin-right: 10px;'; // Add some spacing between buttons
+                    buttonContainer.appendChild(continueButton);
 
-                    scholarContainer.appendChild(buttonContainer);
+                    const setManuallyButton = document.createElement('button');
+                    setManuallyButton.innerText = 'Set manually';
+                    setManuallyButton.style.cssText = buttonStyle; // Apply the same style
+                    buttonContainer.appendChild(setManuallyButton);
+                    // Append buttons to the features frame
+                    TextFrame.appendChild(buttonContainer);
+                    scholarContainer.appendChild(TextFrame);
 
-                    // Add event listeners for Yes and No buttons
-                    yesButton.addEventListener('click', function () {
+                    // Add event listeners for Continue and Set Manually buttons
+                    continueButton.addEventListener('click', function () {
                         continueAnalysis(referenceFound);
                     });
 
-                    noButton.addEventListener('click', async function () {
-                        // If "No" is clicked, manually select the reference section without displaying an error message
+                    setManuallyButton.addEventListener('click', async function () {
+                        // If "Set manually" is clicked, manually select the reference section
                         console.log("now manual");
-                        const manualMessage = document.createElement('p');
-                        manualMessage.innerHTML = 'Please select the start and end of the reference section manually.';
-                        scholarContainer.appendChild(manualMessage);
+                        scholarContainer.innerHTML = '';
+                        // Create and display manual selection message
+                        const manualTextFrame = document.createElement('div');
+                        manualTextFrame.className = 'search-string-frame';
+                        manualTextFrame.style.marginTop = '20px'; // Add space above
+
+                        const manualTextParagraph = document.createElement('p');
+                        manualTextParagraph.innerHTML = 'Please select the start and end of the reference section manually.';
+                        manualTextFrame.appendChild(manualTextParagraph);
+
+                        scholarContainer.appendChild(manualTextFrame);
 
                         // Call StartStop() to manually find the reference section
                         referenceFound = await StartStop();
@@ -495,9 +609,20 @@
                 } else {
                     // If reference section was not found, show the "not found" message and allow manual selection
                     console.log("now manual");
-                    const failureMessage = document.createElement('p');
-                    failureMessage.innerHTML = 'Reference section not found!<br>Please select the start and end of the reference section manually.';
-                    scholarContainer.appendChild(failureMessage);
+
+                    scholarContainer.innerHTML = '';
+                    const TextFrame = document.createElement('div');
+                    TextFrame.className = 'search-string-frame';
+                    TextFrame.style.marginBottom = '20px'; // Add bigger space between the message and the following content
+
+                    // Create paragraph for the reference section found message
+                    const TextFrameParagraph = document.createElement('p');
+                    TextFrameParagraph.innerHTML = 'Reference section not found!<br>Please select the start and end of the reference section manually.';
+                    TextFrame.appendChild(TextFrameParagraph);
+
+
+
+                    scholarContainer.appendChild(TextFrame);
 
                     // Call StartStop() to manually find the reference section
                     referenceFound = await StartStop();
@@ -509,13 +634,25 @@
                 }
             }
 
+
+
+
             // Function to continue analysis after reference section is found
             function continueAnalysis(referenceFound) {
                 const scholarContainer = document.getElementById("scholar-container");
+                scholarContainer.innerHTML = '';
+                const TextFrame = document.createElement('div');
+                TextFrame.className = 'search-string-frame';
+                TextFrame.style.marginBottom = '20px'; // Add bigger space between the message and the following content
 
-                const successMessage = document.createElement('p');
-                successMessage.innerHTML = 'Which separation mode should I use?';
-                scholarContainer.appendChild(successMessage);
+                // Create paragraph for the reference section found message
+                const TextFrameParagraph = document.createElement('p');
+                TextFrameParagraph.innerHTML = 'Which separation mode should I use?';
+                TextFrame.appendChild(TextFrameParagraph);
+
+
+
+                
 
                 // Call the Sudivide function for both "byParagraph" and "byIndent"
                 const paragraphCount = Sudivide(referenceFound, "byParagraph");
@@ -525,20 +662,27 @@
                 const buttonContainer = document.createElement('div');
                 buttonContainer.style.marginTop = '10px'; // Add space above the buttons
 
+                // Shared button style
+                const buttonStyle = 'background-color: white; color: black; border: 1px solid black; width: 200px; padding: 10px; cursor: pointer ;border-radius: 5px;';
+
                 // Create and append the "By paragraph" button
                 const paragraphButton = document.createElement('button');
                 paragraphButton.innerText = `By paragraph (${paragraphCount} references found)`;
-                paragraphButton.style.marginRight = '10px'; // Add some spacing between buttons
+                paragraphButton.style.cssText = buttonStyle + 'margin-right: 10px;'; // Add spacing between buttons
                 buttonContainer.appendChild(paragraphButton);
 
                 // Create and append the "By indent" button
                 const indentButton = document.createElement('button');
                 indentButton.innerText = `By indent (${indentCount} references found)`;
+                indentButton.style.cssText = buttonStyle; // Apply same style as paragraphButton
                 buttonContainer.appendChild(indentButton);
 
-                // Append the button container below the success message
-                scholarContainer.appendChild(buttonContainer);
+// Append buttonContainer to the desired DOM element
 
+
+                // Append the button container below the success message
+                TextFrame.appendChild(buttonContainer);
+                scholarContainer.appendChild(TextFrame);
                 // Add event listeners to the buttons
                 paragraphButton.addEventListener('click', function () {
                     Sudivide(referenceFound, "byParagraph");
@@ -667,7 +811,7 @@
                 //const selectedValue = selectionMode.value;
 
                 // Check if "byTitle" is selected
-                if (selectedValue === 'byTitle') {
+                
                     // Do something when "byTitle" is selected
                     console.log('byTitle selected! Performing action...');
 
@@ -690,15 +834,14 @@
                         'rÉférence'
                     ];
 
-                    function findReferenceSection2() {
+                    
                         const divs = document.querySelectorAll('div.textLine'); // Get all div elements with class "textLine"
                         let startPoint = null;
                         let startFontSize
                         let normalFontSize
                         // Iterate through all divs to find the start of the reference section
                         for (let i = 0; i < divs.length; i++) {
-                            const divText = divs[i].textContent.trim().toLowerCase(); // Get the text and convert to lowercase
-
+                            const divText = divs[i].textContent.replace(/^[0-9.,: ]+/g, '').trim().toLowerCase(); // Get the text and convert to lowercase
                             // Check if any of the keywords matches the div text
                             if (titles.some(title => divText === title.toLowerCase())) {
                                 console.log('Reference section found at div index:', i);
@@ -789,16 +932,9 @@
                             console.log('Reference section not found.');
                             return null
                         }
-                    }
 
 
-                    // Call the function to find the reference section
-                     return findReferenceSection2();
 
-                    // Reset the select element back to its default option
-                    selectionMode.selectedIndex = 0;
-                
-                }
             };
 
 
@@ -1333,6 +1469,14 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                 ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
                 ReferenceFrame.style.maxHeight = '400px';
 
+
+                // Create and add headline for references
+                const referenceTitle = document.createElement('p');
+                referenceTitle.innerHTML = '<strong>References:</strong>';
+                referenceTitle.style.marginBottom = '15px'
+                
+
+
                 // Create a container div to hold the buttons side by side
                 const buttonContainer = document.createElement('div');
                 buttonContainer.style.display = 'inline-block'; // Ensure buttons are on the same line
@@ -1379,9 +1523,10 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                     }
                 });
                 buttonContainer.appendChild(crossRefAllButton);
-                ReferenceFrame.appendChild(buttonContainer);
-                ReferenceFrame.appendChild(toggleButton);
+                referenceTitle.appendChild(buttonContainer);
+                referenceTitle.appendChild(toggleButton);
 
+                ReferenceFrame.appendChild(referenceTitle); 
 
 
                 let citationSpans = document.querySelectorAll('span.citation');
@@ -1407,7 +1552,8 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                         let firstWordCit = cleanedText.split(' ')[0].replace(",","");
                         //console.log(firstWord.toLowerCase())
                         //console.log(firstWordCit.toLowerCase())
-                        if (firstWord.toLowerCase() === firstWordCit.toLowerCase() && MyYear === SpanYear) { /////////////// @ALL: müssen das Jahr noch berücksichtigen. Idealerweise mit sowas wie 2004a etc.
+                        if (firstWord.toLowerCase() === firstWordCit.toLowerCase() && MyYear === SpanYear) { 
+
                             matchCount++
                             matchedSpans.push(span)
                             if (!span.hasAttribute('found')) { span.setAttribute('found', 'true') }
@@ -1457,13 +1603,14 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
                             SingleRef.appendChild(document.createTextNode(', ')); // Add a comma and space
                         }
                     });
-                    ReferenceFrameParagraph.appendChild(SingleRef);
+                    
 
                     // Add the CrossRef search button
                     const crossRefButton = document.createElement('button');
                     crossRefButton.textContent = 'Search CrossRef';
                     crossRefButton.className = 'crossref-search-button';
                     crossRefButton.style.marginBottom = '15px'; // Add space below the button
+                    crossRefButton.style.marginLeft = '15px';
                     crossRefButton.id = `crossref-button-${j}`
 
                     crossRefButton.addEventListener('click', async () => {
@@ -1541,8 +1688,8 @@ DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
 
                     // Append the CrossRef button to the paragraph
-                    ReferenceFrameParagraph.appendChild(crossRefButton);
-
+                    SingleRef.appendChild(crossRefButton);
+                    ReferenceFrameParagraph.appendChild(SingleRef);
                     // If no matches were found, highlight the text in red
                     if (matchCount === 0) {
                         ReferenceFrameParagraph.style.color = 'red';

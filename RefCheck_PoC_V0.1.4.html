@@ -508,10 +508,9 @@
                     console.log("deleting footer")
                     // If the condition is met, remove the 'textLine' class from those divs that only contain a number
                     footerDivs.forEach(function (div) {
-                        const textContent = div.textContent.trim();
-                        if (isNumberOnly(textContent)) {
+
                             div.classList.remove('textLine');
-                        }
+
                     });
                 }
             }

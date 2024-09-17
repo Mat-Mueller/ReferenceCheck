@@ -204,8 +204,9 @@
 
 
     <script type="module">
-        import * as pdfjsLib from 'https://mozilla.github.io/pdf.js/build/pdf.mjs';
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.mjs';
+        import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.worker.min.mjs';
+
         const pdfContainer = document.getElementById('pdf-container');
         let pdfDocument = null;
         let searchMode = 'automatic'; // Initial search mode
@@ -389,6 +390,8 @@
                     // Wait for all pages to be rendered
                     await renderAllPages();
 
+
+                    checkFooter()
                     // Start analysis after rendering all pages
                     startAnalysis();
                 } catch (error) {
@@ -445,6 +448,9 @@
                     // Sort lines by their Y coordinate (descending order)
                     lines.sort((a, b) => b.y - a.y);
 
+                    const firstLine = lines[0]; // The first line (topmost)
+                    const lastLine = lines[lines.length - 1]; // The last line (bottom-most)
+
                     // Render all lines
                     lines.forEach(function (line) {
                         const lineElement = document.createElement('div');
@@ -462,6 +468,13 @@
                         if (line.fontName && line.fontName.toLowerCase().includes('bold')) {
                             lineElement.style.fontWeight = 'bold'; // Set bold style if the font name contains "bold"
                         }
+                        if (line === firstLine) {
+                            lineElement.setAttribute('data-header', 'true');
+                        }
+                        if (line === lastLine) {
+                            lineElement.setAttribute('data-footer', 'true');
+                        }
+
 
                         textLayerDiv.appendChild(lineElement);
                     });
@@ -470,8 +483,38 @@
 
 
 
+            function checkFooter() {
+                // Get all div elements that have the data-footer="true" attribute
+                const footerDivs = document.querySelectorAll('div[data-footer="true"]');
+                let numberOnlyCount = 0;
 
+                // Helper function to check if a string contains only a number
+                function isNumberOnly(text) {
+                    // Remove spaces and check if the remaining text is a number
+                    return /^\d+$/.test(text.trim());
+                }
 
+                // Loop through all footer divs to count how many contain only a number
+                footerDivs.forEach(function (div) {
+                    const textContent = div.textContent.trim();
+                    if (isNumberOnly(textContent)) {
+                        numberOnlyCount++;
+                    }
+                });
+
+                // Check if at least half of the footer divs contain only a number
+                const halfThreshold = Math.floor(footerDivs.length / 2);
+                if (numberOnlyCount >= halfThreshold) {
+                    console.log("deleting footer")
+                    // If the condition is met, remove the 'textLine' class from those divs that only contain a number
+                    footerDivs.forEach(function (div) {
+                        const textContent = div.textContent.trim();
+                        if (isNumberOnly(textContent)) {
+                            div.classList.remove('textLine');
+                        }
+                    });
+                }
+            }
 
 
 
@@ -1015,6 +1058,13 @@
                                     shouldSeparate = true;
                                 }
                             } else if (selectedCriterion === 'byParagraph') {
+
+                                mergedContent += " " + pElements[j].textContent.trim();
+                                pElements[j].setAttribute("myID", highlightCounter);
+                                pElements[j].style.backgroundColor = currentColor[colorCounter]
+                                pElements[j].classList.add('highlight');
+                                counter.push(j);
+
                                 const currentRect = pElements[j].getBoundingClientRect();
                                 const nextRect = pElements[j + 1]?.getBoundingClientRect();
 
@@ -1022,6 +1072,14 @@
                                     shouldSeparate = true;
                                 }
                             } else if (selectedCriterion === 'byIndent') {
+
+
+                                mergedContent += " " + pElements[j].textContent.trim();
+                                pElements[j].setAttribute("myID", highlightCounter);
+                                pElements[j].style.backgroundColor = currentColor[colorCounter]
+                                pElements[j].classList.add('highlight');
+                                counter.push(j);
+
                                 const currentRect = pElements[j].getBoundingClientRect();
                                 // Get the left position of the first div as the reference for non-indented divs
                                 const nextRect = pElements[j + 1]?.getBoundingClientRect();

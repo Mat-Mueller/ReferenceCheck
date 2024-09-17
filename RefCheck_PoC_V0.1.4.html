@@ -944,6 +944,45 @@
                             }
                         }
 
+                        let indents = [];
+                        let noIndent
+                        let yesIndent
+                        if (selectedCriterion === 'byIndent') {
+                            for (let j = 0; j < pElements.length - 1; j++) {
+                                let currentRect = pElements[j].getBoundingClientRect().left;
+                                currentRect = Math.round(currentRect * 10) / 10; // Round to one decimal place
+                                indents.push(currentRect);
+                            }
+
+                            if (indents.length > 0) {
+                                // Create a frequency map of indents
+                                let freqMap = indents.reduce((acc, indent) => {
+                                    acc[indent] = (acc[indent] || 0) + 1;
+                                    return acc;
+                                }, {});
+
+                                // Convert frequency map to an array and sort by frequency
+                                let sortedIndents = Object.entries(freqMap).sort((a, b) => b[1] - a[1]);
+
+                                if (sortedIndents.length >= 2) {
+                                    // Take the two most frequent indents
+                                    const mostFrequent = parseFloat(sortedIndents[0][0]);
+                                    const secondMostFrequent = parseFloat(sortedIndents[1][0]);
+
+                                    // Determine NoIndent and YesIndent
+                                    noIndent = Math.min(mostFrequent, secondMostFrequent);
+                                    yesIndent = Math.max(mostFrequent, secondMostFrequent);
+
+                                    console.log('NoIndent:', noIndent, 'YesIndent:', yesIndent);
+                                } else {
+                                    console.log('Not enough distinct indent values');
+                                }
+                            }
+                        }
+
+
+
+
                         // Find the most common distance
                         const mostCommonDistance = findMostCommonDistance(distances);
 
@@ -981,8 +1020,12 @@
                                 // Get the left position of the first div as the reference for non-indented divs
                                 const nextRect = pElements[j + 1]?.getBoundingClientRect();
 
+                                
+                                //console.log(Math.round(pElements[j].getBoundingClientRect().left * 10) / 10)
+                            
 
-                                if (nextRect && (Math.round(nextRect.left * 10) / 10 < Math.round(currentRect.left * 10) / 10) || j == pElements.length - 1) {
+
+                                if (nextRect && (Math.round(nextRect.left * 10) / 10 === noIndent ) || j == pElements.length - 1) {
                                     shouldSeparate = true;
                                 }
 

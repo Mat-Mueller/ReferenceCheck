@@ -223,6 +223,10 @@
         document.addEventListener("DOMContentLoaded", () => {
             let Refselection = null;
             let selectionMode = "";
+
+            let GlobalRange
+
+
             // Assign functions to window to make them globally accessible
             window.handleDragOver = function (event) {
                 event.preventDefault();
@@ -752,14 +756,7 @@
 
 
             function findReferenceSection(selectedValue) {
-                //const selectedValue = selectionMode.value;
 
-                // Check if "byTitle" is selected
-
-                // Do something when "byTitle" is selected
-                console.log('byTitle selected! Performing action...');
-
-                // Reset the select element back to its default option
                 const titles = [
                     'references',
                     'références',
@@ -822,8 +819,6 @@
                         }
 
 
-
-
                     }
                     if (!endPoint) {
                         for (let i = Array.from(divs).indexOf(startPoint) + 1; i < divs.length; i++) {
@@ -868,6 +863,8 @@
                     // Add the newly created range to the selection
                     selection.addRange(range);
 
+                    GlobalRange = range
+
                     // Call the Sudivide function with the selection
                     return selection;
 
@@ -889,7 +886,16 @@
 
 
             function Sudivide(selection, selectedCriterion) {
+
+
+
                 console.log("subdivide")
+
+
+                selection = window.getSelection();
+                selection.removeAllRanges(); // Clear any current selection
+                selection.addRange(GlobalRange); // Restore the saved range
+
                 if (!selection.isCollapsed) {
                     highlightCounter = 0
                     // Get the selected criterion for separation

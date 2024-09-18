@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Text Selection and CrossRef Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="controls" class="controls">
+        <img src="Logo.png" alt="Icon" id="icon">
+        PDF Citation Analyzer
+        <div id="notification" style="display: none;">Hier Kann Text Stehen</div>
+    </div>
+
+    <div id="viewer">
+        <div class="frame" id="pdf-container" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
+            <div id="dragArea">
+                <input type="file" id="pdf-upload" accept="application/pdf">
+                Drag and drop a PDF here or use the file upload button.
+            </div>
+        </div>
+        <div class="frame" id="scholar-container"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs" type="module"></script>
+    <script src="script.js" type="module"></script>
+</body>
+
+</html>

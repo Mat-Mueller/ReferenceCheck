@@ -1,0 +1,212 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Controls area at the top of the page */
+#controls {
+    padding: 5px;
+    background: #4a90e2;
+    color: #fff;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controls img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+#notification {
+    margin-top: 10px;
+    display: none;
+    border: 2px solid white;
+    width: 300px;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Viewer and Frame styling */
+#viewer {
+    display: flex;
+    flex: 1;
+    overflow-y: hidden;
+}
+
+.frame {
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.search-string-frame, 
+.result-frame {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+}
+
+.Reference-frame {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+}
+
+#dragArea {
+    width: 100%;
+    height: 300px;
+    border: 2px dashed #4a90e2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* PDF upload button */
+#pdf-upload {
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#pdf-upload:hover {
+    background-color: #3b78c4;
+}
+
+/* Text Layer styling */
+.textLayer {
+    position: relative;
+    pointer-events: auto;
+    display: block;
+}
+
+.textLayer > div {
+    position: absolute;
+    transform-origin: 0% 0%;
+}
+
+.textLayer .endOfContent {
+    display: none;
+}
+
+/* Highlighting references */
+.highlight {
+    z-index: 1000;
+}
+
+/* Result item and active button */
+.result-item {
+    margin-bottom: 20px;
+}
+
+.result-item p {
+    margin: 0;
+}
+
+.active {
+    background-color: #ccc;
+}
+
+/* Citation highlighting */
+.citation {
+    background-color: yellow;
+    font-weight: bold;
+    padding: 2px;
+}
+
+/* Collapsible frame with smooth transition */
+.collapsible-frame {
+    overflow-y: auto;
+    max-height: 400px;
+    min-height: 400px;
+    transition: max-height 0.3s ease-out;
+}
+
+/* In-text citation toggle button */
+.toggle-in-text-button {
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+/* Adjust image size within controls */
+#controls img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* Controls styling for button, file input, and select dropdown */
+#controls button,
+#controls input[type="file"],
+#controls select {
+    margin-left: 10px;
+    padding: 10px 5px;
+    width: 190px;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #333;
+}
+
+#controls button.active {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Button active style */
+button.active {
+    background-color: #ccc;
+}
+
+/* Left column */
+#left-column {
+    width: 60px;
+    background-color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #ccc;
+}
+
+/* Additional frame styles */
+.frame {
+    overflow-y: auto;
+}
+
+/* Notification styles for CrossRef results */
+.notification {
+    background-color: white;
+    border: 2px solid white;
+    width: 300px;
+    padding: 10px;
+    text-align: center;
+    margin-top: 10px;
+}

@@ -392,6 +392,7 @@
 
 
                     checkFooter()
+                    checkHeader()
                     // Start analysis after rendering all pages
                     startAnalysis();
                 } catch (error) {
@@ -513,6 +514,32 @@
 
                     });
                 }
+            }
+
+            function checkHeader() {
+
+                let HeaderArray = []
+
+                const headerDivs = document.querySelectorAll('div[data-header="true"]');
+
+                headerDivs.forEach(function (div) {
+                    const textContent = div.textContent.trim();
+                    HeaderArray.push(textContent)
+                });
+                let uniqueHeaderArray = [...new Set(HeaderArray)];
+
+                console.log(HeaderArray)
+                console.log(uniqueHeaderArray)
+
+                if (uniqueHeaderArray.length < (HeaderArray.length / 2)) {
+
+                    headerDivs.forEach(function (div) {
+
+                        div.classList.remove('textLine');
+
+                    });
+                }
+
             }
 
 
@@ -944,6 +971,10 @@
                     //const selectedCriterion = document.getElementById('separationCriteria').value;
                     // Get the selected mode for reference section
                     //const selectedMode = document.getElementById('selectionMode').value;
+
+
+
+
 
                     for (let i = 0; i < selection.rangeCount; i++) {
                         const range = selection.getRangeAt(i);
@@ -1400,7 +1431,7 @@
                     let matchCount = 0;
                     let matchedSpans = [];
                     const mergedText = getMergedTextByMyId(j);
-                    const firstWord = mergedText.split(' ')[0].replace(/,$/, '');
+                    const firstWord = mergedText.split(' ')[0].replace(/,$/, '').replace(".","");
                     console.log(mergedText)
                     var MyYear = mergedText.match(/\b\d{4}[a-zA-Z]?\b/)
                     if (MyYear) {
@@ -1414,7 +1445,7 @@
                         let cleanedText = span.getAttribute('cleanedCit');
                         let SpanYear = span.getAttribute('year');   ///// Spanier ;-)
                         let firstWordCit = cleanedText.split(' ')[0].replace(",", "");
-                        //console.log(firstWord.toLowerCase())
+                        console.log(firstWord.toLowerCase())
                         //console.log(firstWordCit.toLowerCase())
                         if (firstWord.toLowerCase() === firstWordCit.toLowerCase() && MyYear === SpanYear) {
 

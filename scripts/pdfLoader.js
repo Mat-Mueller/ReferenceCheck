@@ -78,7 +78,7 @@ async function renderAllPages() {
         textLayerDiv.style.overflow = 'hidden'; // Hide overflow content
 
         pdfContainer.appendChild(textLayerDiv);
-
+        console.log("hi there")
         const textContent = await page.getTextContent(); // Wait for text content to be retrieved
 
         let lines = []; // Array to store lines with their Y coordinate

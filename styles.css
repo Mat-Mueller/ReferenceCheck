@@ -43,8 +43,9 @@ body {
 
 .frame {
     width: 50%;
-    height: 100%;
+    height: 93%;
     overflow-y: auto;
+    overflow-x: auto;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 10px;

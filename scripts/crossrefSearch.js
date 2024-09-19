@@ -4,8 +4,10 @@ export function getMergedTextByMyId(MyId) {
     const divs = document.querySelectorAll(`[MyId="${MyId}"]`);
     let mergedText = '';
     divs.forEach(div => {
-        mergedText += div.textContent.trim() + ' ';
+        mergedText += div.textContent.trim();
+        //console.log(div.textContent.trim())
     });
+    //console.log(mergedText)
     return mergedText.trim();
 }
 

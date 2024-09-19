@@ -116,6 +116,14 @@ export function firstFrame(referenceCount) {
 }
 
 
+function makeLinksClickable(text) {
+    // Regular expression to detect URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank">${url}</a>`;
+    });
+}
+
 export function secondFrame(referenceCount) {
     const scholarContainer = document.getElementById('scholar-container');
     // Second frame for references (collapsible frame)
@@ -221,7 +229,9 @@ export function secondFrame(referenceCount) {
 
         // Create first paragraph with inline style
         var SingleRef = document.createElement('p');
-        SingleRef.innerHTML = mergedText;
+        const clickableText = makeLinksClickable(mergedText);
+        SingleRef.innerHTML = clickableText;
+        //SingleRef.innerHTML = mergedText;
         SingleRef.style.marginBottom = '15px'; // Add some space below
 
         ReferenceFrameParagraph.appendChild(SingleRef);

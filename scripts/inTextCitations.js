@@ -21,6 +21,28 @@ export function inTextSearch(referenceCount) {
 }
 
 
+function combineHyphenatedWords(words) {  // helper function to merge text between divs if there is a "-"
+    let result = []; // To store the final result
+    let i = 0; // Index to iterate through the array
+    
+    while (i < words.length) {
+      let word = words[i];
+      
+      // Check if the word ends with a hyphen
+      if (word.endsWith("-") && i < words.length - 1) {
+        // Combine with the next word, removing the hyphen
+        word = word.slice(0, -1) + words[i + 1];
+        i++; // Skip the next word since it's already combined
+      }
+      
+      result.push(word); // Add the processed word to the result array
+      i++; // Move to the next word
+    }
+    
+    return result;
+  }
+
+
 function cleanCitations() {
     // Get all span elements with the class 'citation'
     let citationSpans = document.querySelectorAll('span.citation');
@@ -34,24 +56,32 @@ function cleanCitations() {
         if (node && node.nodeType === Node.TEXT_NODE) {
             textContent = node.textContent.replace("(", "").trim();
         }
-        console.log(textContent)
+        //console.log(textContent)
         // If no text content is found or node is not valid, move to the previous div with class 'textLine'
-        if (textContent === "") {
+        if (textContent === "" || textContent.split(" ").length < 5) {
             let previousDiv = span.parentElement.previousElementSibling;
 
             // Loop to find the previous sibling div with class 'textLine'
-            while (previousDiv && !previousDiv.classList.contains('textLine')) {
-                previousDiv = previousDiv.previousElementSibling;
-            }
+            //while (previousDiv && !previousDiv.classList.contains('textLine')) {
+            //    previousDiv = previousDiv.previousElementSibling;
+            //}
 
             // If a previous div with class 'textLine' was found, extract its text content
             if (previousDiv) {
-                textContent = previousDiv.textContent.trim();
+                let previousText = previousDiv.textContent.trim();
+                if (previousText.endsWith("-")) {
+                    // Remove the trailing hyphen and concatenate without the space
+                    //previousText = previousText.slice(0, -1); // Removes the last character (the hyphen)
+                    textContent = previousText + textContent;
+                  } else {
+                    // Concatenate with a space in between
+                    textContent = previousText + " " + textContent;
+                  }
             } else {
                 console.log("No previous div with class 'textLine' found.");
             }
         }
-
+        console.log(textContent)
         return textContent.replace("(", "").trim();
     }
 
@@ -59,14 +89,14 @@ function cleanCitations() {
     citationSpans.forEach((span) => {
 
         let cleanedText = span.innerText.replace(/\(|\)/g, ''); // Remove parentheses
-        console.log(cleanedText)
+        //console.log(cleanedText)
         let precedingText;
         // Check if the cleanedText is just a number (e.g., a year like 1966) --- narrative cit
         if (/^\d+$/.test(cleanedText)) {
             precedingText = getPreviousText(span);
             console.log(precedingText.split(' '))
             if (precedingText) {
-                let words = precedingText.split(' ');
+                let words = precedingText.replace("-", "").split(' ');
                 let lastWord = words[words.length - 1]; // Get the word before the span
 
                 // Check if the word before the last word is "and", "&", or "al."
@@ -87,7 +117,7 @@ function cleanCitations() {
                     cleanedText = `${lastWord} ${cleanedText}`;
                 }
             }
-        } else {
+        } else {   ///////////   if its a Parenthetical citation
             let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').split(" ");
             let lastWord = words[words.length - 2];
             if (words.length < 5) {
@@ -102,6 +132,11 @@ function cleanCitations() {
                     }
                 }
             }
+            console.log(words)
+
+            words = combineHyphenatedWords(words)
+
+
             lastWord = words[words.length - 2]
             if (lastWord === "al." || lastWord === "al.,") {
                 // Get the last three words if the last word is "al.,"
@@ -115,7 +150,7 @@ function cleanCitations() {
             }
 
             // If words array has less than 5 words, prepend with text from getPreviousText()
-            console.log(words)
+            //console.log(words)
             cleanedText = words.join(" ")
         }
 

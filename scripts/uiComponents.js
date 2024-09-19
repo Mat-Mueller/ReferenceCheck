@@ -196,7 +196,7 @@ export function secondFrame(referenceCount) {
         let matchedSpans = [];
         const mergedText = getMergedTextByMyId(j);
         const firstWord = mergedText.split(' ')[0].replace(/,$/, '').replace(".","");
-        console.log(mergedText)
+        //console.log(mergedText)
         var MyYear = mergedText.match(/\b\d{4}[a-zA-Z]?\b/)
         if (MyYear) {
             MyYear = MyYear[0]

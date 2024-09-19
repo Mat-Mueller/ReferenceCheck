@@ -379,6 +379,7 @@ export function thirdFrame() {
 
     // Create the "Show All/Show Problematic" button
     const showToggleButton = document.createElement('button');
+    showToggleButton.style.display = 'none';
     showToggleButton.textContent = 'Show Problematic'; // Default to show only problematics
     let showAll = false; // Flag to track toggle state
 

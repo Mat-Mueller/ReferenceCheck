@@ -84,7 +84,7 @@ body {
 #dragArea {
     width: 100%;
     height: 300px;
-    border: 2px dashed #4a90e2;
+    border: 2px dashed var(--primary-color);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -101,7 +101,7 @@ body {
 #pdf-upload {
     margin-bottom: 10px;
     padding: 10px 20px;
-    background-color: #4a90e2;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 5px;
@@ -109,7 +109,7 @@ body {
 }
 
 #pdf-upload:hover {
-    background-color: #3b78c4;
+    background-color: var(--primary-color);
 }
 
 /* Text Layer styling */
@@ -148,7 +148,7 @@ body {
 
 /* Citation highlighting */
 .citation {
-    background-color: yellow;
+    background-color: var(--secondary-color); 
     font-weight: bold;
     padding: 2px;
 }

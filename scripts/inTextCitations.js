@@ -45,40 +45,53 @@ function combineHyphenatedWords(words) {  // helper function to merge text betwe
     // Helper function to get the preceding text, possibly from a previous div
 
 function getPreviousText(span) {
-    let node = span.previousSibling;
+    let previousDiv = span.previousSibling;
     let textContent = '';
 
     // If it's a text node, extract text content
-    if (node && node.nodeType === Node.TEXT_NODE) {
-        textContent = node.textContent.replace("(", "").trim();
+    if (previousDiv && previousDiv.nodeType === Node.TEXT_NODE) {
+        textContent = previousDiv.textContent.replace("(", "").trim();
     }
     //console.log(textContent)
     // If no text content is found or node is not valid, move to the previous div with class 'textLine'
-    if (textContent === "" || textContent.split(" ").length < 5) {
-        let previousDiv = span.parentElement.previousElementSibling;
+    let counter = 0
+    while ( textContent.split(" ").length < 5 && counter < 10) {
+        counter++
+        if (counter === 9) {console.log(span)}
+        if (!previousDiv) {
+            //console.log(span.parentElement)
+            previousDiv = span.parentElement
+        }
+        previousDiv = previousDiv.previousSibling;
 
-        // Loop to find the previous sibling div with class 'textLine'
-        //while (previousDiv && !previousDiv.classList.contains('textLine')) {
-        //    previousDiv = previousDiv.previousElementSibling;
-        //}
 
-        // If a previous div with class 'textLine' was found, extract its text content
-        if (previousDiv) {
-            let previousText = previousDiv.textContent.trim();
-            if (previousText.endsWith("-")) {
+        if (previousDiv && previousDiv.tagName !== 'SPAN') {
+            // Loop to find the previous sibling div with class 'textLine'
+            //while (previousDiv && !previousDiv.classList.contains('textLine')) {
+            //    previousDiv = previousDiv.previousElementSibling;
+            //}
+
+            // If a previous div with class 'textLine' was found, extract its text content
+            if (previousDiv) {
+                let previousText = previousDiv.textContent.trim();
+                if (previousText.endsWith("-")) {
                 // Remove the trailing hyphen and concatenate without the space
                 //previousText = previousText.slice(0, -1); // Removes the last character (the hyphen)
                 textContent = previousText + textContent;
-              } else {
-                // Concatenate with a space in between
+                } else {
+                    // Concatenate with a space in between
                 textContent = previousText + " " + textContent;
-              }
-        } else {
+                }
+            } else {
             console.log("No previous div with class 'textLine' found.");
+            } 
+        } else if (previousDiv && previousDiv.tagName === 'SPAN') {
+            textContent = previousDiv.textContent.trim().replace(/[^\p{L}]/gu, '') + textContent;
         }
     }
+    
     //console.log(textContent)
-    return textContent.replace("(", "").trim();
+    return textContent.replace("(", "").replace(",", "").trim();
 }
 
 
@@ -129,7 +142,7 @@ function cleanCitations() {
         // Check if the cleanedText is just a number (e.g., a year like 1966) --- narrative cit
         if (/^\d+$/.test(cleanedText)) {
             precedingText = getPreviousText(span);
-            console.log(precedingText.split(' '))
+            //console.log(precedingText.split(' '))
             if (precedingText) {
                 let words = precedingText.replace("-", "").split(' ');
                 let lastWord = words[words.length - 1]; // Get the word before the span
@@ -157,7 +170,7 @@ function cleanCitations() {
             let lastWord = words[words.length - 2];
             if (words.length < 5) {
                 let precedingText = getPreviousText(span);
-                console.log(precedingText.split(' '))
+                //console.log(precedingText.split(' '))
                 if (precedingText) {
                     let precedingWords = precedingText.split(' ');
 

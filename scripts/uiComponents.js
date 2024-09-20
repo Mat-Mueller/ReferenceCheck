@@ -3,104 +3,25 @@ import { triggerSearch2, calculateMatchPercentage, getYear, getMergedTextByMyId,
 export function displaySoftwareDescription() {
     const scholarContainer = document.getElementById('scholar-container');
 
-    // First div: Software overview
-    const overviewFrame = document.createElement('div');
-    overviewFrame.className = 'search-string-frame'; // Use similar class names for styling
-    overviewFrame.style.padding = '15px'; // Add padding for better visual separation
-    overviewFrame.style.lineHeight = '1.6'; // Improve readability with better line height
+    // Function for loading external html file
+    function loadHTML(url, container) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(htmlContent => {
+                container.innerHTML = htmlContent;
+            })
+            .catch(error => {
+                console.error('Error loading HTML:', error);
+            });
+    }
 
-    // First part of the content (before "How It Works")
-    const overviewHTML = `
-    <h2>PDF Citation Analyzer</h2>
-    <p>This software allows users to upload and interact with PDFs for citation analysis and validation using the CrossRef API. It helps identify and analyze references in PDF documents.</p>
-`;
-
-    // Set the innerHTML for the first div (Overview)
-    overviewFrame.innerHTML = overviewHTML;
-
-    // Result frame for Features
-    const featuresFrame = document.createElement('div');
-    featuresFrame.className = 'result-frame';
-    featuresFrame.style.backgroundColor = "#FFFFFF";
-    featuresFrame.style.marginBottom = '15px'; // Add margin between steps
-    featuresFrame.style.padding = '10px'; // Add padding inside each step frame
-    featuresFrame.style.border = '1px solid #ddd'; // Optional: Add a light border
-
-    const featuresTitle = document.createElement('h3');
-    featuresTitle.textContent = 'Features';
-
-    const featuresList = `
-    <ul>
-        <li>Upload PDF files for analysis</li>
-        <li>Automatic and manual reference section detection</li>
-        <li>CrossRef API integration for reference validation</li>
-        <li>In-text citation highlighting and matching</li>
-        <li>Google Scholar search for additional reference lookup</li>
-    </ul>
-`;
-
-    // Append features content to the frame
-    featuresFrame.appendChild(featuresTitle);
-    featuresFrame.innerHTML += featuresList;
-
-    // Second div: How it works section with custom result frame
-    const howItWorksFrame = document.createElement('div');
-    howItWorksFrame.className = 'search-string-frame'; // Use similar class names for styling
-    howItWorksFrame.style.padding = '15px'; // Add padding for better visual separation
-    howItWorksFrame.style.lineHeight = '1.6'; // Improve readability with better line height
-
-    // Steps are wrapped in custom-styled resultFrame divs
-    const steps = [
-        {
-            title: 'Step 1: Uploading a PDF',
-            description: 'You can upload a PDF either by dragging and dropping it into the designated area or using the file upload button. Once uploaded, the system processes and renders the PDF using the PDF.js library.'
-        },
-        {
-            title: 'Step 2 & 3: Reference Section Detection and Analyzing References',
-            description: 'The software can automatically or manually identify the reference section. After that, the reference section is analyzed, and references are separated by paragraph or indentation, depending on the structure of the document.'
-        },
-        {
-            title: 'Step 4: CrossRef Search',
-            description: 'Once references are separated, the tool performs CrossRef lookups to validate citations. The results are displayed within the document for easy review.'
-        },
-        {
-            title: 'Step 5: Citation Highlighting',
-            description: 'In-text citations are detected and matched with the references. The tool highlights both the in-text citation and its corresponding reference in the reference section.'
-        },
-        {
-            title: 'Step 6: Google Scholar Search',
-            description: 'For references where CrossRef doesn’t provide sufficient information, the tool offers a Google Scholar search option for extended citation lookup.'
-        }
-    ];
-
-    // Add steps to the second div using resultFrame
-    steps.forEach(step => {
-        const resultFrame = document.createElement('div');
-        resultFrame.className = 'result-frame';
-        resultFrame.style.backgroundColor = "#FFFFFF";
-        resultFrame.style.marginBottom = '15px'; // Add margin between steps
-        resultFrame.style.padding = '10px'; // Add padding inside each step frame
-        resultFrame.style.border = '1px solid #ddd'; // Optional: Add a light border
-
-        const stepTitle = document.createElement('h4');
-        stepTitle.textContent = step.title;
-
-        const stepDescription = document.createElement('p');
-        stepDescription.textContent = step.description;
-
-        // Append title and description to the resultFrame
-        resultFrame.appendChild(stepTitle);
-        resultFrame.appendChild(stepDescription);
-
-        // Append each resultFrame to the howItWorksFrame
-        howItWorksFrame.appendChild(resultFrame);
-    });
-
-    // Append the overview, features, and how it works frames to the scholar container
-    overviewFrame.appendChild(featuresFrame)
-    scholarContainer.appendChild(overviewFrame);
-    //scholarContainer.appendChild(featuresFrame);
-    scholarContainer.appendChild(howItWorksFrame);
+    // Load software description from external html
+    loadHTML('software_description.html', scholarContainer);
 }
 
 

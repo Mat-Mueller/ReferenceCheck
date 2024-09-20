@@ -445,14 +445,19 @@ export function secondFrame(referenceCount) {
 export function thirdFrame() {
     const scholarContainer = document.getElementById('scholar-container');
 
+
+
     // Create the third frame for in-text citations (collapsible frame)
     const InTextCitFrame = document.createElement('div');
     InTextCitFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
     InTextCitFrame.style.maxHeight = '400px'; // Set initial max height
 
+
+
     // Create the toggle button for expanding/collapsing the in-text citation frame
     const toggleInTextButton = document.createElement('button');
     toggleInTextButton.className = 'toggle-in-text-button';
+    toggleInTextButton.style.display = 'none';
     toggleInTextButton.textContent = 'Show/Hide In-Text Citations';
 
     // Toggle the frame height when the button is clicked
@@ -519,6 +524,14 @@ export function thirdFrame() {
         showToggleButton.textContent = showAll ? 'Show Problematic' : 'Show All'; // Update button text
         renderSpans(); // Re-render spans based on the new state
     });
+
+    const referenceTitle = document.createElement('p');
+    const problematicCitationsCount = document.querySelectorAll('span:not([found])').length;
+    referenceTitle.innerHTML = `<strong>Found ${problematicCitationsCount} problematic in-text citations:</strong>`;
+    referenceTitle.style.marginBottom = '15px'
+    referenceTitle.style.paddingtop = '0px'
+    InTextCitFrame.appendChild(referenceTitle)
+
 
     // Append the toggle buttons to the InTextCitFrame
     InTextCitFrame.appendChild(toggleInTextButton);

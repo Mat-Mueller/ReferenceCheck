@@ -1,5 +1,49 @@
 // called from referenceAnalysis.js to manually or automatically detect reference list
 
+export async function userDecisionReferenceSection(referenceFound) {
+    if (referenceFound) {
+        // Identify buttons for decisions
+        const continueButton = document.getElementById('continue-button');
+        const setManuallyButton = document.getElementById('manual-button');
+
+        // Add event listeners for Continue and Set Manually buttons
+        continueButton.addEventListener('click', function () {
+            return referenceFound;
+        });
+
+        setManuallyButton.addEventListener('click', async function () {
+            // If "Set manually" is clicked, manually select the reference section
+            console.log("now manual");
+            scholarContainer.innerHTML = '';
+            // Create and display manual selection message
+            const manualTextFrame = document.createElement('div');
+            manualTextFrame.className = 'search-string-frame';
+            manualTextFrame.style.marginTop = '20px'; // Add space above
+
+            const manualTextParagraph = document.createElement('p');
+            manualTextParagraph.innerHTML = 'Please select the start and end of the reference section manually.';
+            manualTextFrame.appendChild(manualTextParagraph);
+
+            scholarContainer.appendChild(manualTextFrame);
+
+            // Call StartStop() to manually find the reference section
+            referenceFound = await startStop();
+
+            if (referenceFound) {
+                return referenceFound;
+            }
+        });
+    } else {
+       // Call StartStop() to manually find the reference section
+        referenceFound = await startStop();
+
+        // If reference section is found after manual selection, continue analysis
+        if (referenceFound) {
+            return referenceFound;
+        }
+    }
+}
+
 export function startStop() {
     let isSelecting = false;
     return new Promise((resolve) => {

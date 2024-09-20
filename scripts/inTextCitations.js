@@ -57,7 +57,7 @@ function getPreviousText(span) {
     let counter = 0
     while ( textContent.split(" ").length < 5 && counter < 10) {
         counter++
-        if (counter === 4) {console.log(span)}
+        if (counter === 9) {console.log(span)}
         if (!previousDiv) {
             //console.log(span.parentElement)
             previousDiv = span.parentElement

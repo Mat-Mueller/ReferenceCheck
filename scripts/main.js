@@ -11,14 +11,22 @@ async function main() {
     await readRenderPDF();
 
     // Try to detect reference section automatically
-    let referenceFound = findReferenceSection("byTitle");
+    let refSecAuto = findReferenceSection("byTitle");
 
     // Let user decide on where reference section is
-    referenceSectionGUI(referenceFound);
-    referenceFound = userDecisionReferenceSection(referenceFound);
+    referenceSectionGUI(refSecAuto);
+    try {
+        // Wait for promise containing user choice for reference section
+        const refSecUser = await userDecisionReferenceSection(refSecAuto);
 
-    // Continue analysis after reference section is found
-    continueAnalysis(referenceFound);
+        // If promise is resolved, continue with reference separation
+        if (refSecUser) {
+            console.log("Reference section found, proceeding with analysis...");
+            continueAnalysis(refSecUser);
+        }
+    } catch (error) {
+        console.error("Error finding reference section:", error);
+    }
 }
 
 // Initialize the main event listener

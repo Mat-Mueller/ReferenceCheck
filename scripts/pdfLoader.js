@@ -1,7 +1,6 @@
-// Called from main.js, reads in and renders pdf, initializes reference section analysis
+// Called from main.js, reads in and renders pdf
 
 import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs';
-import { startAnalysis } from './referenceAnalysis.js';
 import { checkFooter, checkHeader } from './headerFooterDetect.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.worker.min.mjs';
@@ -23,9 +22,6 @@ export async function readRenderPDF() {
     // Detect footers and headers
     checkFooter()
     checkHeader()
-
-    // Start analysis after rendering all pages
-    startAnalysis();
 }
 
 // Initialize PDF loader by setting up drag-and-drop and file input handling

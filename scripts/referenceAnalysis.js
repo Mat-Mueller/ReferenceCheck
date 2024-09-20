@@ -1,3 +1,5 @@
+// Called from main.js, identifies reference section and initiates reference separation
+
 import { startStop, findReferenceSection } from './findReferenceList.js';
 import { subdivide } from './separateReferences.js';
 import { inTextSearch } from './inTextCitations.js';

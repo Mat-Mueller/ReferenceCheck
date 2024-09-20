@@ -325,7 +325,7 @@ export function secondFrame(referenceCount) {
         }
         const ReferenceFrameParagraph = document.createElement('p');
 
-        //assign names
+        //assign author names to ReferenceFrameParagraph
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
         // Step 2: Extract the part before the (year)
         let lastNames
@@ -339,7 +339,6 @@ export function secondFrame(referenceCount) {
 
         }
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
-        console.log(lastNames)
         ReferenceFrameParagraph.className = 'Reference-frame';
 
 
@@ -355,10 +354,31 @@ export function secondFrame(referenceCount) {
         citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
             let SpanYear = span.getAttribute('year');   ///// Spanier ;-)
-            let firstWordCit = cleanedText.split(' ')[0].replace(",", "");
-            //console.log(firstWord.toLowerCase())
-            //console.log(firstWordCit.toLowerCase())
-            if (firstWord.toLowerCase() === firstWordCit.toLowerCase() && MyYear === SpanYear) {
+            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace("and", "").split(' ').filter(name => name !== "")//.replace(",", "");
+            authorsCit.pop()
+            console.log(authorsCit)
+            console.log(lastNames)
+            //console.log(authorsCit)
+
+            function arraysAreIdentical(arr1, arr2) {
+                // If "et" and "al." are in arr1, we only compare the first author
+                const hasEtAl = arr1.includes("et") && arr1.includes("al.");
+                
+                if (hasEtAl) {
+                    // Compare the first author of arr1 with the first author of arr2
+                    return arr1[0] === arr2[0];
+                }
+            
+                // Standard comparison when "et" and "al." are not present
+                if (arr1.length !== arr2.length) {
+                    return false;
+                }
+                
+                // Check if all elements are the same
+                return arr1.every((element, index) => element === arr2[index]);
+            }
+
+            if ( arraysAreIdentical(authorsCit, lastNames,) && MyYear === SpanYear) {
                 matchCount++
                 matchedSpans.push(span)
                 if (!span.hasAttribute('found')) { span.setAttribute('found', 'true') }

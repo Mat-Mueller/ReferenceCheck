@@ -1,71 +1,80 @@
-// Called from main.js, reads in and renders pdf, initializes reference section analysis
+// Called from main.js, reads in and renders pdf
 
 import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs';
-import { startAnalysis } from './referenceAnalysis.js';
 import { checkFooter, checkHeader } from './headerFooterDetect.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.worker.min.mjs';
 
-export let pdfDocument = null;
-const pdfContainer = document.getElementById('pdf-container');
-
-// Initialize PDF loader by setting up drag-and-drop and file input handling
-export function initializePDFLoader() {
-    // Assign functions to window to make them globally accessible
-    window.handleDragOver = function (event) {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'copy'; // Indicates a copy action
-    };
-
-    window.handleDrop = function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const file = event.dataTransfer.files[0];  // Get the dropped file
-        handleFile(file);  // Use the same logic for handling file input or drag-and-drop
-    };
-
-    // Handle file input button
-    const fileInput = document.getElementById('pdf-upload');
-    fileInput.addEventListener('change', function (event) {
-        const file = event.target.files[0];  // Get the file from the input button
-        handleFile(file);  // Handle the file in the same way as drag-and-drop
-    });
-}
-
-// Handle file processing for both drag-and-drop and input button
-function handleFile(file) {
+// Exported function that calls all functions necessary for reading and rendering of user-input PDFs
+export async function readRenderPDF() {
+    const file = await initializePDFLoader();
+    
+    let pdfDocument = null;
     if (file && file.type === 'application/pdf') {
-        const fileURL = URL.createObjectURL(file);  // Create a URL for the file
-        loadPDF(fileURL);  // Call loadPDF function to render the PDF
+        pdfDocument = await loadPDF(file);  // Call loadPDF function to render the PDF
     } else {
         alert('Please select a valid PDF file.');
     }
+
+    // Wait for all pages to be rendered
+    await renderAllPages(pdfDocument);
+
+    // Detect footers and headers
+    checkFooter()
+    checkHeader()
 }
 
-async function loadPDF(url) {
+// Initialize PDF loader by setting up drag-and-drop and file input handling
+function initializePDFLoader() {
+    return new Promise((resolve, reject) => {
+        window.handleDragOver = function (event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy'; // Indicates a copy action
+        };
+    
+        // Get file via drop
+        window.handleDrop = function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+    
+            const file = event.dataTransfer.files[0];  // Get the dropped file
+            if (file) {
+                resolve(file);  // Resolve promise and return file
+            } else {
+                reject(new Error("No file selected"));
+            }
+        };
+
+        // Get file via file selection
+        const fileInput = document.getElementById('pdf-upload');
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];  // Get file
+            if (file) {
+                resolve(file);  // Resolve promise and return file
+            } else {
+                reject(new Error("No file selected"));
+            }
+        });
+    });
+}
+
+async function loadPDF(file) {
+    const url = URL.createObjectURL(file);
     try {
         // Load the PDF document
         const pdf = await pdfjsLib.getDocument(url).promise;
-        pdfDocument = pdf;
 
         // Clear the previous content
         document.getElementById('pdf-container').innerHTML = '';
 
-        // Wait for all pages to be rendered
-        await renderAllPages();
-
-
-        checkFooter()
-        checkHeader()
-        // Start analysis after rendering all pages
-        startAnalysis();
+        return pdf
     } catch (error) {
         console.error("Error loading or rendering PDF:", error);
     }
 }
 
-async function renderAllPages() {
+async function renderAllPages(pdfDocument) {
+    const pdfContainer = document.getElementById('pdf-container');
     for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
         const page = await pdfDocument.getPage(pageNum); // Wait for the page to be loaded
         const viewport = page.getViewport({ scale: 1.5 });

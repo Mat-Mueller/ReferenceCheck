@@ -1,3 +1,21 @@
+export function userDecisionSeparation(referenceSection) {
+    return new Promise(async (resolve, reject) => {
+        // Identify buttons for decisions
+        const paragraphButton = document.getElementById('paragraph-button');
+        const indentButton = document.getElementById('indent-button');
+
+        // Add event listeners to the buttons
+        paragraphButton.addEventListener('click', function () {
+        resolve(subdivide(referenceSection, "byParagraph"));
+        });
+
+        indentButton.addEventListener('click', function () {
+        resolve(subdivide(referenceSection, "byIndent"));
+        });
+    });
+}
+
+
 export function subdivide(selection, selectedCriterion) {
     console.log("subdivide")
 

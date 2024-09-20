@@ -1,4 +1,4 @@
-import { displaySoftwareDescription, referenceSectionGUI, referenceSeparationGUI } from './uiComponents.js';
+import { displaySoftwareDescription, referenceSectionGUI, referenceSeparationGUI, firstFrame, secondFrame, thirdFrame, clearRightContainer } from './uiComponents.js';
 import { readRenderPDF } from './pdfLoader.js';
 import { findReferenceSection, userDecisionReferenceSection } from './findReferenceList.js';
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
@@ -15,6 +15,7 @@ async function main() {
     let refSecAuto = findReferenceSection("byTitle");
 
     // Let user decide on where reference section is
+    clearRightContainer();
     referenceSectionGUI(refSecAuto);
     try {
         // Wait for promise containing user choice for reference section
@@ -28,6 +29,7 @@ async function main() {
     const paragraphCount = subdivide(refSecUser, "byParagraph");
     const indentCount = subdivide(refSecUser, "byIndent");
 
+    clearRightContainer();
     referenceSeparationGUI(paragraphCount, indentCount);
     try {
         // Wait for promise containing number of separated references according to method chosen by user
@@ -37,7 +39,13 @@ async function main() {
     }
     
     // Search for in-text citations and set up GUI for results
-    inTextSearch(referenceCount);
+    inTextSearch();
+
+    // Set up GUI for results and crossref search
+    clearRightContainer();
+    firstFrame(referenceCount)
+    secondFrame(referenceCount)
+    thirdFrame()
 }
 
 // Initialize the main event listener

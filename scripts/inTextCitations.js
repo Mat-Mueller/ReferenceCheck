@@ -1,23 +1,10 @@
-import { firstFrame, secondFrame, thirdFrame } from './uiComponents.js';
+// Called by main.js, finds and highlights in-text citations
 
-export function inTextSearch(referenceCount) {
-    //const scholarContainer = document.getElementById("scholar-container")
-
+export function inTextSearch() {
     console.log("doing intext search etc.")
-    ///////// create first frame
-    const scholarContainer = document.getElementById('scholar-container');
-    scholarContainer.innerHTML = ''; // Clear previous content
-
 
     identifyAndWrapCitations();
     cleanCitations()
-
-    firstFrame(referenceCount)
-
-    secondFrame(referenceCount)
-
-    thirdFrame()
-
 }
 
 

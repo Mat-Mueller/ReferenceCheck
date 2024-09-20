@@ -1,5 +1,10 @@
 import { triggerSearch2, calculateMatchPercentage, getYear, getMergedTextByMyId, formatAuthors } from './crossrefSearch.js';
 
+export function clearRightContainer() {
+    const scholarContainer = document.getElementById('scholar-container');
+    scholarContainer.innerHTML = ''; // Clear previous content
+}
+
 export function displaySoftwareDescription() {
     const scholarContainer = document.getElementById('scholar-container');
 
@@ -28,7 +33,6 @@ export function displaySoftwareDescription() {
 export function referenceSectionGUI(referenceFound) {
     // Clear previous analysis results or messages
     const scholarContainer = document.getElementById("scholar-container");
-    scholarContainer.innerHTML = '';
 
     if (referenceFound) {
         // Create a frame for the success message
@@ -84,7 +88,6 @@ export function referenceSectionGUI(referenceFound) {
 
 export function referenceSeparationGUI(paragraphCount, indentCount) {
     const scholarContainer = document.getElementById("scholar-container");
-    scholarContainer.innerHTML = '';
     const TextFrame = document.createElement('div');
     TextFrame.className = 'search-string-frame';
     TextFrame.style.marginBottom = '20px'; // Add bigger space between the message and the following content

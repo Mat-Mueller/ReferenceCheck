@@ -54,9 +54,12 @@ function getPreviousText(span) {
     }
     //console.log(textContent)
     // If no text content is found or node is not valid, move to the previous div with class 'textLine'
-
-    while ( textContent.split(" ").length < 5) {
+    let counter = 0
+    while ( textContent.split(" ").length < 5 && counter < 10) {
+        counter++
+        if (counter === 4) {console.log(span)}
         if (!previousDiv) {
+            //console.log(span.parentElement)
             previousDiv = span.parentElement
         }
         previousDiv = previousDiv.previousSibling;

@@ -324,6 +324,22 @@ export function secondFrame(referenceCount) {
             MyYear = MyYear[0]
         }
         const ReferenceFrameParagraph = document.createElement('p');
+
+        //assign names
+        const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
+        // Step 2: Extract the part before the (year)
+        let lastNames
+        if (cleanedText) {
+            const authorsPart = cleanedText.match(/^(.*?)(?=\(\d{4}[a-z]?\))/)[0];
+        // Step 3: Split the remaining string by commas or ampersands and extract the last names
+             lastNames = authorsPart.replace(", ,", ",").split(/,|&/).map(author => author.trim());
+             lastNames = lastNames.filter(name => name !== "");
+        } else {
+             lastNames = [];
+
+        }
+        ReferenceFrameParagraph.setAttribute('authors', lastNames)
+        console.log(lastNames)
         ReferenceFrameParagraph.className = 'Reference-frame';
 
 
@@ -335,7 +351,7 @@ export function secondFrame(referenceCount) {
 
     
 
-        // Loop through each span element
+        // Loop through each span element for matching
         citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
             let SpanYear = span.getAttribute('year');   ///// Spanier ;-)
@@ -343,7 +359,6 @@ export function secondFrame(referenceCount) {
             //console.log(firstWord.toLowerCase())
             //console.log(firstWordCit.toLowerCase())
             if (firstWord.toLowerCase() === firstWordCit.toLowerCase() && MyYear === SpanYear) {
-
                 matchCount++
                 matchedSpans.push(span)
                 if (!span.hasAttribute('found')) { span.setAttribute('found', 'true') }
@@ -353,8 +368,6 @@ export function secondFrame(referenceCount) {
 
                 });
             }
-
-
         });
 
 

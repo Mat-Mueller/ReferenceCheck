@@ -1,13 +1,6 @@
 /* General body styling */
 
 
-:root {
-    --primary-color: #4a90e2;
-    --secondary-color: #2ecc71;
-    --accent-color: #e74c3c;
-}
-
-
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -21,7 +14,7 @@ body {
 /* Controls area at the top of the page */
 #controls {
     padding: 5px;
-    background: var(--primary-color); 
+    background: #4a90e2;
     color: #fff;
     border-bottom: 1px solid #ccc;
     display: flex;
@@ -66,14 +59,17 @@ body {
 .result-frame {
     border: 1px solid #ccc;
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     border-radius: 5px;
     background-color: #f0f0f0;
 }
 
 .Reference-frame {
     border: 1px solid #ccc;
-    padding: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
     margin-bottom: 15px;
     border-radius: 5px;
     background-color: #FFFFFF;
@@ -99,7 +95,7 @@ body {
 #pdf-upload {
     margin-bottom: 10px;
     padding: 10px 20px;
-    background-color: var(--primary-color);
+    background-color: #4a90e2;
     color: white;
     border: none;
     border-radius: 5px;
@@ -107,7 +103,7 @@ body {
 }
 
 #pdf-upload:hover {
-    background-color: var(--primary-color);
+    background-color: #3b78c4;
 }
 
 /* Text Layer styling */
@@ -146,7 +142,7 @@ body {
 
 /* Citation highlighting */
 .citation {
-    background-color: var(--secondary-color);
+    background-color: yellow;
     font-weight: bold;
     padding: 2px;
 }

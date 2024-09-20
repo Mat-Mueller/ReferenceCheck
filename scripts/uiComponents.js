@@ -259,7 +259,7 @@ export function secondFrame(referenceCount) {
         // Create second paragraph with inline style
         SingleRef = document.createElement('p');
         SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
-        SingleRef.style.marginBottom = '15px'; // Add space as needed
+        SingleRef.style.marginBottom = '5px'; // Add space as needed
         matchedSpans.forEach((span, index) => {
             //console.log(span);
 
@@ -288,7 +288,7 @@ export function secondFrame(referenceCount) {
         const crossRefButton = document.createElement('button');
         crossRefButton.textContent = 'Search CrossRef';
         crossRefButton.className = 'crossref-search-button';
-        crossRefButton.style.marginBottom = '15px'; // Add space below the button
+        crossRefButton.style.marginBottom = '0px'; // Add space below the button
         crossRefButton.style.marginLeft = '15px';
         crossRefButton.id = `crossref-button-${j}`
 
@@ -301,11 +301,11 @@ export function secondFrame(referenceCount) {
 
             // If search data is available, process it and show results
             if (searchData && searchData.message && searchData.message.items && searchData.message.items.length > 0) {
-                const results = searchData.message.items.slice(0, 3); // Get the first 3 results
+                const results = searchData.message.items.slice(0, 2); // Get the first 3 results
 
                 const resultsDiv = document.createElement('div'); // Create a div to contain results
                 resultsDiv.className = 'crossref-results';
-                resultsDiv.style.marginTop = '10px'; // Add margin above results
+                resultsDiv.style.marginTop = '5px'; // Add margin above results
 
                 let highestMatch = 0;
 
@@ -314,7 +314,7 @@ export function secondFrame(referenceCount) {
                     if (item.title && item.URL) { // Check if title and URL are present
                         const resultFrame = document.createElement('div');
                         resultFrame.className = 'result-frame';
-                        resultFrame.style.backgroundColor = "#FFFFFF";
+                        
 
                         // Format authors
                         const formattedAuthors = formatAuthors(item.author);
@@ -322,14 +322,15 @@ export function secondFrame(referenceCount) {
                         // Create a single paragraph element
                         const resultParagraph = document.createElement('p');
                         resultParagraph.style.fontSize = '16px'; // Set font size
+                        resultParagraph.style.margin = '0px'; // Set font size
                         resultParagraph.style.backgroundColor = "#FFFFFF";
 
                         // Calculate the match percentage (based on your logic)
                         const matchPercentage = calculateMatchPercentage(item, query);
 
-                        // Construct the inner HTML content without new lines
+                        // Construct the inner HTML content without new lines   <strong>${matchPercentage}% Match</strong>.
                         resultParagraph.innerHTML = `
-                <strong>${matchPercentage}% Match</strong>.
+                
                 ${formattedAuthors}.
                 (${getYear(item.issued)}).
                 <strong>${item.title[0]}</strong>.
@@ -339,7 +340,7 @@ export function secondFrame(referenceCount) {
                         resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
 
                         // Add empty line between results
-                        resultFrame.style.marginBottom = '20px';
+                        resultFrame.style.marginBottom = '2px';
 
                         // Append the resultFrame to the resultsDiv
                         resultsDiv.appendChild(resultFrame);
@@ -348,6 +349,7 @@ export function secondFrame(referenceCount) {
                         if (highestMatch < matchPercentage) {
                             highestMatch = matchPercentage;
                         }
+                        resultFrame.style.backgroundColor = `hsl(${(highestMatch / 100) * 120}, 100%, 50%)`;
                     }
                 });
 
@@ -355,7 +357,7 @@ export function secondFrame(referenceCount) {
 
                 // Apply color to ReferenceFrameParagraph based on highest match percentage
                 const hue = (highestMatch / 100) * 120; // Calculate hue based on highest match percentage (0 to 120)
-                ReferenceFrameParagraph.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+                //ReferenceFrameParagraph.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
 
             } else {
                 const noResultsMsg = document.createElement('p');

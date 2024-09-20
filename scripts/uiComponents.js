@@ -25,6 +25,63 @@ export function displaySoftwareDescription() {
 }
 
 
+export function referenceSectionGUI(referenceFound) {
+    // Clear previous analysis results or messages
+    const scholarContainer = document.getElementById("scholar-container");
+    scholarContainer.innerHTML = '';
+
+    if (referenceFound) {
+        // Create a frame for the success message
+        const TextFrame = document.createElement('div');
+        TextFrame.className = 'search-string-frame';
+        TextFrame.style.marginBottom = '20px'; // Add bigger space between the message and the following content
+
+        // Create paragraph for the reference section found message
+        const TextFrameParagraph = document.createElement('p');
+        TextFrameParagraph.innerHTML = 'Reference section found and highlighted!';
+
+        // Add the paragraph to the text frame
+        TextFrame.appendChild(TextFrameParagraph);
+
+        // Create Continue/Set Manually buttons
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.marginTop = '10px'; // Add space above the buttons
+
+        const buttonStyle = 'background-color: white; color: black; width: 100px;border-radius: 5px; padding: 10px; cursor: pointer;'; // Shared style for both buttons
+
+        const continueButton = document.createElement('button');
+        continueButton.id = 'continue-button';
+        continueButton.innerText = 'Continue';
+        continueButton.style.cssText = buttonStyle + 'margin-right: 10px;'; // Add some spacing between buttons
+        buttonContainer.appendChild(continueButton);
+
+        const setManuallyButton = document.createElement('button');
+        setManuallyButton.id = 'manual-button';
+        setManuallyButton.innerText = 'Set manually';
+        setManuallyButton.style.cssText = buttonStyle; // Apply the same style
+        buttonContainer.appendChild(setManuallyButton);
+        // Append buttons to the features frame
+        TextFrame.appendChild(buttonContainer);
+        scholarContainer.appendChild(TextFrame);
+    } else {
+        // If reference section was not found, show the "not found" message and allow manual selection
+        console.log("now manual");
+
+        scholarContainer.innerHTML = '';
+        const TextFrame = document.createElement('div');
+        TextFrame.className = 'search-string-frame';
+        TextFrame.style.marginBottom = '20px'; // Add bigger space between the message and the following content
+
+        // Create paragraph for the reference section found message
+        const TextFrameParagraph = document.createElement('p');
+        TextFrameParagraph.innerHTML = 'Reference section not found!<br>Please select the start and end of the reference section manually.';
+        TextFrame.appendChild(TextFrameParagraph);
+
+        scholarContainer.appendChild(TextFrame);
+    }
+}
+
+
 export function firstFrame(referenceCount) {
     // First Frame for "Bla bla"
     const scholarContainer = document.getElementById('scholar-container');

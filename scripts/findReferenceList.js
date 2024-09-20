@@ -1,4 +1,51 @@
-// called from referenceAnalysis.js to manually or automatically detect reference list
+// called from main.js to manually or automatically detect reference list
+
+export function userDecisionReferenceSection(referenceFound) {
+    return new Promise(async (resolve, reject) => {
+        if (referenceFound) {
+            // Identify buttons for decisions
+            const continueButton = document.getElementById('continue-button');
+            const setManuallyButton = document.getElementById('manual-button');
+
+            // Add event listeners for Continue and Set Manually buttons
+            continueButton.addEventListener('click', function () {
+                resolve(referenceFound); // Resolve the promise with referenceFound
+            });
+
+            setManuallyButton.addEventListener('click', async function () {
+                // If "Set manually" is clicked, manually select the reference section
+                console.log("now manual");
+                scholarContainer.innerHTML = '';
+                // Create and display manual selection message
+                const manualTextFrame = document.createElement('div');
+                manualTextFrame.className = 'search-string-frame';
+                manualTextFrame.style.marginTop = '20px'; // Add space above
+
+                const manualTextParagraph = document.createElement('p');
+                manualTextParagraph.innerHTML = 'Please select the start and end of the reference section manually.';
+                manualTextFrame.appendChild(manualTextParagraph);
+
+                scholarContainer.appendChild(manualTextFrame);
+
+                // Call StartStop() to manually find the reference section
+                referenceFound = await startStop();
+
+                if (referenceFound) {
+                    resolve(referenceFound); // Resolve the promise when referenceFound is available
+                }
+            });
+        } else {
+            // Call StartStop() to manually find the reference section
+            referenceFound = await startStop();
+
+            // If reference section is found after manual selection, resolve the promise
+            if (referenceFound) {
+                resolve(referenceFound); // Resolve the promise with the referenceFound
+            }
+        }
+    });
+}
+
 
 export function startStop() {
     let isSelecting = false;

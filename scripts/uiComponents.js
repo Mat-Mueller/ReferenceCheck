@@ -144,7 +144,11 @@ function makeLinksClickable(text) {
     });
 }
 
+
+
+
 export function secondFrame(referenceCount) {
+
     const scholarContainer = document.getElementById('scholar-container');
     // Second frame for references (collapsible frame)
     const ReferenceFrame = document.createElement('div');
@@ -223,6 +227,18 @@ export function secondFrame(referenceCount) {
         }
         const ReferenceFrameParagraph = document.createElement('p');
         ReferenceFrameParagraph.className = 'Reference-frame';
+
+
+        divs.forEach ((div) => {
+    
+            div.addEventListener('click', () => {
+    
+                    ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+            });
+        })
+
+    
 
         // Loop through each span element
         citationSpans.forEach((span) => {

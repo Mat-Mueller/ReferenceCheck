@@ -145,10 +145,28 @@ function makeLinksClickable(text) {
 }
 
 
+function createSeparator(referenceCount) {
+    for (let j = 0; j < referenceCount; j++) {
+        const divs = document.querySelectorAll(`[MyId="${j}"]`);
+
+        // Alternate the background color based on the value of j
+        const backgroundColor = (j % 2 === 0) ? "#d3d3d3" : "#a9a9a9";  // Light grey for even j, darker grey for odd j
+
+        divs.forEach((div) => {
+            // Set the same background color for all divs with the same j
+            div.style.backgroundColor = backgroundColor;
+        });
+    }
+}
+
+
 
 
 export function secondFrame(referenceCount) {
 
+
+    createSeparator(referenceCount)
+    
     const scholarContainer = document.getElementById('scholar-container');
     // Second frame for references (collapsible frame)
     const ReferenceFrame = document.createElement('div');
@@ -384,6 +402,24 @@ export function secondFrame(referenceCount) {
 
         // Append the CrossRef button to the paragraph
         SingleRef.appendChild(crossRefButton);
+
+
+        const ScholarRefButton = document.createElement('button');
+        ScholarRefButton.textContent = 'Search Google Scholar';
+        ScholarRefButton.className = 'Scholar-search-button';
+        ScholarRefButton.id = `Scholar-button-${j}`
+        ScholarRefButton.addEventListener('click', async () => { 
+            
+                let baseUrl = "https://scholar.google.com/scholar?q=";
+                let formattedQuery = encodeURIComponent(mergedText);  // Encodes the search string for URL
+                let fullUrl = baseUrl + formattedQuery;
+                window.open(fullUrl, '_blank');  // Opens the URL in a new tab or window
+            
+
+        })
+
+
+        SingleRef.appendChild(ScholarRefButton);
         ReferenceFrameParagraph.appendChild(SingleRef);
         // If no matches were found, highlight the text in red
         if (matchCount === 0) {

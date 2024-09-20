@@ -20,7 +20,7 @@ async function main() {
     try {
         // Wait for promise containing user choice for reference section
         var refSecUser = await userDecisionReferenceSection(refSecAuto);
-        console.log("Reference section found, proceeding with analysis...");
+        console.log("Reference section found, proceeding with reference separation");
     } catch (error) {
         console.error("Error finding reference section:", error);
     }
@@ -34,6 +34,7 @@ async function main() {
     try {
         // Wait for promise containing number of separated references according to method chosen by user
         var referenceCount = await userDecisionSeparation(refSecUser);
+        console.log("Reference separation done, proceeding with in-text citation search");
     } catch (error) {
         console.error("Error separating references:", error);
     }
@@ -43,9 +44,9 @@ async function main() {
 
     // Set up GUI for results and crossref search
     clearRightContainer();
-    firstFrame(referenceCount)
-    secondFrame(referenceCount)
-    thirdFrame()
+    firstFrame(referenceCount);
+    secondFrame(referenceCount);
+    thirdFrame();
 }
 
 // Initialize the main event listener

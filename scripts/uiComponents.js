@@ -371,9 +371,9 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.appendChild(SingleRef);
         // If no matches were found, highlight the text in red
         if (matchCount === 0) {
-            ReferenceFrameParagraph.style.color = 'red';
+            ReferenceFrameParagraph.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
             divs.forEach(div => {
-                div.style.color = 'red';
+                //div.style.color = 'red';
             });
         }
 

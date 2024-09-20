@@ -157,6 +157,9 @@ function createSeparator(referenceCount) {
             div.style.backgroundColor = backgroundColor;
         });
     }
+    const selection = window.getSelection();
+selection.removeAllRanges();  // Clears the selection
+
 }
 
 

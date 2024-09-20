@@ -1,6 +1,12 @@
 /* General body styling */
 
 
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #2ecc71;
+    --accent-color: #e74c3c;
+}
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -14,7 +20,7 @@ body {
 /* Controls area at the top of the page */
 #controls {
     padding: 5px;
-    background: #4a90e2;
+    background: var(--primary-color); 
     color: #fff;
     border-bottom: 1px solid #ccc;
     display: flex;

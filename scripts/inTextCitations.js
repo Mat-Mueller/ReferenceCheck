@@ -42,48 +42,83 @@ function combineHyphenatedWords(words) {  // helper function to merge text betwe
     return result;
   }
 
-
-function cleanCitations() {
-    // Get all span elements with the class 'citation'
-    let citationSpans = document.querySelectorAll('span.citation');
-
     // Helper function to get the preceding text, possibly from a previous div
-    function getPreviousText(span) {
-        let node = span.previousSibling;
-        let textContent = '';
 
-        // If it's a text node, extract text content
-        if (node && node.nodeType === Node.TEXT_NODE) {
-            textContent = node.textContent.replace("(", "").trim();
+function getPreviousText(span) {
+    let node = span.previousSibling;
+    let textContent = '';
+
+    // If it's a text node, extract text content
+    if (node && node.nodeType === Node.TEXT_NODE) {
+        textContent = node.textContent.replace("(", "").trim();
+    }
+    //console.log(textContent)
+    // If no text content is found or node is not valid, move to the previous div with class 'textLine'
+    if (textContent === "" || textContent.split(" ").length < 5) {
+        let previousDiv = span.parentElement.previousElementSibling;
+
+        // Loop to find the previous sibling div with class 'textLine'
+        //while (previousDiv && !previousDiv.classList.contains('textLine')) {
+        //    previousDiv = previousDiv.previousElementSibling;
+        //}
+
+        // If a previous div with class 'textLine' was found, extract its text content
+        if (previousDiv) {
+            let previousText = previousDiv.textContent.trim();
+            if (previousText.endsWith("-")) {
+                // Remove the trailing hyphen and concatenate without the space
+                //previousText = previousText.slice(0, -1); // Removes the last character (the hyphen)
+                textContent = previousText + textContent;
+              } else {
+                // Concatenate with a space in between
+                textContent = previousText + " " + textContent;
+              }
+        } else {
+            console.log("No previous div with class 'textLine' found.");
         }
-        //console.log(textContent)
-        // If no text content is found or node is not valid, move to the previous div with class 'textLine'
-        if (textContent === "" || textContent.split(" ").length < 5) {
-            let previousDiv = span.parentElement.previousElementSibling;
+    }
+    //console.log(textContent)
+    return textContent.replace("(", "").trim();
+}
 
-            // Loop to find the previous sibling div with class 'textLine'
-            //while (previousDiv && !previousDiv.classList.contains('textLine')) {
-            //    previousDiv = previousDiv.previousElementSibling;
-            //}
 
-            // If a previous div with class 'textLine' was found, extract its text content
-            if (previousDiv) {
-                let previousText = previousDiv.textContent.trim();
-                if (previousText.endsWith("-")) {
-                    // Remove the trailing hyphen and concatenate without the space
-                    //previousText = previousText.slice(0, -1); // Removes the last character (the hyphen)
-                    textContent = previousText + textContent;
-                  } else {
-                    // Concatenate with a space in between
-                    textContent = previousText + " " + textContent;
-                  }
+function precleaned() {
+    let citationSpans = document.querySelectorAll('span.citation')
+    citationSpans.forEach((span) => {
+        let trimmedPart = span.textContent;  // Get the text content of the current <span>
+    
+        // Split the text content based on consecutive years but keep the commas/spaces intact
+        let parts = trimmedPart.split(/(?<=\d{4})(\s*,?\s*)(?=\d{4})/);
+    
+        // Create a document fragment to hold the new spans
+        let fragment = document.createDocumentFragment();
+    
+        // Loop through each part and create a new <span> for it
+        for (let i = 0; i < parts.length; i++) {
+            let part = parts[i];
+            // Create a new <span> only for the actual year, skip comma/space parts
+            if (/\d{4}/.test(part.trim())) {
+                let newSpan = document.createElement('span');  // Create a new <span> element
+                newSpan.classList.add('citation');             // Add the citation class
+                newSpan.textContent = part.trim();             // Set the text content (trim spaces)
+                fragment.appendChild(newSpan);                 // Append the new span to the fragment
             } else {
-                console.log("No previous div with class 'textLine' found.");
+                // If part is a comma or space, add it as a text node
+                fragment.appendChild(document.createTextNode(part));
             }
         }
-        console.log(textContent)
-        return textContent.replace("(", "").trim();
-    }
+    
+        // Replace the old <span> with the new span(s)
+        span.replaceWith(fragment);
+    });
+    
+
+    return document.querySelectorAll('span.citation')
+}
+
+function cleanCitations() {
+    // Get all span elements with the class 'citation', precleaned which means that they are split again sometimes
+    let citationSpans = precleaned();
 
     // Loop through each span element
     citationSpans.forEach((span) => {
@@ -132,7 +167,7 @@ function cleanCitations() {
                     }
                 }
             }
-            console.log(words)
+            //console.log(words)
 
             words = combineHyphenatedWords(words)
 
@@ -168,6 +203,7 @@ function cleanCitations() {
 
 function identifyAndWrapCitations() {
     const citationPattern = /\d{4}/;  // Regex to match a four-digit year (representing the year in a citation)
+    const pagePattern = /p\.\s*\d+/i;
     let awaitingCitation = false;  // Flag to treat the next div as if it starts with an implicit "("
 
     // Get all divs with class 'textLine', excluding those with the attribute 'myid', and convert NodeList to an array
@@ -212,14 +248,19 @@ function identifyAndWrapCitations() {
             let afterText = modifiedText.substring(closeParenthesisIndex);
 
             // Split the citation text by ";"
-            let citationParts = citationText.split(';');
+            let citationParts = citationText.split(";");
             let wrappedCitations = citationParts.map((part) => {
                 let trimmedPart = part.trim();
+                
                 // Check if this part contains a year
+                if (pagePattern.test(trimmedPart)) {
+                    return trimmedPart; // Leave page references unchanged
+                }
                 if (citationPattern.test(trimmedPart)) {
                     return `<span class="citation">${trimmedPart}</span>`;
                 }
                 return trimmedPart;  // If no year, return it unchanged
+            
             });
 
             // Join the wrapped citations back with "; "

@@ -150,7 +150,7 @@ function createSeparator(referenceCount) {
         const divs = document.querySelectorAll(`[MyId="${j}"]`);
 
         // Alternate the background color based on the value of j
-        const backgroundColor = (j % 2 === 0) ? "#d3d3d3" : "#a9a9a9";  // Light grey for even j, darker grey for odd j
+        const backgroundColor = (j % 2 === 0) ? getComputedStyle(document.documentElement).getPropertyValue('--Referencelist1-color').trim() : getComputedStyle(document.documentElement).getPropertyValue('--Referencelist2-color').trim();  // Light grey for even j, darker grey for odd j
 
         divs.forEach((div) => {
             // Set the same background color for all divs with the same j

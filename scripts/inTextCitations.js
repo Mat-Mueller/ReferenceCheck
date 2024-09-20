@@ -142,7 +142,7 @@ function cleanCitations() {
         // Check if the cleanedText is just a number (e.g., a year like 1966) --- narrative cit
         if (/^\d+$/.test(cleanedText)) {
             precedingText = getPreviousText(span);
-            console.log(precedingText.split(' '))
+            //console.log(precedingText.split(' '))
             if (precedingText) {
                 let words = precedingText.replace("-", "").split(' ');
                 let lastWord = words[words.length - 1]; // Get the word before the span
@@ -170,7 +170,7 @@ function cleanCitations() {
             let lastWord = words[words.length - 2];
             if (words.length < 5) {
                 let precedingText = getPreviousText(span);
-                console.log(precedingText.split(' '))
+                //console.log(precedingText.split(' '))
                 if (precedingText) {
                     let precedingWords = precedingText.split(' ');
 

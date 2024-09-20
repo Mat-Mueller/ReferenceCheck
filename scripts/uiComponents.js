@@ -432,7 +432,7 @@ export function thirdFrame() {
 
         // Highlight unfound citations in red
         document.querySelectorAll('span:not([found])').forEach((span, index) => {
-            span.style.backgroundColor = 'red'
+            span.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
 
         })
 

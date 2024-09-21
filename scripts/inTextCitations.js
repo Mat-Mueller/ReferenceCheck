@@ -252,11 +252,11 @@ function identifyAndWrapCitations() {
             let citationParts = citationText.split(";");
             let wrappedCitations = citationParts.map((part) => {
                 let trimmedPart = part.trim();
-                
+                console.log(trimmedPart)
                 // Check if this part contains a year
-                if (pagePattern.test(trimmedPart)) {
-                    return trimmedPart; // Leave page references unchanged
-                }
+                //if (pagePattern.test(trimmedPart)) {
+                //    return trimmedPart; // Leave page references unchanged
+                //}
                 if (citationPattern.test(trimmedPart)) {
                     return `<span class="citation">${trimmedPart}</span>`;
                 }

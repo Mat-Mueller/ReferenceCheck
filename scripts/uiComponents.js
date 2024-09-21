@@ -238,7 +238,50 @@ async function Crossrefbuttonlistener(ReferenceFrameParagraph, crossRefButton, j
 
 
 
+function matching(ReferenceFrameParagraph) {
+// Loop through each span element for matching
+let citationSpans = document.querySelectorAll('span.citation');
+let authorsRef = ReferenceFrameParagraph.getAttribute('authors').split(",")
+let RefYear = ReferenceFrameParagraph.getAttribute('year')
+let matchedSpans = [];
+citationSpans.forEach((span) => {
 
+
+
+    let authorsCit = span.getAttribute('authors').split(",")
+    let SpanYear = span.getAttribute('year');
+    //console.log(authorsCit)
+
+    function arraysAreIdentical(arr1, arr2) {
+        // If "et" and "al." are in arr1, we only compare the first author
+        const hasEtAl = arr1.includes("et") && arr1.includes("al.");
+        
+        if (hasEtAl) {
+            // Compare the first author of arr1 with the first author of arr2
+            return arr1[0] === arr2[0];
+        }
+    
+        // Standard comparison when "et" and "al." are not present
+        if (arr1.length !== arr2.length) {
+            return false;
+        }
+        
+        // Check if all elements are the same
+        return arr1.every((element, index) => element === arr2[index]);
+    }
+
+    if ( arraysAreIdentical(authorsCit, authorsRef,) && RefYear === SpanYear) {
+        matchedSpans.push(span)
+        if (!span.hasAttribute('found')) { span.setAttribute('found', 'true') }
+        span.addEventListener('click', () => {
+
+            ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        });
+    }
+});
+return matchedSpans;
+}
 
 
 
@@ -310,14 +353,13 @@ export function secondFrame(referenceCount) {
     ReferenceFrame.appendChild(referenceTitle);
 
 
-    let citationSpans = document.querySelectorAll('span.citation');
 
     for (let j = 0; j < referenceCount; j++) {
         const divs = document.querySelectorAll(`[MyId="${j}"]`);
-        let matchCount = 0;
-        let matchedSpans = [];
+        //let matchCount = 0;
+        //let matchedSpans = [];
         const mergedText = getMergedTextByMyId(j);
-        const firstWord = mergedText.split(' ')[0].replace(/,$/, '').replace(".","");
+        //const firstWord = mergedText.split(' ')[0].replace(/,$/, '').replace(".","");
         //console.log(mergedText)
         var MyYear = mergedText.match(/\b\d{4}[a-zA-Z]?\b/)
         if (MyYear) {
@@ -339,6 +381,7 @@ export function secondFrame(referenceCount) {
 
         }
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
+        ReferenceFrameParagraph.setAttribute('year', MyYear)
         ReferenceFrameParagraph.className = 'Reference-frame';
 
 
@@ -348,46 +391,9 @@ export function secondFrame(referenceCount) {
             });
         })
 
-    
+        const matchedSpans = matching(ReferenceFrameParagraph)
 
-        // Loop through each span element for matching
-        citationSpans.forEach((span) => {
-
-
-
-            let authorsCit = span.getAttribute('authors').split(",")
-            let SpanYear = span.getAttribute('year');
-            //console.log(authorsCit)
-
-            function arraysAreIdentical(arr1, arr2) {
-                // If "et" and "al." are in arr1, we only compare the first author
-                const hasEtAl = arr1.includes("et") && arr1.includes("al.");
-                
-                if (hasEtAl) {
-                    // Compare the first author of arr1 with the first author of arr2
-                    return arr1[0] === arr2[0];
-                }
-            
-                // Standard comparison when "et" and "al." are not present
-                if (arr1.length !== arr2.length) {
-                    return false;
-                }
-                
-                // Check if all elements are the same
-                return arr1.every((element, index) => element === arr2[index]);
-            }
-
-            if ( arraysAreIdentical(authorsCit, lastNames,) && MyYear === SpanYear) {
-                matchCount++
-                matchedSpans.push(span)
-                if (!span.hasAttribute('found')) { span.setAttribute('found', 'true') }
-                span.addEventListener('click', () => {
-
-                    ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                });
-            }
-        });
+        
 
 
         // Create first paragraph with inline style
@@ -401,6 +407,7 @@ export function secondFrame(referenceCount) {
 
         // Create second paragraph with inline style
         SingleRef = document.createElement('p');
+        const matchCount = matchedSpans.length;
         SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
         SingleRef.style.marginBottom = '5px'; // Add space as needed
         matchedSpans.forEach((span, index) => {

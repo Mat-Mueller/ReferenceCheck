@@ -332,7 +332,7 @@ export function secondFrame(referenceCount) {
         if (cleanedText) {
             const authorsPart = cleanedText.match(/^(.*?)(?=\(\d{4}[a-z]?\))/)[0];
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
-             lastNames = authorsPart.replace(", ,", ",").split(/,|&/).map(author => author.trim());
+             lastNames = authorsPart.replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
              lastNames = lastNames.filter(name => name !== "");
         } else {
              lastNames = [];
@@ -352,12 +352,11 @@ export function secondFrame(referenceCount) {
 
         // Loop through each span element for matching
         citationSpans.forEach((span) => {
-            let cleanedText = span.getAttribute('cleanedCit');
-            let SpanYear = span.getAttribute('year');   ///// Spanier ;-)
-            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace("and", "").split(' ').filter(name => name !== "")//.replace(",", "");
-            authorsCit.pop()
-            console.log(authorsCit)
-            console.log(lastNames)
+
+
+
+            let authorsCit = span.getAttribute('authors').split(",")
+            let SpanYear = span.getAttribute('year');
             //console.log(authorsCit)
 
             function arraysAreIdentical(arr1, arr2) {

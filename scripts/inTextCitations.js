@@ -5,6 +5,7 @@ export function inTextSearch() {
 
     identifyAndWrapCitations();
     cleanCitations()
+    assignnames()
 }
 
 
@@ -284,4 +285,16 @@ function identifyAndWrapCitations() {
         // Update the div's content with the modified text
         div.innerHTML = modifiedText;
     }
+}
+
+function assignnames() {
+    let citationSpans = document.querySelectorAll('span.citation');
+    citationSpans.forEach((span) => {
+            let cleanedText = span.getAttribute('cleanedCit');
+            console.log(cleanedText)
+            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(" and ", " ").split(' ').filter(name => name !== "")//.replace(",", "");
+            authorsCit.pop()
+            console.log(authorsCit)
+            span.setAttribute('authors', authorsCit)
+    })
 }

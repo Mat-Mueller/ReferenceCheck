@@ -219,13 +219,15 @@ function cleanCitations() {
                 let precedingText = getPreviousText(span);
                 //console.log(precedingText.split(' '))
                 if (precedingText) {
-                    let precedingWords = precedingText.split(' ');
+                    let precedingWords = precedingText.replace("(", "").split(' ');
                     precedingWords = mergeNameFragments(Allnames, precedingWords)
 
                     // Prepend words from precedingText until the words array has at least 5 words
                     while (words.length < 5 && precedingWords.length > 0) {
                         words.unshift(precedingWords.pop());
                     }
+                    console.log(words)
+                    words = mergeNameFragments(Allnames, words)
                 }
             }
 
@@ -348,8 +350,8 @@ function assignnames() {
     let citationSpans = document.querySelectorAll('span.citation');
     citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
-            console.log(cleanedText)
-            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(" and ", " ").split(';').filter(name => name !== "")//.replace(",", "");
+            //console.log(cleanedText)
+            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(";and", "").split(';').filter(name => name !== "")//.replace(",", "");
             authorsCit.pop()
             console.log(authorsCit)
             span.setAttribute('authors', authorsCit.join(";"))

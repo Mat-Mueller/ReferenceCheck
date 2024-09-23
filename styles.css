@@ -225,3 +225,9 @@ button.active {
     text-align: center;
     margin-top: 10px;
 }
+
+.crossref-search-button {
+
+    marginBottom : '0px'; 
+    marginLeft : '15px';
+}

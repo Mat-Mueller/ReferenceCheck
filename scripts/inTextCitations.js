@@ -1,7 +1,11 @@
 // Called by main.js, finds and highlights in-text citations
 
+import { getMergedTextByMyId } from './crossrefSearch.js';
+
+
 export function inTextSearch() {
     console.log("doing intext search etc.")
+
 
     identifyAndWrapCitations();
     cleanCitations()
@@ -83,6 +87,33 @@ function getPreviousText(span) {
 }
 
 
+function GetallPossibleNames() {
+    let referenceCount = Math.max(...Array.from(document.querySelectorAll('div.textLine.highlight[myid]')).map(div => parseInt(div.getAttribute('myid'), 10)));   //böse böse
+    let AlllastNames = []
+    for (let j = 0; j < referenceCount; j++) {
+        //const divs = document.querySelectorAll(`[MyId="${j}"]`);
+        const mergedText = getMergedTextByMyId(j);
+
+        //assign author names to ReferenceFrameParagraph
+        const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
+        // Step 2: Extract the part before the (year)
+        let lastNames
+        if (cleanedText) {
+            const authorsPart = cleanedText.match(/^(.*?)(?=\(\d{4}[a-z]?\))/)[0];
+        // Step 3: Split the remaining string by commas or ampersands and extract the last names
+             lastNames = authorsPart.replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
+             lastNames = lastNames.filter(name => name !== "");
+        } else {
+             lastNames = [];
+
+        }
+        lastNames.forEach((name) => {AlllastNames.push(name)})
+    }
+    //console.log(AlllastNames)
+    return AlllastNames
+}
+
+
 function precleaned() {
     let citationSpans = document.querySelectorAll('span.citation')
     citationSpans.forEach((span) => {
@@ -117,9 +148,34 @@ function precleaned() {
     return document.querySelectorAll('span.citation')
 }
 
+function mergeNameFragments(knownNames, guessedNames) {
+    const knownNamesSet = new Set(
+        knownNames
+            .map(name => name.toLowerCase())
+            .filter(name => name !== 'et al.') // Exclude "et al." from the set
+    );    
+    const mergedNames = [];
+  
+    for (let i = 0; i < guessedNames.length; i++) {
+      let combinedName = guessedNames[i].toLowerCase();
+      
+      // Check if the next word forms a known name when combined with the current one
+      while (i + 1 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase())) {
+        combinedName += ' ' + guessedNames[++i].toLowerCase();
+      }
+  
+      // Push the merged name (or single name) to the result
+      mergedNames.push(combinedName);
+    }
+  
+    return mergedNames;
+  }
+
 function cleanCitations() {
     // Get all span elements with the class 'citation', precleaned which means that they are split again sometimes
     let citationSpans = precleaned();
+
+    let Allnames = GetallPossibleNames()
 
     // Loop through each span element
     citationSpans.forEach((span) => {
@@ -133,6 +189,7 @@ function cleanCitations() {
             //console.log(precedingText.split(' '))
             if (precedingText) {
                 let words = precedingText.replace("-", "").split(' ');
+                words = mergeNameFragments(Allnames, words)
                 let lastWord = words[words.length - 1]; // Get the word before the span
 
                 // Check if the word before the last word is "and", "&", or "al."
@@ -147,20 +204,23 @@ function cleanCitations() {
                     // Include both the second-to-last word and the last word
                     let secondLastWord = words[words.length - 2];
                     let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
-                    cleanedText = `${thirdLastWord ? thirdLastWord + ' ' : ''}${secondLastWord} ${lastWord} ${cleanedText}`;
+                    cleanedText = `${thirdLastWord ? thirdLastWord + ';' : ''}${secondLastWord};${lastWord};${cleanedText}`;
                 } else {
                     // If no "and" is present, just include the last word
-                    cleanedText = `${lastWord} ${cleanedText}`;
+                    cleanedText = `${lastWord};${cleanedText}`;
+
                 }
             }
         } else {   ///////////   if its a Parenthetical citation
             let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').split(" ");
+            words = mergeNameFragments(Allnames, words)
             let lastWord = words[words.length - 2];
             if (words.length < 5) {
                 let precedingText = getPreviousText(span);
                 //console.log(precedingText.split(' '))
                 if (precedingText) {
                     let precedingWords = precedingText.split(' ');
+                    precedingWords = mergeNameFragments(Allnames, precedingWords)
 
                     // Prepend words from precedingText until the words array has at least 5 words
                     while (words.length < 5 && precedingWords.length > 0) {
@@ -168,11 +228,8 @@ function cleanCitations() {
                     }
                 }
             }
-            //console.log(words)
 
             words = combineHyphenatedWords(words)
-
-
             lastWord = words[words.length - 2]
             if (lastWord === "al." || lastWord === "al.,") {
                 // Get the last three words if the last word is "al.,"
@@ -187,9 +244,9 @@ function cleanCitations() {
 
             // If words array has less than 5 words, prepend with text from getPreviousText()
             //console.log(words)
-            cleanedText = words.join(" ")
+            cleanedText = words.join(";")
         }
-
+        console.log(cleanedText)
         // Set a new attribute 'cleanedCit' with the cleaned text
         span.setAttribute('cleanedCit', cleanedText.replace("(", ""));
         span.setAttribute('title', cleanedText);
@@ -252,7 +309,7 @@ function identifyAndWrapCitations() {
             let citationParts = citationText.split(";");
             let wrappedCitations = citationParts.map((part) => {
                 let trimmedPart = part.trim();
-                console.log(trimmedPart)
+                //console.log(trimmedPart)
                 // Check if this part contains a year
                 //if (pagePattern.test(trimmedPart)) {
                 //    return trimmedPart; // Leave page references unchanged
@@ -292,9 +349,9 @@ function assignnames() {
     citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
             console.log(cleanedText)
-            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(" and ", " ").split(' ').filter(name => name !== "")//.replace(",", "");
+            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(" and ", " ").split(';').filter(name => name !== "")//.replace(",", "");
             authorsCit.pop()
             console.log(authorsCit)
-            span.setAttribute('authors', authorsCit)
+            span.setAttribute('authors', authorsCit.join(";"))
     })
 }

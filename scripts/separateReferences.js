@@ -90,7 +90,7 @@ export function subdivide(selection, selectedCriterion) {
 }
 
 function highlightElement(element, id, color = '#add8e6') {
-    console.log(`Highlighting element with ID: ${id}`);
+    //console.log(`Highlighting element with ID: ${id}`);
     element.setAttribute("myID", id);
     element.style.backgroundColor = color;
     element.classList.add('highlight');

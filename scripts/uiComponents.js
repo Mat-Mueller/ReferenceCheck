@@ -238,57 +238,64 @@ async function Crossrefbuttonlistener(ReferenceFrameParagraph, crossRefButton, j
 
 
 
-function matching(ReferenceFrameParagraph) {
-// Loop through each span element for matching
-let citationSpans = document.querySelectorAll('span.citation');
-let authorsRef = ReferenceFrameParagraph.getAttribute('authors').split(",")
-let RefYear = ReferenceFrameParagraph.getAttribute('year')
-let matchedSpans = [];
-citationSpans.forEach((span) => {
+    function matching(ReferenceFrameParagraph) {
+        // Loop through each span element for matching
+        let citationSpans = document.querySelectorAll('span.citation');
+        let authorsRef = ReferenceFrameParagraph
+  .getAttribute('authors')
+  .split(/,| and /)                     // Split by comma or 'and'
+  .map(author => author.trim().toLowerCase())  // Trim and convert to lowercase
+  .filter(author => author !== "");    // Filter out empty strings
 
-
-
-    let authorsCit = span.getAttribute('authors').split(",")
-    let SpanYear = span.getAttribute('year');
-    //console.log(authorsCit)
-
-    function arraysAreIdentical(arr1, arr2) {
-        // If "et" and "al." are in arr1, we only compare the first author
-        const hasEtAl = arr1.includes("et") && arr1.includes("al.");
+        let RefYear = ReferenceFrameParagraph.getAttribute('year');
+        let matchedSpans = [];
         
-        if (hasEtAl) {
-            // Compare the first author of arr1 with the first author of arr2
-            return arr1[0] === arr2[0];
-        }
-    
-        // Standard comparison when "et" and "al." are not present
-        if (arr1.length !== arr2.length) {
-            return false;
-        }
-        
-        // Check if all elements are the same
-        return arr1.every((element, index) => element === arr2[index]);
-    }
-
-    if ( arraysAreIdentical(authorsCit, authorsRef,) && RefYear === SpanYear) {
-        matchedSpans.push(span)
-        if (!span.hasAttribute('found')) { span.setAttribute('found', 'true') }
-        span.addEventListener('click', () => {
-
-            ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
+        citationSpans.forEach((span) => {
+          let authorsCit = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
+          console.log(authorsRef, authorsCit)
+          let SpanYear = span.getAttribute('year');
+      
+          function arraysAreIdentical(arr1, arr2) {
+            // If "et" and "al." are in arr1, we only compare the first author
+            const hasEtAl = arr1.includes("et") && arr1.includes("al.");
+            
+            if (hasEtAl) {
+              // Normalize both strings to avoid encoding issues
+              console.log(arr1[0].normalize().length, arr2[0].normalize().length)
+              return arr1[0].normalize() === arr2[0].normalize();
+            }
+          
+            // Standard comparison when "et" and "al." are not present
+            if (arr1.length !== arr2.length) {
+              return false;
+            }
+            
+            // Check if all elements are the same (case-insensitive)
+            return arr1.every((element, index) => element.normalize() === arr2[index].normalize());
+          }
+          
+      
+          if (arraysAreIdentical(authorsCit, authorsRef) && RefYear === SpanYear) {
+            matchedSpans.push(span);
+            if (!span.hasAttribute('found')) {
+              span.setAttribute('found', 'true');
+            }
+            span.addEventListener('click', () => {
+              ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+          }
         });
-    }
-});
-return matchedSpans;
-}
+      
+        return matchedSpans;
+      }
+      
 
 
 
 export function secondFrame(referenceCount) {
 
 
-    createSeparator(referenceCount)
+    createSeparator(referenceCount)   // @LF: that should probably moved somewhere else 
     
     const scholarContainer = document.getElementById('scholar-container');
     // Second frame for references (collapsible frame)
@@ -356,11 +363,8 @@ export function secondFrame(referenceCount) {
 
     for (let j = 0; j < referenceCount; j++) {
         const divs = document.querySelectorAll(`[MyId="${j}"]`);
-        //let matchCount = 0;
-        //let matchedSpans = [];
         const mergedText = getMergedTextByMyId(j);
-        //const firstWord = mergedText.split(' ')[0].replace(/,$/, '').replace(".","");
-        //console.log(mergedText)
+
         var MyYear = mergedText.match(/\b\d{4}[a-zA-Z]?\b/)
         if (MyYear) {
             MyYear = MyYear[0]
@@ -368,7 +372,7 @@ export function secondFrame(referenceCount) {
         const ReferenceFrameParagraph = document.createElement('p');
 
         //assign author names to ReferenceFrameParagraph
-        const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
+        const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '').toLowerCase();
         // Step 2: Extract the part before the (year)
         let lastNames
         if (cleanedText) {
@@ -384,18 +388,23 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.setAttribute('year', MyYear)
         ReferenceFrameParagraph.className = 'Reference-frame';
 
-
         divs.forEach ((div) => {
             div.addEventListener('click', () => {   
                     ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });    
             });
         })
 
+    //}
+    
+    //let paragraphs = 
+
+    //for (let j = 0; j < referenceCount; j++) {
+        //// lets try to seperate the function here. 
+
+
         const matchedSpans = matching(ReferenceFrameParagraph)
 
-        
-
-
+    
         // Create first paragraph with inline style
         var SingleRef = document.createElement('p');
         const clickableText = makeLinksClickable(mergedText);
@@ -438,48 +447,35 @@ export function secondFrame(referenceCount) {
         const crossRefButton = document.createElement('button');
         crossRefButton.textContent = 'Search CrossRef';
         crossRefButton.className = 'crossref-search-button';
-        crossRefButton.style.marginBottom = '0px'; // Add space below the button
-        crossRefButton.style.marginLeft = '15px';
         crossRefButton.id = `crossref-button-${j}`
-
         crossRefButton.addEventListener('click', async () => {
             Crossrefbuttonlistener(ReferenceFrameParagraph, crossRefButton, j)
         });
-
-        // Append the CrossRef button to the paragraph
         SingleRef.appendChild(crossRefButton);
 
-
+        // make a scholar button
         const ScholarRefButton = document.createElement('button');
         ScholarRefButton.textContent = 'Search Google Scholar';
         ScholarRefButton.className = 'Scholar-search-button';
         ScholarRefButton.id = `Scholar-button-${j}`
-        ScholarRefButton.addEventListener('click', async () => { 
-            
+        ScholarRefButton.addEventListener('click', async () => {           
                 let baseUrl = "https://scholar.google.com/scholar?q=";
                 let formattedQuery = encodeURIComponent(mergedText);  // Encodes the search string for URL
                 let fullUrl = baseUrl + formattedQuery;
                 window.open(fullUrl, '_blank');  // Opens the URL in a new tab or window
-            
-
         })
-
-
         SingleRef.appendChild(ScholarRefButton);
         ReferenceFrameParagraph.appendChild(SingleRef);
-        // If no matches were found, highlight the text in red
+        // If no matches were found, highlight in red
         if (matchCount === 0) {
             ReferenceFrameParagraph.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
-            divs.forEach(div => {
+            //divs.forEach(div => {
                 //div.style.color = 'red';
-            });
+            //});
         }
-
         // Append the ReferenceFrameParagraph to the main ReferenceFrame
         ReferenceFrame.appendChild(ReferenceFrameParagraph);
-
     }
-
     // Append the ReferenceFrame to the scholar container
     scholarContainer.appendChild(ReferenceFrame);
 }

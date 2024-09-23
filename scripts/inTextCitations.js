@@ -213,7 +213,8 @@ function cleanCitations() {
                 }
             }
         } else {   ///////////   if its a Parenthetical citation
-            let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').split(" ");
+            let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').replace(",", "").split(" ");
+            console.log(words)
             words = mergeNameFragments(Allnames, words)
             let lastWord = words[words.length - 2];
             if (words.length < 5) {
@@ -227,11 +228,13 @@ function cleanCitations() {
                     while (words.length < 5 && precedingWords.length > 0) {
                         words.unshift(precedingWords.pop());
                     }
-                    console.log(words)
-                    words = mergeNameFragments(Allnames, words)
+                    
+                    
                 }
             }
-
+            console.log(words)
+            words = mergeNameFragments(Allnames, words)
+            console.log(words)
             words = combineHyphenatedWords(words)
             lastWord = words[words.length - 2]
             if (lastWord === "al." || lastWord === "al.,") {

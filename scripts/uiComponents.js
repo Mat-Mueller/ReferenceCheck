@@ -489,12 +489,16 @@ export function secondFrame(referenceCount) {
 function DragDrop() {
     let dragStartTime = 0;
     let draggedElement = null; // Keep track of the dragged element
-    
+
     // Select all draggable span elements with class "citation"
     const draggables = document.querySelectorAll('span.citation');
     
     // Select all drop zones with class "Reference-frame"
     const dropZones = document.querySelectorAll('.Reference-frame');
+
+    // Get CSS variable values for secondary and accent colors
+    const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color');
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
 
     // Make elements draggable and add event listeners
     draggables.forEach(draggable => {
@@ -507,14 +511,11 @@ function DragDrop() {
             e.dataTransfer.setData('text/plain', ''); // Some browsers require data to be set
         });
 
-        // Click event listener
+        // Click event listener (for valid drops)
         draggable.addEventListener('click', (e) => {
             const currentTime = new Date().getTime();
-            // Trigger click if it's not part of a drag action
             if (currentTime - dragStartTime > 200) {
                 console.log(`Clicked on ${draggable.innerText}`);
-            } else {
-                console.log("Ignored click due to drag action");
             }
         });
     });
@@ -535,18 +536,64 @@ function DragDrop() {
         // Drop event (handles the actual drop)
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-
-            // Log both the dragged element and the drop zone
-            console.log(`Dragged element: ${draggedElement.innerText}`);
-            console.log(`Dropped into drop zone with class: ${dropZone.classList}`);
-
-            // Remove the hover class from the drop zone
             dropZone.classList.remove('hover');
 
-            // Do NOT append the dragged element to the drop zone, just log it
+            // If the drop zone is a valid "Reference-frame" element
+            if (dropZone.classList.contains('Reference-frame')) {
+                // 1. Set the background color to secondary color
+                draggedElement.style.backgroundColor = secondaryColor;
+
+                // 2. Add event listener to scroll to the drop zone (Reference-frame)
+                draggedElement.addEventListener('click', () => {
+                    dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+
+                // 3. Append a link to the drop zone
+                const matchedSpans = [draggedElement]; // Assuming one span per drop for now
+                matchedSpans.forEach((span, index) => {
+                    const link = document.createElement('a');
+                    link.textContent = `${index + 1}`; // Display 1, 2, 3, etc.
+                    link.href = "#"; // Dummy href to make it clickable
+                    link.addEventListener('click', (event) => {
+                        event.preventDefault(); // Prevent the default anchor behavior
+                        span.scrollIntoView({ behavior: 'smooth' }); // Scroll to the matched span
+                    });
+                    dropZone.appendChild(link);
+
+                    // Add a comma and space after the link, except for the last one
+                    if (index < matchedSpans.length - 1) {
+                        dropZone.appendChild(document.createTextNode(', '));
+                    }
+                });
+            } else {
+                // If the drop zone is not a valid "Reference-frame" element:
+                // 1. Set the background color to accent color
+                draggedElement.style.backgroundColor = accentColor;
+
+                // 2. Remove all event listeners from the dragged element
+                const clonedElement = draggedElement.cloneNode(true);
+                draggedElement.replaceWith(clonedElement);
+                draggedElement = clonedElement;
+
+                // 3. Remove any links related to that span from all drop zones
+                removeLinksRelatedToSpan(dropZones, draggedElement);
+            }
         });
     });
+
+    // Helper function to remove links related to a specific span in all drop zones
+    function removeLinksRelatedToSpan(dropZones, span) {
+        dropZones.forEach((dropZone) => {
+            const links = dropZone.querySelectorAll('a');
+            links.forEach(link => {
+                if (link.textContent === span.innerText) {
+                    link.remove(); // Remove the link if it's related to the span
+                }
+            });
+        });
+    }
 }
+
 
 
 

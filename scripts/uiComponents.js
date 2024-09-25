@@ -1,4 +1,4 @@
-import { triggerSearch2, calculateMatchPercentage, getYear, getMergedTextByMyId, formatAuthors } from './crossrefSearch.js';
+import { getMergedTextByMyId, checkExists } from './crossrefSearch.js';
 
 export function clearRightContainer() {
     const scholarContainer = document.getElementById('scholar-container');
@@ -163,32 +163,21 @@ selection.removeAllRanges();  // Clears the selection
 }
 
 
-async function Crossrefbuttonlistener(ReferenceFrameParagraph, crossRefButton, j) {
-    const searchData = await triggerSearch2(j); // Wait for the search data
-    const query = getMergedTextByMyId(j); // Get the merged text for comparison
-
+async function searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph) {
     // Remove the button after it's clicked
     crossRefButton.remove();
 
     // If search data is available, process it and show results
-    if (searchData && searchData.message && searchData.message.items && searchData.message.items.length > 0) {
-        const results = searchData.message.items.slice(0, 2); // Get the first 3 results
-
+    if (searchResults.length > 0) {
         const resultsDiv = document.createElement('div'); // Create a div to contain results
         resultsDiv.className = 'crossref-results';
         resultsDiv.style.marginTop = '5px'; // Add margin above results
 
-        let highestMatch = 0;
-
-        // Loop through the first 3 results and add them to the resultsDiv
-        results.forEach(item => {
+        // Loop through results and add them to the resultsDiv
+        searchResults.forEach(item => {
             if (item.title && item.URL) { // Check if title and URL are present
                 const resultFrame = document.createElement('div');
                 resultFrame.className = 'result-frame';
-                
-
-                // Format authors
-                const formattedAuthors = formatAuthors(item.author);
 
                 // Create a single paragraph element
                 const resultParagraph = document.createElement('p');
@@ -196,14 +185,11 @@ async function Crossrefbuttonlistener(ReferenceFrameParagraph, crossRefButton, j
                 resultParagraph.style.margin = '0px'; // Set font size
                 resultParagraph.style.backgroundColor = "#FFFFFF";
 
-                // Calculate the match percentage (based on your logic)
-                const matchPercentage = calculateMatchPercentage(item, query);
-
                 // Construct the inner HTML content without new lines   <strong>${matchPercentage}% Match</strong>.
                 resultParagraph.innerHTML = `
         
-        ${formattedAuthors}.
-        (${getYear(item.issued)}).
+        ${item.formattedAuthors}.
+        (${item.yearString}).
         <strong>${item.title[0]}</strong>.
         ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}.
         DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
@@ -216,20 +202,11 @@ async function Crossrefbuttonlistener(ReferenceFrameParagraph, crossRefButton, j
                 // Append the resultFrame to the resultsDiv
                 resultsDiv.appendChild(resultFrame);
 
-                // Track the highest match percentage
-                if (highestMatch < matchPercentage) {
-                    highestMatch = matchPercentage;
-                }
-                resultFrame.style.backgroundColor = `hsl(${(highestMatch / 100) * 120}, 100%, 50%)`;
+                resultFrame.style.backgroundColor = `hsl(${(item.matchPercentage / 100) * 120}, 100%, 50%)`;
             }
         });
 
         ReferenceFrameParagraph.appendChild(resultsDiv); // Append the resultsDiv to the ReferenceFrameParagraph
-
-        // Apply color to ReferenceFrameParagraph based on highest match percentage
-        const hue = (highestMatch / 100) * 120; // Calculate hue based on highest match percentage (0 to 120)
-        //ReferenceFrameParagraph.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
-
     } else {
         const noResultsMsg = document.createElement('p');
         noResultsMsg.textContent = 'No CrossRef results found.';
@@ -451,7 +428,9 @@ export function secondFrame(referenceCount) {
         crossRefButton.className = 'crossref-search-button';
         crossRefButton.id = `crossref-button-${j}`
         crossRefButton.addEventListener('click', async () => {
-            Crossrefbuttonlistener(ReferenceFrameParagraph, crossRefButton, j)
+            const textReference = getMergedTextByMyId(j);
+            const searchResults = await checkExists(textReference);
+            searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph);
         });
         SingleRef.appendChild(crossRefButton);
 

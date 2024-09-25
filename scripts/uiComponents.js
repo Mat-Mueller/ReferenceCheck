@@ -385,6 +385,7 @@ export function secondFrame(referenceCount) {
              lastNames = [];
 
         }
+        ReferenceFrameParagraph.className = "ReferenceFrameParagraph"
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
         ReferenceFrameParagraph.setAttribute('year', MyYear)
         ReferenceFrameParagraph.className = 'Reference-frame';
@@ -479,7 +480,74 @@ export function secondFrame(referenceCount) {
     }
     // Append the ReferenceFrame to the scholar container
     scholarContainer.appendChild(ReferenceFrame);
+
+
+    DragDrop() // sollten wir eventuell verschieben
+
 }
+
+function DragDrop() {
+    let dragStartTime = 0;
+    let draggedElement = null; // Keep track of the dragged element
+    
+    // Select all draggable span elements with class "citation"
+    const draggables = document.querySelectorAll('span.citation');
+    
+    // Select all drop zones with class "Reference-frame"
+    const dropZones = document.querySelectorAll('.Reference-frame');
+
+    // Make elements draggable and add event listeners
+    draggables.forEach(draggable => {
+        draggable.setAttribute('draggable', 'true');
+
+        // Drag start event
+        draggable.addEventListener('dragstart', (e) => {
+            dragStartTime = new Date().getTime(); // Track drag start time
+            draggedElement = draggable; // Keep reference to the dragged element
+            e.dataTransfer.setData('text/plain', ''); // Some browsers require data to be set
+        });
+
+        // Click event listener
+        draggable.addEventListener('click', (e) => {
+            const currentTime = new Date().getTime();
+            // Trigger click if it's not part of a drag action
+            if (currentTime - dragStartTime > 200) {
+                console.log(`Clicked on ${draggable.innerText}`);
+            } else {
+                console.log("Ignored click due to drag action");
+            }
+        });
+    });
+
+    // Set up drag events for each drop zone
+    dropZones.forEach((dropZone) => { 
+        // Drag over event (necessary to allow dropping)
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('hover');
+        });
+
+        // Drag leave event (removes hover state when dragging leaves the zone)
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('hover');
+        });
+
+        // Drop event (handles the actual drop)
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+
+            // Log both the dragged element and the drop zone
+            console.log(`Dragged element: ${draggedElement.innerText}`);
+            console.log(`Dropped into drop zone with class: ${dropZone.classList}`);
+
+            // Remove the hover class from the drop zone
+            dropZone.classList.remove('hover');
+
+            // Do NOT append the dragged element to the drop zone, just log it
+        });
+    });
+}
+
 
 
 export function thirdFrame() {

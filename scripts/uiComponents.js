@@ -269,6 +269,59 @@ async function searchResultGUI(searchResults, crossRefButton, ReferenceFramePara
 
 
 
+      function ShowLinks(SingleRef, ReferenceFrameParagraph) {
+        console.log(SingleRef)
+        const matchedSpans = [...new Set(SingleRef.myLinks)];
+        const matchCount = matchedSpans.length;
+        SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
+        SingleRef.style.marginBottom = '5px'; // Add space as needed
+        matchedSpans.forEach((span, index) => {
+            //console.log(span);
+
+            // Create a link for each match
+            const link = document.createElement('a');
+            link.textContent = `${index + 1}`; // Display 1, 2, 3, etc.
+            link.href = "#"; // Dummy href to make it clickable
+
+            // Add an event listener to scroll to the span element when clicked
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent the default anchor behavior
+                span.scrollIntoView({ behavior: 'smooth' }); // Scroll to the matched span
+            });
+
+            // Append the link to the paragraph without using innerHTML
+            SingleRef.appendChild(link);
+
+            // Add a comma and space after the link, except for the last one
+            if (index < matchedSpans.length - 1) {
+                SingleRef.appendChild(document.createTextNode(', ')); // Add a comma and space
+            }
+        });
+
+        if (matchCount === 0) {
+            if (ReferenceFrameParagraph){
+                
+                ReferenceFrameParagraph.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+            } else {
+                SingleRef.parentElement.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+
+            }
+                //divs.forEach(div => {
+                //div.style.color = 'red';
+            //});
+        } else {
+            if (ReferenceFrameParagraph){
+                
+                ReferenceFrameParagraph.style.backgroundColor = "#FFFFFF"//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+            } else {
+                SingleRef.parentElement.style.backgroundColor = "#FFFFFF"//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+
+            }
+
+        }
+
+      }
+
 export function secondFrame(referenceCount) {
 
 
@@ -390,36 +443,14 @@ export function secondFrame(referenceCount) {
         SingleRef.innerHTML = clickableText;
         //SingleRef.innerHTML = mergedText;
         SingleRef.style.marginBottom = '15px'; // Add some space below
-
+        
         ReferenceFrameParagraph.appendChild(SingleRef);
 
         // Create second paragraph with inline style
         SingleRef = document.createElement('p');
-        const matchCount = matchedSpans.length;
-        SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
-        SingleRef.style.marginBottom = '5px'; // Add space as needed
-        matchedSpans.forEach((span, index) => {
-            //console.log(span);
-
-            // Create a link for each match
-            const link = document.createElement('a');
-            link.textContent = `${index + 1}`; // Display 1, 2, 3, etc.
-            link.href = "#"; // Dummy href to make it clickable
-
-            // Add an event listener to scroll to the span element when clicked
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent the default anchor behavior
-                span.scrollIntoView({ behavior: 'smooth' }); // Scroll to the matched span
-            });
-
-            // Append the link to the paragraph without using innerHTML
-            SingleRef.appendChild(link);
-
-            // Add a comma and space after the link, except for the last one
-            if (index < matchedSpans.length - 1) {
-                SingleRef.appendChild(document.createTextNode(', ')); // Add a comma and space
-            }
-        });
+        SingleRef.classList.add('SingleRef');
+        SingleRef.myLinks = matchedSpans
+        ShowLinks(SingleRef, ReferenceFrameParagraph)
 
 
         // Add the CrossRef search button
@@ -432,6 +463,7 @@ export function secondFrame(referenceCount) {
             const searchResults = await checkExists(textReference);
             searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph);
         });
+        ReferenceFrameParagraph.appendChild(SingleRef)
         SingleRef.appendChild(crossRefButton);
 
         // make a scholar button
@@ -446,14 +478,9 @@ export function secondFrame(referenceCount) {
                 window.open(fullUrl, '_blank');  // Opens the URL in a new tab or window
         })
         SingleRef.appendChild(ScholarRefButton);
-        ReferenceFrameParagraph.appendChild(SingleRef);
+        ;
         // If no matches were found, highlight in red
-        if (matchCount === 0) {
-            ReferenceFrameParagraph.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
-            //divs.forEach(div => {
-                //div.style.color = 'red';
-            //});
-        }
+
         // Append the ReferenceFrameParagraph to the main ReferenceFrame
         ReferenceFrame.appendChild(ReferenceFrameParagraph);
     }
@@ -528,49 +555,43 @@ function DragDrop() {
                 });
 
                 // 3. Append a link to the drop zone
-                const matchedSpans = [draggedElement]; // Assuming one span per drop for now
-                matchedSpans.forEach((span, index) => {
-                    const link = document.createElement('a');
-                    link.textContent = `${index + 1}`; // Display 1, 2, 3, etc.
-                    link.href = "#"; // Dummy href to make it clickable
-                    link.addEventListener('click', (event) => {
-                        event.preventDefault(); // Prevent the default anchor behavior
-                        span.scrollIntoView({ behavior: 'smooth' }); // Scroll to the matched span
-                    });
-                    dropZone.appendChild(link);
+                
+                let currentLinks = dropZone.querySelector('.SingleRef').myLinks
+                removeLinksRelatedToSpan(draggedElement)
+                currentLinks.push(draggedElement)
 
-                    // Add a comma and space after the link, except for the last one
-                    if (index < matchedSpans.length - 1) {
-                        dropZone.appendChild(document.createTextNode(', '));
-                    }
-                });
-            } else {
-                // If the drop zone is not a valid "Reference-frame" element:
-                // 1. Set the background color to accent color
-                draggedElement.style.backgroundColor = accentColor;
+                console.log(currentLinks)
+                ShowLinks(dropZone.querySelector('.SingleRef'))
+                
+            } else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
 
-                // 2. Remove all event listeners from the dragged element
-                const clonedElement = draggedElement.cloneNode(true);
-                draggedElement.replaceWith(clonedElement);
-                draggedElement = clonedElement;
-
-                // 3. Remove any links related to that span from all drop zones
-                removeLinksRelatedToSpan(dropZones, draggedElement);
             }
         });
     });
 
     // Helper function to remove links related to a specific span in all drop zones
-    function removeLinksRelatedToSpan(dropZones, span) {
+    function removeLinksRelatedToSpan(span) {
         dropZones.forEach((dropZone) => {
-            const links = dropZone.querySelectorAll('a');
-            links.forEach(link => {
-                if (link.textContent === span.innerText) {
-                    link.remove(); // Remove the link if it's related to the span
+            // Get the SingleRef element within the dropZone
+            const singleRef = dropZone.querySelector('.SingleRef');
+    
+            // Check if SingleRef exists and has the myLinks array
+            if (singleRef && singleRef.myLinks) {
+                // Find the index of the span in the myLinks array
+                const index = singleRef.myLinks.indexOf(span);
+                
+                // If span is in myLinks (index >= 0), remove it
+                if (index > -1) {
+                    // Remove the span from myLinks array
+                    singleRef.myLinks.splice(index, 1);
+    
+                    // Update the links in the UI by calling ShowLinks
+                    ShowLinks(singleRef);
                 }
-            });
+            }
         });
     }
+    
 }
 
 

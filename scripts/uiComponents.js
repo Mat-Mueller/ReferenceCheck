@@ -452,8 +452,9 @@ export function secondFrame(referenceCount) {
         SingleRef.myLinks = matchedSpans
         ShowLinks(SingleRef, ReferenceFrameParagraph)
 
-
+        ReferenceFrameParagraph.appendChild(SingleRef)
         // Add the CrossRef search button
+        SingleRef = document.createElement('p');
         const crossRefButton = document.createElement('button');
         crossRefButton.textContent = 'Search CrossRef';
         crossRefButton.className = 'crossref-search-button';

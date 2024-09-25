@@ -63,7 +63,7 @@ function formatResults(searchResults) {
     searchResults.forEach(item => {
         // Format the authors
         if (!item.author || item.author.length === 0) {
-            item.formattedAuthors = '';
+            item.formattedAuthors = 'Unknown';
         } else {
             item.formattedAuthors = item.author.map(author => {
                 const givenNameInitial = author.given ? `${author.given[0]}.` : '';
@@ -73,7 +73,7 @@ function formatResults(searchResults) {
 
         // Clean and split author surnames
         if (!item.author || item.author.length === 0) {
-            item.authorSurnames = '';
+            item.authorSurnames = ['Unknown'];
         } else {
             item.authorSurnames = item.author.map(author => `$${author.family}`).join(', ').replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
         }
@@ -85,7 +85,7 @@ function formatResults(searchResults) {
         item.journalWords = item['container-title'] ? item['container-title'][0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/) : [];
 
         // Year as a string
-        if (!item.issued || !item.issued['date-parts'] || !Array.isArray(item.issued['date-parts']) || !item.issued['date-parts'][0] || !Array.isArray(item.issued['date-parts'][0])) {
+        if (!item.issued || !item.issued['date-parts'] || !Array.isArray(item.issued['date-parts']) || !item.issued['date-parts'][0] || !Array.isArray(item.issued['date-parts'][0]) || !item.issued['date-parts'][0][0]) {
             item.yearString = 'Unknown Year';
         } else {
             item.yearString = item.issued['date-parts'][0][0].toString();

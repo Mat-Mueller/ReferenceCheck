@@ -93,16 +93,16 @@ function GetallPossibleNames() {
     for (let j = 0; j < referenceCount; j++) {
         //const divs = document.querySelectorAll(`[MyId="${j}"]`);
         const mergedText = getMergedTextByMyId(j);
-
+        console.log(mergedText)
         //assign author names to ReferenceFrameParagraph
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
         // Step 2: Extract the part before the (year)
         let lastNames
         if (cleanedText) {
             console.log(cleanedText);
-            const authorsPart = cleanedText.match(/^(.*?)(?=\(\d{4}[a-z]?)/)[0];
+            const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
-             lastNames = authorsPart.replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
+             lastNames = authorsPart.replace(" (", "").replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
              lastNames = lastNames.filter(name => name !== "");
         } else {
              lastNames = [];

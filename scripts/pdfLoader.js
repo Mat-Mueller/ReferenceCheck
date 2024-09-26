@@ -122,7 +122,7 @@ async function renderAllPages(pdfDocument) {
         const lastLine = lines[lines.length - 1]; // The last line (bottom-most)
 
         // Render all lines
-        lines.forEach(function (line) {
+        lines.forEach(function (line, index) {
             const lineElement = document.createElement('div');
             lineElement.textContent = line.text.replace(/\s+/g, ' ').trim(); // Remove any trailing space
             lineElement.className = 'textLine';
@@ -145,7 +145,7 @@ async function renderAllPages(pdfDocument) {
                 lineElement.setAttribute('data-footer', 'true');
             }
 
-
+            lineElement.id = `textLine-${pageNum}-${index}`; 
             textLayerDiv.appendChild(lineElement);
         });
     }

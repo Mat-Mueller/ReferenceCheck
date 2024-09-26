@@ -30,12 +30,13 @@ async function crossrefSearch(textReference) {
             const apiUrl = `https://api.crossref.org/works?query.bibliographic=${query}&rows=3`;
 
             // Await the result of the fetch call
+            
             const response = await fetch(apiUrl);
             const searchResults = await response.json();
             const rateLimit = response.headers.get('X-Rate-Limit-Limit');
             const rateLimitRemaining = response.headers.get('X-Rate-Limit-Remaining');
             const rateLimitInterval = response.headers.get('X-Rate-Limit-Interval');
-
+            console.log([...response.headers.entries()]);
             console.log(`Rate Limit: ${rateLimit}`);
             console.log(`Rate Limit Remaining: ${rateLimitRemaining}`);
             console.log(`Rate Limit Interval: ${rateLimitInterval}`);

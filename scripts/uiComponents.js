@@ -350,7 +350,7 @@ export function secondFrame(referenceCount) {
     // Create and add headline for references
     const referenceTitle = document.createElement('p');
     referenceTitle.innerHTML = '<strong>References:</strong>';
-    referenceTitle.style.marginBottom = '0px'
+    referenceTitle.style.marginBottom = '5px'
     referenceTitle.style.paddingBottom = '0px'
 
     referenceTitle.style.marginLeft = '10px'

@@ -270,7 +270,7 @@ async function searchResultGUI(searchResults, crossRefButton, ReferenceFramePara
 
 
       function ShowLinks(SingleRef, ReferenceFrameParagraph) {
-        console.log(SingleRef)
+       
         const matchedSpans = [...new Set(SingleRef.myLinks)];
         const matchCount = matchedSpans.length;
         SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
@@ -380,7 +380,7 @@ export function secondFrame(referenceCount) {
             crossRefButtons[i].click(); // Trigger the individual click event
 
             // Introduce a delay of 1 second (1000 ms) between each request
-            await sleep(1000);
+            await sleep(10);
         }
     });
     buttonContainer.appendChild(crossRefAllButton);
@@ -406,10 +406,9 @@ export function secondFrame(referenceCount) {
         // Step 2: Extract the part before the (year)
         let lastNames
         if (cleanedText) {
-            console.log(cleanedText);
             const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
-             lastNames = authorsPart.replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
+             lastNames = authorsPart.replace(" (", "").replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
              lastNames = lastNames.filter(name => name !== "");
         } else {
              lastNames = [];

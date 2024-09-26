@@ -49,20 +49,38 @@ function getPreviousText(span) {
     let counter = 0
     while ( textContent.split(" ").length < 5 && counter < 10) {
         counter++
-        if (counter === 9) {console.log(span)}
+
         if (!previousDiv) {
             //console.log(span.parentElement)
             previousDiv = span.parentElement
         }
         previousDiv = previousDiv.previousSibling;
+        if (counter === 9) {
 
+            console.log(span, previousDiv)
+            const pageNumber = span.parentElement.id.split('-')[1]
+            const allDivs = document.querySelectorAll(`div[id^="textLine-${pageNumber}-"]`);
+
+            let highestDiv = null;
+            let highestNumber = -1;
+            allDivs.forEach(div => {
+                // Extract the sequence number from the ID
+                const idParts = div.id.split('-');
+                const sequenceNumber = parseInt(idParts[2], 10); // The third part is the sequence number
+            
+                // Check if this sequence number is the highest we've seen
+                if (sequenceNumber > highestNumber && div.className === "textLine") {
+                    highestNumber = sequenceNumber;
+                    highestDiv = div;
+                }
+            });
+            previousDiv = highestDiv
+            console.log(previousDiv)
+
+        
+        }
 
         if (previousDiv && previousDiv.tagName !== 'SPAN') {
-            // Loop to find the previous sibling div with class 'textLine'
-            //while (previousDiv && !previousDiv.classList.contains('textLine')) {
-            //    previousDiv = previousDiv.previousElementSibling;
-            //}
-
             // If a previous div with class 'textLine' was found, extract its text content
             if (previousDiv) {
                 let previousText = previousDiv.textContent.trim();
@@ -93,13 +111,11 @@ function GetallPossibleNames() {
     for (let j = 0; j < referenceCount; j++) {
         //const divs = document.querySelectorAll(`[MyId="${j}"]`);
         const mergedText = getMergedTextByMyId(j);
-        console.log(mergedText)
         //assign author names to ReferenceFrameParagraph
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
         // Step 2: Extract the part before the (year)
         let lastNames
         if (cleanedText) {
-            console.log(cleanedText);
             const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
              lastNames = authorsPart.replace(" (", "").replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
@@ -182,7 +198,6 @@ function cleanCitations() {
     citationSpans.forEach((span) => {
 
         let cleanedText = span.innerText.replace(/\(|\)/g, ''); // Remove parentheses
-        console.log(cleanedText)
         let precedingText;
         // Check if the cleanedText is just a number (e.g., a year like 1966) --- narrative cit
         if (/^\d+$/.test(cleanedText)) {
@@ -214,7 +229,6 @@ function cleanCitations() {
             }
         } else {   ///////////   if its a Parenthetical citation
             let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').replace(",", "").split(" ");
-            console.log(words)
             words = mergeNameFragments(Allnames, words)
             let lastWord = words[words.length - 2];
             if (words.length < 5) {
@@ -232,9 +246,7 @@ function cleanCitations() {
                     
                 }
             }
-            console.log(words)
             words = mergeNameFragments(Allnames, words)
-            console.log(words)
             words = combineHyphenatedWords(words)
             lastWord = words[words.length - 2]
             if (lastWord === "al." || lastWord === "al.,") {
@@ -252,7 +264,6 @@ function cleanCitations() {
             //console.log(words)
             cleanedText = words.join(";")
         }
-        console.log(cleanedText)
         // Set a new attribute 'cleanedCit' with the cleaned text
         span.setAttribute('cleanedCit', cleanedText.replace("(", ""));
         span.setAttribute('title', cleanedText);
@@ -357,7 +368,6 @@ function assignnames() {
             //console.log(cleanedText)
             let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(";and", "").split(';').filter(name => name !== "")//.replace(",", "");
             authorsCit.pop()
-            console.log(authorsCit)
             span.setAttribute('authors', authorsCit.join(";"))
     })
 }

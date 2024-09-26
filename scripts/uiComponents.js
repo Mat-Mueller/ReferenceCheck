@@ -340,6 +340,8 @@ export function secondFrame(referenceCount) {
     
     const scholarContainer = document.getElementById('scholar-container');
     // Second frame for references (collapsible frame)
+    const OuterFrame = document.createElement('div');
+    OuterFrame.className = "OuterFrame"
     const ReferenceFrame = document.createElement('div');
     ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
     ReferenceFrame.style.maxHeight = '400px';
@@ -422,7 +424,7 @@ export function secondFrame(referenceCount) {
             const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
             console.log(authorsPart)
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
-             lastNames = authorsPart.replace("(Hrsg.)", "").replace("(Eds.).", "").replace(" (", "").replace(", ,", ",").split(/,|&/).map(author => author.trim());
+             lastNames = authorsPart.replace(" (hrsg.)", "").replace(" (eds.).", "").replace(" (", "").replace(", ,", ",").split(/,|&/).map(author => author.trim());
              lastNames = lastNames.filter(name => name !== "");
         } else {
              lastNames = [];
@@ -448,16 +450,7 @@ export function secondFrame(referenceCount) {
             });
         })
 
-    //}
-    
-    //let paragraphs = 
-
-    //for (let j = 0; j < referenceCount; j++) {
-        //// lets try to seperate the function here. 
-
-
         const matchedSpans = matching(ReferenceFrameParagraph)
-
     
         // Create first paragraph with inline style
         var SingleRef = document.createElement('p');
@@ -508,7 +501,8 @@ export function secondFrame(referenceCount) {
         ReferenceFrame.appendChild(ReferenceFrameParagraph);
     }
     // Append the ReferenceFrame to the scholar container
-    scholarContainer.appendChild(ReferenceFrame);
+    OuterFrame.appendChild(ReferenceFrame);
+    scholarContainer.appendChild(OuterFrame);
 
 
     DragDrop() // sollten wir eventuell verschieben

@@ -240,13 +240,11 @@ async function searchResultGUI(searchResults, crossRefButton, ReferenceFramePara
               // Normalize both strings to avoid encoding issues
             //   console.log(arr1[0].normalize().length, arr2[0].normalize().length)
               return arr1[0].normalize() === arr2[0].normalize();
-            }
-          
+            }       
             // Standard comparison when "et" and "al." are not present
             if (arr1.length !== arr2.length) {
               return false;
-            }
-            
+            }            
             // Check if all elements are the same (case-insensitive)
             return arr1.every((element, index) => element.normalize() === arr2[index].normalize());
           }
@@ -261,6 +259,19 @@ async function searchResultGUI(searchResults, crossRefButton, ReferenceFramePara
               ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
             });
           }
+
+          if ( ReferenceFrameParagraph.getAttribute('abbr') && ReferenceFrameParagraph.getAttribute('abbr').toLowerCase() === authorsCit[0].toLowerCase() && RefYear === SpanYear) {
+            //console.log(ReferenceFrameParagraph.getAttribute('abbr').toLowerCase,  authorsCit[0].toLowerCase)
+            matchedSpans.push(span);
+            if (!span.hasAttribute('found')) {
+              span.setAttribute('found', 'true');
+            }
+            span.addEventListener('click', () => {
+              ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+          }
+
+
         });
       
         return matchedSpans;
@@ -399,6 +410,8 @@ export function secondFrame(referenceCount) {
         if (MyYear) {
             MyYear = MyYear[0]
         }
+
+
         const ReferenceFrameParagraph = document.createElement('p');
 
         //assign author names to ReferenceFrameParagraph
@@ -408,7 +421,7 @@ export function secondFrame(referenceCount) {
         if (cleanedText) {
             const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
-             lastNames = authorsPart.replace(" (", "").replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
+             lastNames = authorsPart.replace(" (", "").replace(", ,", ",").replace("(Hrsg.)", "").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
              lastNames = lastNames.filter(name => name !== "");
         } else {
              lastNames = [];
@@ -417,6 +430,15 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.className = "ReferenceFrameParagraph"
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
         ReferenceFrameParagraph.setAttribute('year', MyYear)
+                // check if there is an abbreviation
+                const result = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
+
+                const match = result.match(/\(([^)]+)\)/);
+
+                if (match) {
+                    ReferenceFrameParagraph.setAttribute('Abbr', match[1]); // Outputs: "example text"
+                    console.log(match[1])
+                } else {ReferenceFrameParagraph.setAttribute('Abbr', "");}
         ReferenceFrameParagraph.className = 'Reference-frame';
 
         divs.forEach ((div) => {

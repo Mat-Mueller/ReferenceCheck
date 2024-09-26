@@ -55,10 +55,9 @@ function getPreviousText(span) {
             previousDiv = span.parentElement
         }
         previousDiv = previousDiv.previousSibling;
-        if (counter === 9) {
+        if (counter === 9) {   //// bisher haben wir keine Ids gehabt um den Previsou text zu identifizieren. Jetzt schon, dh wir sollten den Rest der Prozedur überdenken. Bis dahin gilt: never change a working code
 
-            console.log(span, previousDiv)
-            const pageNumber = span.parentElement.id.split('-')[1]
+            const pageNumber = span.parentElement.id.split('-')[1] - 1
             const allDivs = document.querySelectorAll(`div[id^="textLine-${pageNumber}-"]`);
 
             let highestDiv = null;
@@ -75,7 +74,6 @@ function getPreviousText(span) {
                 }
             });
             previousDiv = highestDiv
-            console.log(previousDiv)
 
         
         }

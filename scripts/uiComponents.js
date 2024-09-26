@@ -344,12 +344,16 @@ export function secondFrame(referenceCount) {
     OuterFrame.className = "OuterFrame"
     const ReferenceFrame = document.createElement('div');
     ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
-    ReferenceFrame.style.maxHeight = '400px';
+    ReferenceFrame.setAttribute('style', 'max-height: 400px; border: 0px solid #ccc !important; box-shadow: none !important;');
 
+    
     // Create and add headline for references
     const referenceTitle = document.createElement('p');
     referenceTitle.innerHTML = '<strong>References:</strong>';
-    referenceTitle.style.marginBottom = '15px'
+    referenceTitle.style.marginBottom = '0px'
+    referenceTitle.style.paddingBottom = '0px'
+
+    referenceTitle.style.marginLeft = '10px'
 
     // Create a container div to hold the buttons side by side
     const buttonContainer = document.createElement('div');
@@ -400,7 +404,7 @@ export function secondFrame(referenceCount) {
     referenceTitle.appendChild(buttonContainer);
     referenceTitle.appendChild(toggleButton);
 
-    ReferenceFrame.appendChild(referenceTitle);
+    OuterFrame.appendChild(referenceTitle);
 
 
 
@@ -506,7 +510,36 @@ export function secondFrame(referenceCount) {
 
 
     DragDrop() // sollten wir eventuell verschieben
+    UpdateFirstFrame()
+}
 
+function UpdateFirstFrame() {
+        // Get the accent color from the CSS variable
+        const accentColor =  "rgb(227, 87, 75)" //getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+
+        // Select all elements with class '.Reference-frame'
+        const referenceFrames = document.querySelectorAll('.Reference-frame');
+    
+        // Count how many reference frames do not match the accent color
+        let countWithoutMatch = 0;
+        
+        referenceFrames.forEach(reference => {
+            // Get the computed color of the reference frame
+            const referenceColor = getComputedStyle(reference).getPropertyValue('background-color').trim();
+            console.log(referenceColor)
+            // If the reference color doesn't match the accent color, increment the counter
+            if (referenceColor === accentColor) {
+                countWithoutMatch++;
+            }
+        });
+    
+        // Find the TextFrameParagraph where the new text needs to be added
+        const TextFrameParagraph = document.querySelector('.search-string-frame p');
+        
+        // Append the text to the existing paragraph
+        if (TextFrameParagraph) {
+            TextFrameParagraph.innerHTML += `<br>${countWithoutMatch} References without match.`;
+        }
 }
 
 function DragDrop() {

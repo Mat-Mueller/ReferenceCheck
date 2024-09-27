@@ -428,7 +428,7 @@ export function secondFrame(referenceCount) {
             const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
             console.log(authorsPart)
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
-             lastNames = authorsPart.replace(" (hrsg.)", "").replace(" (eds.).", "").replace(" (", "").replace(", ,", ",").split(/,|&/).map(author => author.trim());
+             lastNames = authorsPart.replace(" (hrsg.)", "").replace(" (eds.).", "").replace(" (", "").replace(", ,", ",").replace(".", "").split(/,|&/).map(author => author.trim());
              lastNames = lastNames.filter(name => name !== "");
         } else {
              lastNames = [];

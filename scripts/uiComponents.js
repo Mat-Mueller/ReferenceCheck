@@ -462,6 +462,7 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.className = 'Reference-frame';
 
         divs.forEach ((div) => {
+            div.style.cursor = 'pointer'
             div.addEventListener('click', () => {   
                     ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });    
             });
@@ -619,7 +620,7 @@ function DragDrop() {
     // Make elements draggable and add event listeners
     draggables.forEach(draggable => {
         draggable.setAttribute('draggable', 'true');
-
+        draggable.style.cursor = 'pointer'
         // Drag start event
         draggable.addEventListener('dragstart', (e) => {
             dragStartTime = new Date().getTime(); // Track drag start time
@@ -639,6 +640,7 @@ function DragDrop() {
     // Set up drag events for each drop zone
     dropZones.forEach((dropZone) => { 
         // Drag over event (necessary to allow dropping)
+        dropZone.style.cursor = 'pointer'
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('hover');
@@ -811,3 +813,4 @@ export function thirdFrame() {
     // Initial render showing only problematic spans
     renderSpans();
 }
+

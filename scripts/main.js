@@ -1,4 +1,4 @@
-import { displaySoftwareDescription, referenceSectionGUI, referenceSeparationGUI, firstFrame, secondFrame, thirdFrame, clearRightContainer } from './uiComponents.js';
+import { displaySoftwareDescription,referenceSectionGUI, referenceSeparationGUI, firstFrame, secondFrame, thirdFrame, clearRightContainer } from './uiComponents.js';
 import { readRenderPDF } from './pdfLoader.js';
 import { findReferenceSection, userDecisionReferenceSection } from './findReferenceList.js';
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
@@ -47,6 +47,7 @@ async function main() {
     firstFrame(referenceCount);
     secondFrame(referenceCount);
     thirdFrame();
+
 }
 
 // Initialize the main event listener

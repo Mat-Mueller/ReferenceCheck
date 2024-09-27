@@ -226,6 +226,7 @@ async function searchResultGUI(searchResults, crossRefButton, ReferenceFramePara
 
         let RefYear = ReferenceFrameParagraph.getAttribute('year');
         let matchedSpans = [];
+        console.log(authorsRef)
         
         citationSpans.forEach((span) => {
           let authorsCit = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
@@ -273,6 +274,7 @@ async function searchResultGUI(searchResults, crossRefButton, ReferenceFramePara
 
 
         });
+
       
         return matchedSpans;
       }
@@ -437,7 +439,7 @@ export function secondFrame(referenceCount) {
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '').toLowerCase();
         // Step 2: Extract the part before the (year)
         let lastNames
-        if (cleanedText) {
+        if (cleanedText && cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0]) {
             const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
             console.log(authorsPart)
         // Step 3: Split the remaining string by commas or ampersands and extract the last names

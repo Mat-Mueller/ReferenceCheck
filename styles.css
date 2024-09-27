@@ -90,6 +90,7 @@ body {
     margin-bottom: 15px;
     border-radius: 5px;
     background-color: #FFFFFF;
+    position: relative;
 }
 
 #dragArea {
@@ -184,6 +185,13 @@ body {
     margin-right: 10px;
 }
 
+.buttoncontainer {
+    position: absolute;  /* Position the buttons absolutely */
+    top: 5%;           /* Aligns the buttons to the top of the container */
+    right: 5px;
+
+}
+
 /* Controls styling for button, file input, and select dropdown */
 #controls button,
 #controls input[type="file"],
@@ -238,4 +246,9 @@ button.active {
 
     marginBottom : '0px'; 
     marginLeft : '15px';
+}
+
+.Scholar-search-button {
+margin-left : 3px;
+
 }

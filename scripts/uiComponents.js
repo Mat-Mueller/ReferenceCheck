@@ -418,7 +418,7 @@ export function secondFrame(referenceCount) {
         }
 
 
-        const ReferenceFrameParagraph = document.createElement('p');
+        const ReferenceFrameParagraph = document.createElement('div');
 
         //assign author names to ReferenceFrameParagraph
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '').toLowerCase();
@@ -462,7 +462,7 @@ export function secondFrame(referenceCount) {
         SingleRef.innerHTML = clickableText;
         //SingleRef.innerHTML = mergedText;
         SingleRef.style.marginBottom = '15px'; // Add some space below
-        
+        SingleRef.style.marginRight = "60px";
         ReferenceFrameParagraph.appendChild(SingleRef);
 
         // Create second paragraph with inline style
@@ -473,9 +473,10 @@ export function secondFrame(referenceCount) {
 
         ReferenceFrameParagraph.appendChild(SingleRef)
         // Add the CrossRef search button
-        SingleRef = document.createElement('p');
+        const buttoncontainer = document.createElement('div');
+        buttoncontainer.className = "buttoncontainer"
         const crossRefButton = document.createElement('button');
-        crossRefButton.textContent = 'Search CrossRef';
+        crossRefButton.textContent = 'CR';
         crossRefButton.className = 'crossref-search-button';
         crossRefButton.id = `crossref-button-${j}`
         crossRefButton.addEventListener('click', async () => {
@@ -483,12 +484,12 @@ export function secondFrame(referenceCount) {
             const searchResults = await checkExists(textReference);
             searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph);
         });
-        ReferenceFrameParagraph.appendChild(SingleRef)
-        SingleRef.appendChild(crossRefButton);
+        ReferenceFrameParagraph.appendChild(buttoncontainer)
+        buttoncontainer.appendChild(crossRefButton);
 
         // make a scholar button
         const ScholarRefButton = document.createElement('button');
-        ScholarRefButton.textContent = 'Search Google Scholar';
+        ScholarRefButton.textContent = 'GS';
         ScholarRefButton.className = 'Scholar-search-button';
         ScholarRefButton.id = `Scholar-button-${j}`
         ScholarRefButton.addEventListener('click', async () => {           
@@ -497,7 +498,7 @@ export function secondFrame(referenceCount) {
                 let fullUrl = baseUrl + formattedQuery;
                 window.open(fullUrl, '_blank');  // Opens the URL in a new tab or window
         })
-        SingleRef.appendChild(ScholarRefButton);
+        buttoncontainer.appendChild(ScholarRefButton);
         ;
         // If no matches were found, highlight in red
 

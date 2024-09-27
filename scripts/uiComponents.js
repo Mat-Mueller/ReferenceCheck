@@ -351,6 +351,7 @@ export function secondFrame(referenceCount) {
     const referenceTitle = document.createElement('p');
     referenceTitle.innerHTML = '<strong>References:</strong>';
     referenceTitle.style.marginBottom = '5px'
+    referenceTitle.style.marginTop = '10px'
     referenceTitle.style.paddingBottom = '0px'
 
     referenceTitle.style.marginLeft = '10px'
@@ -359,6 +360,7 @@ export function secondFrame(referenceCount) {
     searchInput.type = 'text';
     searchInput.id = 'searchField';
     searchInput.placeholder = 'Search...';
+    searchInput.style.marginLeft = '50px';
     searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {  // Check if the Enter key was pressed
             searchRef(event);      // Call the search function and pass the event
@@ -371,9 +373,9 @@ export function secondFrame(referenceCount) {
 
     // Create the toggle button for expanding/collapsing
     const toggleButton = document.createElement('button');
-    toggleButton.textContent = 'Show/Hide References';
+    toggleButton.textContent = 'x';
     toggleButton.className = 'toggle-in-text-button';
-    toggleButton.style.marginRight = '10px'; // Add some space between the buttons
+    toggleButton.style.float = "right"; // Add some space between the buttons
 
     toggleButton.addEventListener('click', () => {
         // Toggle the max-height between 100px and the full height of the content (to show/hide the reference frame)
@@ -389,8 +391,9 @@ export function secondFrame(referenceCount) {
 
     // Create the second button for CrossRef search
     const crossRefAllButton = document.createElement('button');
-    crossRefAllButton.textContent = 'Search All CrossRef';
+    crossRefAllButton.textContent = 'Search CrossRef';
     crossRefAllButton.className = 'crossref-all-button';
+    crossRefAllButton.style.marginLeft = '5px';
 
     // Add event listener to trigger the search for all references when clicked
     function sleep(ms) {
@@ -524,25 +527,46 @@ export function secondFrame(referenceCount) {
     UpdateFirstFrame()
 }
 
+let currentMatchIndex = -1; // To keep track of the current match
+
 function searchRef() {
-        // Get the search term from the input field
-        const searchTerm = event.target.value.toLowerCase();  // Use event.target to get the input value
+    // Get the search term from the input field
+    const searchTerm = event.target.value.toLowerCase();
     
-        // Find the element by its content or ID
-        const referenceFrames = document.querySelectorAll('.Reference-frame');
-        // Loop through elements to find the matching one based on content or ID
-        referenceFrames.forEach((element) => {
-            if (element.textContent.toLowerCase().includes(searchTerm) || element.id.toLowerCase() === searchTerm) {
-                //document.getElementById('scholar-container').style.overflowY = 'hidden';
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                //setTimeout(document.getElementById('scholar-container').style.overflowY = 'auto', 200)
-            }
-        });
+    // Find the element by its content or ID
+    const referenceFrames = Array.from(document.querySelectorAll('.Reference-frame'));
     
+    // Filter the elements that match the search term
+    const matchingElements = referenceFrames.filter((element) =>
+        element.textContent.toLowerCase().includes(searchTerm) || element.id.toLowerCase() === searchTerm
+    );
+    
+    if (matchingElements.length === 0) {
+        console.log('No matches found.');
+        return; // No matches, exit function
+    }
+    
+    // Increment index and loop around if necessary
+    currentMatchIndex = (currentMatchIndex + 1) % matchingElements.length;
+    
+    // Scroll to the next match
+    const element = matchingElements[currentMatchIndex];
+    
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('scholar-container').scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 
-
+    // Optional: highlight the element to visually indicate the match
+    element.style.backgroundColor = 'yellow';
+    
+    // Remove highlight after some time (optional)
+    setTimeout(() => {
+        element.style.backgroundColor = '';
+    }, 200);
 }
+
 
 function UpdateFirstFrame() {
         // Get the accent color from the CSS variable

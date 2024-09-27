@@ -526,7 +526,6 @@ function UpdateFirstFrame() {
         referenceFrames.forEach(reference => {
             // Get the computed color of the reference frame
             const referenceColor = getComputedStyle(reference).getPropertyValue('background-color').trim();
-            console.log(referenceColor)
             // If the reference color doesn't match the accent color, increment the counter
             if (referenceColor === accentColor) {
                 countWithoutMatch++;
@@ -624,6 +623,7 @@ function DragDrop() {
             } else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
 
             }
+            UpdateFirstFrame()
         });
     });
 
@@ -649,7 +649,7 @@ function DragDrop() {
             }
         });
     }
-    UpdateFirstFrame()
+    
 }
 
 

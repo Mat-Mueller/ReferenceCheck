@@ -355,6 +355,16 @@ export function secondFrame(referenceCount) {
 
     referenceTitle.style.marginLeft = '10px'
 
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.id = 'searchField';
+    searchInput.placeholder = 'Search...';
+    searchInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {  // Check if the Enter key was pressed
+            searchRef(event);      // Call the search function and pass the event
+        }
+        })
+    referenceTitle.appendChild(searchInput)
     // Create a container div to hold the buttons side by side
     const buttonContainer = document.createElement('div');
     buttonContainer.style.display = 'inline-block'; // Ensure buttons are on the same line
@@ -512,6 +522,26 @@ export function secondFrame(referenceCount) {
 
     DragDrop() // sollten wir eventuell verschieben
     UpdateFirstFrame()
+}
+
+function searchRef() {
+        // Get the search term from the input field
+        const searchTerm = event.target.value.toLowerCase();  // Use event.target to get the input value
+    
+        // Find the element by its content or ID
+        const referenceFrames = document.querySelectorAll('.Reference-frame');
+        // Loop through elements to find the matching one based on content or ID
+        referenceFrames.forEach((element) => {
+            if (element.textContent.toLowerCase().includes(searchTerm) || element.id.toLowerCase() === searchTerm) {
+                //document.getElementById('scholar-container').style.overflowY = 'hidden';
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                //setTimeout(document.getElementById('scholar-container').style.overflowY = 'auto', 200)
+            }
+        });
+    
+
+
 }
 
 function UpdateFirstFrame() {

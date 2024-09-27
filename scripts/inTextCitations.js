@@ -211,6 +211,7 @@ function cleanCitations() {
                     words.length > 1 &&
                     (
                         words[words.length - 2].toLowerCase() === 'and' ||
+                        words[words.length - 2].toLowerCase() === 'und' ||
                         words[words.length - 2].toLowerCase() === '&' ||
                         words[words.length - 1].toLowerCase().replace(",", "") === 'al.'
                     )
@@ -364,7 +365,7 @@ function assignnames() {
     citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
             //console.log(cleanedText)
-            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(";and", "").split(';').filter(name => name !== "")//.replace(",", "");
+            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(";and", "").replace(";und", "").split(';').filter(name => name !== "")//.replace(",", "");
             authorsCit.pop()
             span.setAttribute('authors', authorsCit.join(";"))
     })

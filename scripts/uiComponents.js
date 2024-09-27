@@ -532,13 +532,19 @@ function UpdateFirstFrame() {
                 countWithoutMatch++;
             }
         });
-    
+        
+
+        const citationSpans = document.querySelectorAll('span.citation')
+        const MatchedcitationSpans = document.querySelectorAll('span.citation[found="true"]')
+
+
         // Find the TextFrameParagraph where the new text needs to be added
         const TextFrameParagraph = document.querySelector('.search-string-frame p');
         
         // Append the text to the existing paragraph
         if (TextFrameParagraph) {
-            TextFrameParagraph.innerHTML += `<br>${countWithoutMatch} References without match.`;
+            TextFrameParagraph.innerHTML = `Found ${referenceFrames.length} References with ` + `${countWithoutMatch} Reference${countWithoutMatch === 1 ? '' : 's'} without match.`;
+            TextFrameParagraph.innerHTML += `<br>Found ${citationSpans.length} in-text citations with ` + `${citationSpans.length - MatchedcitationSpans.length} in-text citation${citationSpans.length - MatchedcitationSpans.length === 1 ? '' : 's'} without match.  `
         }
 }
 
@@ -598,7 +604,9 @@ function DragDrop() {
             if (dropZone.classList.contains('Reference-frame')) {
                 // 1. Set the background color to secondary color
                 draggedElement.style.backgroundColor = secondaryColor;
-
+                if (!draggedElement.hasAttribute('found')) {
+                    draggedElement.setAttribute('found', 'true');
+                  }
                 // 2. Add event listener to scroll to the drop zone (Reference-frame)
                 draggedElement.addEventListener('click', () => {
                     dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -641,7 +649,7 @@ function DragDrop() {
             }
         });
     }
-    
+    UpdateFirstFrame()
 }
 
 

@@ -543,8 +543,8 @@ function UpdateFirstFrame() {
         
         // Append the text to the existing paragraph
         if (TextFrameParagraph) {
-            TextFrameParagraph.innerHTML = `Found ${referenceFrames.length} References with ` + `${countWithoutMatch} Reference${countWithoutMatch === 1 ? '' : 's'} without match.`;
-            TextFrameParagraph.innerHTML += `<br>Found ${citationSpans.length} in-text citations with ` + `${citationSpans.length - MatchedcitationSpans.length} in-text citation${citationSpans.length - MatchedcitationSpans.length === 1 ? '' : 's'} without match.  `
+            TextFrameParagraph.innerHTML = `Found <b>${referenceFrames.length}</b> References with ` + `<b>${countWithoutMatch}</b> Reference${countWithoutMatch === 1 ? '' : 's'} without match.`;
+            TextFrameParagraph.innerHTML += `<br>Found <b>${citationSpans.length}</b> in-text citations with ` + `<b>${citationSpans.length - MatchedcitationSpans.length}</b> in-text citation${citationSpans.length - MatchedcitationSpans.length === 1 ? '' : 's'} without match.  `
         }
 }
 

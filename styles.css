@@ -235,6 +235,11 @@ button.active {
     overflow-y: auto;
 }
 
+#pdf-container {
+    overflow:auto;
+
+}
+
 /* Notification styles for CrossRef results */
 .notification {
     background-color: white;

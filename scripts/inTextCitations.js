@@ -113,7 +113,8 @@ function GetallPossibleNames() {
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
         // Step 2: Extract the part before the (year)
         let lastNames
-        if (cleanedText && cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0]) {
+        console.log(cleanedText)
+        if (cleanedText ) {
             const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
              lastNames = authorsPart.replace(" (", "").replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
@@ -265,7 +266,7 @@ function cleanCitations() {
         }
         // Set a new attribute 'cleanedCit' with the cleaned text
         span.setAttribute('cleanedCit', cleanedText.replace("(", ""));
-        span.setAttribute('title', cleanedText);
+        span.setAttribute('title', cleanedText.replace(/;/g, " "));
         // Find the first 4-digit year in the cleanedText
         let yearMatch = cleanedText.match(/\b\d{4}[a-zA-Z]?\b/);
         if (yearMatch) {

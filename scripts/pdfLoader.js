@@ -2,6 +2,7 @@
 
 import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs';
 import { checkFooter, checkHeader } from './headerFooterDetect.js';
+import {createZoomButtons} from "./zoomin.js"
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.worker.min.mjs';
 
@@ -149,4 +150,9 @@ async function renderAllPages(pdfDocument) {
             textLayerDiv.appendChild(lineElement);
         });
     }
+
+
+    createZoomButtons()
 }
+
+

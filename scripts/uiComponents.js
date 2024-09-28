@@ -1,5 +1,7 @@
 import { getMergedTextByMyId, checkExists } from './crossrefSearch.js';
 
+
+
 export function clearRightContainer() {
     const scholarContainer = document.getElementById('scholar-container');
     scholarContainer.innerHTML = ''; // Clear previous content

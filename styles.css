@@ -238,6 +238,18 @@ button.active {
 #pdf-container {
     overflow:auto;
 
+
+}
+
+#dummy {
+    transform-origin: 0 0; /* Keeps the zoom effect centered */
+    transition: transform 0.2s ease-in-out; /* Smooth zoom effect */
+
+}
+.textLayer{
+    transform-origin: 0 0; /* Keeps the zoom effect centered */
+    transition: transform 0.2s ease-in-out; /* Smooth zoom effect */
+
 }
 
 /* Notification styles for CrossRef results */

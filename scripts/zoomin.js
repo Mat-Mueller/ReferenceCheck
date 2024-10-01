@@ -5,13 +5,15 @@ export function createZoomButtons() {
     zoomInButton.onclick = zoomIn;
     zoomInButton.style.position = "fixed";
     zoomInButton.style.bottom = "20px";
-    zoomInButton.style.left = "40px";
+    zoomInButton.style.width = "20px";
+    zoomInButton.style.left = "45px";
 
     const zoomOutButton = document.createElement("button");
     zoomOutButton.innerHTML = "-";
     zoomOutButton.onclick = zoomOut;
     zoomOutButton.style.position = "fixed";
     zoomOutButton.style.bottom = "20px";
+    zoomOutButton.style.width = "20px";
     zoomOutButton.style.left = "20px"; // Position it to the right of the Zoom In button
 
     document.body.appendChild(zoomInButton);

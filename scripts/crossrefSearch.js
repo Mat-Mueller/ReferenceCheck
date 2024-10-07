@@ -36,14 +36,16 @@ async function crossrefSearch(textReference) {
             const rateLimit = response.headers.get('X-Rate-Limit-Limit');
             const rateLimitRemaining = response.headers.get('X-Rate-Limit-Remaining');
             const rateLimitInterval = response.headers.get('X-Rate-Limit-Interval');
+            /*
             console.log([...response.headers.entries()]);
             console.log(`Rate Limit: ${rateLimit}`);
             console.log(`Rate Limit Remaining: ${rateLimitRemaining}`);
             console.log(`Rate Limit Interval: ${rateLimitInterval}`);
 
             console.log(`Search results returned from crossref: ${searchResults}`); // Log the response from the API
+            */
             document.body.style.cursor = 'default'; // Revert cursor to default
-
+            console.log(searchResults)
             const searchResultsData = searchResults.message.items.slice(0, 2); // Get the first 2 results
             console.log(`Sliced search results returned from crossref: ${searchResultsData}`);
 

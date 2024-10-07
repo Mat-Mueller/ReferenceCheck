@@ -403,23 +403,42 @@ export function secondFrame(referenceCount) {
     crossRefAllButton.style.marginLeft = '5px';
 
     // Add event listener to trigger the search for all references when clicked
+    crossRefAllButton.addEventListener('click', async () => {
+        const crossRefButtons = document.querySelectorAll('.crossref-search-button');
+    
+        // Create a concurrency limiter
+        const MAX_CONCURRENT_REQUESTS = 5;
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    
+        let activeRequests = 0;
+    
+        for (let i = 0; i < crossRefButtons.length; i++) {
+            // Wait until there are fewer than MAX_CONCURRENT_REQUESTS
+            while (activeRequests >= MAX_CONCURRENT_REQUESTS) {
+                await delay(100); // Check every 100 ms if there's space for new requests
+            }
+    
+            activeRequests++; // Increment active requests count
+    
+            // Manually call the function that was originally triggered by the button click
+            const textReference = getMergedTextByMyId(i);
+            checkExists(textReference)
+                .then((searchResults) => {
+                    searchResultGUI(searchResults, crossRefButtons[i], crossRefButtons[i].RP);
+                })
+                .finally(() => {
+                    activeRequests--; // Decrement after the request is finished
+                });
+    
+            await delay(100); // Small delay between starting new requests
+        }
+    });
+    
+    // Simulate a sleep function for delays
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-
-    // Add event listener to the CrossRef search button
-    crossRefAllButton.addEventListener('click', async () => {
-        // Find all buttons with class 'crossref-search-button'
-        const crossRefButtons = document.querySelectorAll('.crossref-search-button');
-
-        // Iterate through each button and trigger its click event with a delay
-        for (let i = 0; i < crossRefButtons.length; i++) {
-            crossRefButtons[i].click(); // Trigger the individual click event
-
-            // Introduce a delay of 1 second (1000 ms) between each request
-            await sleep(10);
-        }
-    });
+    
     buttonContainer.appendChild(crossRefAllButton);
     referenceHeadline.appendChild(buttonContainer);
     referenceHeadline.appendChild(toggleButton);
@@ -500,6 +519,7 @@ export function secondFrame(referenceCount) {
         crossRefButton.textContent = 'CR';
         crossRefButton.className = 'crossref-search-button';
         crossRefButton.id = `crossref-button-${j}`
+        crossRefButton.RP = ReferenceFrameParagraph
         crossRefButton.addEventListener('click', async () => {
             const textReference = getMergedTextByMyId(j);
             const searchResults = await checkExists(textReference);

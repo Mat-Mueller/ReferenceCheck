@@ -45,7 +45,7 @@ async function crossrefSearch(textReference) {
             console.log(`Search results returned from crossref: ${searchResults}`); // Log the response from the API
             */
             document.body.style.cursor = 'default'; // Revert cursor to default
-            console.log(searchResults)
+            
             const searchResultsData = searchResults.message.items.slice(0, 2); // Get the first 2 results
             console.log(`Sliced search results returned from crossref: ${searchResultsData}`);
 

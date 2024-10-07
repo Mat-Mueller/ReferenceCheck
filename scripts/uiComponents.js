@@ -228,7 +228,7 @@ async function searchResultGUI(searchResults, crossRefButton, ReferenceFramePara
 
         let RefYear = ReferenceFrameParagraph.getAttribute('year');
         let matchedSpans = [];
-        console.log(authorsRef)
+        //console.log(authorsRef)
         
         citationSpans.forEach((span) => {
           let authorsCit = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
@@ -352,7 +352,9 @@ export function secondFrame(referenceCount) {
 
     
     // Create and add headline for references
+    const referenceHeadline = document.createElement('div');
     const referenceTitle = document.createElement('p');
+    referenceTitle.id = "References"
     referenceTitle.innerHTML = '<strong>References:</strong>';
     referenceTitle.style.marginBottom = '5px'
     referenceTitle.style.marginTop = '10px'
@@ -360,6 +362,7 @@ export function secondFrame(referenceCount) {
 
     referenceTitle.style.marginLeft = '10px'
 
+    referenceHeadline.appendChild(referenceTitle)
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.id = 'searchField';
@@ -370,14 +373,14 @@ export function secondFrame(referenceCount) {
             searchRef(event);      // Call the search function and pass the event
         }
         })
-    referenceTitle.appendChild(searchInput)
+        referenceHeadline.appendChild(searchInput)
     // Create a container div to hold the buttons side by side
     const buttonContainer = document.createElement('div');
     buttonContainer.style.display = 'inline-block'; // Ensure buttons are on the same line
 
     // Create the toggle button for expanding/collapsing
     const toggleButton = document.createElement('button');
-    toggleButton.textContent = 'x';
+    toggleButton.textContent = '▲'; // ▼
     toggleButton.className = 'toggle-in-text-button';
     toggleButton.style.float = "right"; // Add some space between the buttons
 
@@ -418,10 +421,10 @@ export function secondFrame(referenceCount) {
         }
     });
     buttonContainer.appendChild(crossRefAllButton);
-    referenceTitle.appendChild(buttonContainer);
-    referenceTitle.appendChild(toggleButton);
+    referenceHeadline.appendChild(buttonContainer);
+    referenceHeadline.appendChild(toggleButton);
 
-    OuterFrame.appendChild(referenceTitle);
+    OuterFrame.appendChild(referenceHeadline);
 
 
 
@@ -443,7 +446,7 @@ export function secondFrame(referenceCount) {
         let lastNames
         if (cleanedText && cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0]) {
             const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
-            console.log(authorsPart)
+            //console.log(authorsPart)
         // Step 3: Split the remaining string by commas or ampersands and extract the last names
              lastNames = authorsPart.replace(" (hrsg.)", "").replace(" (eds.).", "").replace(" (", "").replace(", ,", ",").replace(".", "").split(/,|&/).map(author => author.trim());
              lastNames = lastNames.filter(name => name !== "");
@@ -529,7 +532,7 @@ export function secondFrame(referenceCount) {
 
 
     DragDrop() // sollten wir eventuell verschieben
-    UpdateFirstFrame()
+    
 }
 
 let currentMatchIndex = -1; // To keep track of the current match
@@ -575,7 +578,7 @@ function searchRef() {
 }
 
 
-function UpdateFirstFrame() {
+function UpdateFrames() {
         // Get the accent color from the CSS variable
         const accentColor =  "rgb(227, 87, 75)" //getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
 
@@ -598,14 +601,17 @@ function UpdateFirstFrame() {
         const citationSpans = document.querySelectorAll('span.citation')
         const MatchedcitationSpans = document.querySelectorAll('span.citation[found="true"]')
 
-
-        // Find the TextFrameParagraph where the new text needs to be added
-        const TextFrameParagraph = document.querySelector('.search-string-frame p');
         
+        // Find the TextFrameParagraph where the new text needs to be added
+        const TextFrameParagraph = document.getElementById('References');       
         // Append the text to the existing paragraph
         if (TextFrameParagraph) {
-            TextFrameParagraph.innerHTML = `Found <b>${referenceFrames.length}</b> References with ` + `<b>${countWithoutMatch}</b> Reference${countWithoutMatch === 1 ? '' : 's'} without match.`;
-            TextFrameParagraph.innerHTML += `<br>Found <b>${citationSpans.length}</b> in-text citations with ` + `<b>${citationSpans.length - MatchedcitationSpans.length}</b> in-text citation${citationSpans.length - MatchedcitationSpans.length === 1 ? '' : 's'} without match.  `
+            TextFrameParagraph.innerHTML = `Found <b>${referenceFrames.length}</b> References with ` + `<b>${countWithoutMatch}</b> Reference${countWithoutMatch === 1 ? '' : 's'} without match:`;
+        }
+        const ThirdFrameHead = document.getElementById('ThirdFrameHead');       
+        // Append the text to the existing paragraph
+        if (ThirdFrameHead) {
+            ThirdFrameHead.innerHTML = `<br>Found <b>${citationSpans.length}</b> in-text citations with ` + `<b>${citationSpans.length - MatchedcitationSpans.length}</b> in-text citation${citationSpans.length - MatchedcitationSpans.length === 1 ? '' : 's'} without match:  `
         }
 }
 
@@ -686,7 +692,7 @@ function DragDrop() {
             } else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
 
             }
-            UpdateFirstFrame()
+            UpdateFrames()
         });
     });
 
@@ -801,12 +807,13 @@ export function thirdFrame() {
         renderSpans(); // Re-render spans based on the new state
     });
 
-    const referenceTitle = document.createElement('p');
+    const ThirdFrameHead = document.createElement('div');
     const problematicCitationsCount = document.querySelectorAll('span:not([found])').length;
-    referenceTitle.innerHTML = `<strong>Found ${problematicCitationsCount} problematic in-text citations:</strong>`;
-    referenceTitle.style.marginBottom = '15px'
-    referenceTitle.style.paddingtop = '0px'
-    InTextCitFrame.appendChild(referenceTitle)
+    //ThirdFrameHead.innerHTML = `<strong>Found ${problematicCitationsCount} problematic in-text citations:</strong>`;
+    ThirdFrameHead.style.marginBottom = '15px'
+    ThirdFrameHead.style.paddingtop = '0px'
+    ThirdFrameHead.id = 'ThirdFrameHead'
+    InTextCitFrame.appendChild(ThirdFrameHead)
 
 
     // Append the toggle buttons to the InTextCitFrame
@@ -818,5 +825,6 @@ export function thirdFrame() {
 
     // Initial render showing only problematic spans
     renderSpans();
+    UpdateFrames()
 }
 

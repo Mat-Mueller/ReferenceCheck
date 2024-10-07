@@ -44,9 +44,10 @@ async function main() {
 
     // Set up GUI for results and crossref search
     clearRightContainer();
-    firstFrame(referenceCount);
+    //firstFrame(referenceCount);
     secondFrame(referenceCount);
     thirdFrame();
+    //UpdateFrames();
 
 }
 

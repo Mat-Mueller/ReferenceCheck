@@ -407,7 +407,7 @@ export function secondFrame(referenceCount) {
         const crossRefButtons = document.querySelectorAll('.crossref-search-button');
     
         // Create a concurrency limiter
-        const MAX_CONCURRENT_REQUESTS = 5;
+        const MAX_CONCURRENT_REQUESTS = 3;
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     
         let activeRequests = 0;

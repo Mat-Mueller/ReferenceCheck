@@ -563,12 +563,14 @@ function searchRef() {
         behavior: 'smooth'
     });
 
+    const ElementColor = element.style.backgroundColor;
+
     // Optional: highlight the element to visually indicate the match
     element.style.backgroundColor = 'yellow';
     
     // Remove highlight after some time (optional)
     setTimeout(() => {
-        element.style.backgroundColor = '';
+        element.style.backgroundColor = ElementColor;
     }, 200);
 }
 

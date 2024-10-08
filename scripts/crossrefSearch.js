@@ -1,4 +1,4 @@
-import { searchResultGUI } from './uiComponents.js'
+import { searchResultGUI, hideLoadingSpinner, showLoadingSpinner } from './uiComponents.js'
 
 // Functions imported by uiComponents.js to run and evaluate crossref search
 
@@ -12,7 +12,7 @@ export async function performCrossRefSearch() {
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     let activeRequests = 0;
-
+    showLoadingSpinner()
     for (let i = 0; i < References.length; i++) {
         // Wait until there are fewer than MAX_CONCURRENT_REQUESTS
         while (activeRequests >= MAX_CONCURRENT_REQUESTS) {
@@ -33,6 +33,7 @@ export async function performCrossRefSearch() {
 
         await delay(100); // Small delay between starting new requests
     }
+    hideLoadingSpinner();
 }
 
 // Simulate a sleep function for delays
@@ -69,7 +70,7 @@ async function crossrefSearch(textReference) {
 
     if (textReference.length > 0) {
         try {
-            document.body.style.cursor = 'wait'; // Change cursor to wait
+            //document.body.style.cursor = 'wait'; // Change cursor to wait
             const query = encodeURIComponent(textReference);
             const apiUrl = `https://api.crossref.org/works?query.bibliographic=${query}&rows=3`;
 

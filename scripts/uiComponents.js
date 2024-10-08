@@ -352,6 +352,11 @@ export function secondFrame(referenceCount) {
     
     // Create and add headline for references
     const referenceHeadline = document.createElement('div');
+
+    const Refspinner = document.createElement('div')
+    Refspinner.id = "loading-spinner" 
+    Refspinner.className  = "spinner"
+    referenceHeadline.appendChild(Refspinner)
     const referenceTitle = document.createElement('p');
     referenceTitle.id = "References"
     referenceTitle.innerHTML = '<strong>References:</strong>';
@@ -808,4 +813,13 @@ export function thirdFrame() {
     renderSpans();
     UpdateFrames()
 }
+
+export function showLoadingSpinner() {
+    document.getElementById('loading-spinner').style.display = 'block';
+  }
+  
+  // Function to hide the loading spinner
+ export function hideLoadingSpinner() {
+    document.getElementById('loading-spinner').style.display = 'none';
+  }
 

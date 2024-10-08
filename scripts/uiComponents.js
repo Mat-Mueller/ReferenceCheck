@@ -166,53 +166,90 @@ selection.removeAllRanges();  // Clears the selection
 
 
 export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
-    // Remove the button after it's clicked
-
     // If search data is available, process it and show results
     if (searchResults.length > 0) {
         const resultsDiv = document.createElement('div'); // Create a div to contain results
         resultsDiv.className = 'crossref-results';
         resultsDiv.style.marginTop = '5px'; // Add margin above results
 
-        // Loop through results and add them to the resultsDiv
-        searchResults.forEach(item => {
-            if (item.title && item.URL) { // Check if title and URL are present
-                const resultFrame = document.createElement('div');
-                resultFrame.className = 'result-frame';
+        // Add a heading for the best match
+        const bestMatchHeading = document.createElement('p');
+        bestMatchHeading.innerHTML = '<strong>Best Crossref match:</strong>';
+        //bestMatchHeading.style.fontSize = '18px';
+        bestMatchHeading.style.marginBottom = '10px';
+        resultsDiv.appendChild(bestMatchHeading);
 
-                // Create a single paragraph element
-                const resultParagraph = document.createElement('p');
-                resultParagraph.style.fontSize = '16px'; // Set font size
-                resultParagraph.style.margin = '0px'; // Set font size
-                resultParagraph.style.backgroundColor = "#FFFFFF";
+        // Show the first (best) result
+        const firstResult = searchResults[0];
+        appendResultToDiv(firstResult, resultsDiv);
 
-                // Construct the inner HTML content without new lines   <strong>${matchPercentage}% Match</strong>.
-                resultParagraph.innerHTML = `
-        
+        // Append the resultsDiv to the ReferenceFrameParagraph
+        ReferenceFrameParagraph.appendChild(resultsDiv);
+
+        // If there are more results, create a "Load more results" button
+        if (searchResults.length > 10) {
+            const loadMoreButton = document.createElement('button');
+            loadMoreButton.textContent = 'Load more results';
+            loadMoreButton.style.display = 'block';
+            loadMoreButton.style.marginTop = '10px';
+            loadMoreButton.style.cursor = 'pointer';
+
+            // Append the button after the first result
+            ReferenceFrameParagraph.appendChild(loadMoreButton);
+
+            let resultsLoaded = 1; // Track how many results have been loaded
+
+            // Event listener for the "Load more results" button
+            loadMoreButton.addEventListener('click', () => {
+                // Load the next result
+                if (resultsLoaded < searchResults.length) {
+                    const nextResult = searchResults[resultsLoaded];
+                    appendResultToDiv(nextResult, resultsDiv);
+                    resultsLoaded++; // Increment the number of loaded results
+
+                    // Hide the button if all results have been loaded
+                    if (resultsLoaded === searchResults.length) {
+                        loadMoreButton.style.display = 'none'; // Hide the button
+                    }
+                }
+            });
+        }
+
+    } else {
+        const noResultsMsg = document.createElement('p');
+        noResultsMsg.textContent = 'No CrossRef results found.';
+        ReferenceFrameParagraph.appendChild(noResultsMsg);
+    }
+}
+
+// Helper function to append a single result to the resultsDiv
+function appendResultToDiv(item, resultsDiv) {
+    if (item.title && item.URL) {
+        const resultFrame = document.createElement('div');
+        resultFrame.className = 'result-frame';
+
+        // Create a single paragraph element for the result
+        const resultParagraph = document.createElement('p');
+        resultParagraph.style.fontSize = '16px';
+        resultParagraph.style.margin = '0px';
+        resultParagraph.style.backgroundColor = "#FFFFFF";
+
+        resultParagraph.innerHTML = `
         ${item.formattedAuthors}.
         (${item.yearString}).
         <strong>${item.title[0]}</strong>.
         ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}.
         DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
 
-                resultFrame.appendChild(resultParagraph); // Append the combined paragraph to resultFrame
+        resultFrame.appendChild(resultParagraph);
+        resultFrame.style.marginBottom = '10px';
+        resultFrame.style.backgroundColor = `hsl(${(item.matchPercentage / 100) * 120}, 100%, 50%)`;
 
-                // Add empty line between results
-                resultFrame.style.marginBottom = '2px';
+        // Append the result frame to the resultsDiv
+        resultsDiv.appendChild(resultFrame);
+    }
+}
 
-                // Append the resultFrame to the resultsDiv
-                resultsDiv.appendChild(resultFrame);
-
-                resultFrame.style.backgroundColor = `hsl(${(item.matchPercentage / 100) * 120}, 100%, 50%)`;
-            }
-        });
-
-        ReferenceFrameParagraph.appendChild(resultsDiv); // Append the resultsDiv to the ReferenceFrameParagraph
-    } else {
-        const noResultsMsg = document.createElement('p');
-        noResultsMsg.textContent = 'No CrossRef results found.';
-        ReferenceFrameParagraph.appendChild(noResultsMsg);
-    }}
 
 
 
@@ -287,7 +324,7 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
        
         const matchedSpans = [...new Set(SingleRef.myLinks)];
         const matchCount = matchedSpans.length;
-        SingleRef.innerHTML = `Has been found ${matchCount} times in the document.`;
+        SingleRef.innerHTML = `<b>${matchCount}</b> ${matchCount === 1 ? 'instance' : 'instances'} in the document:`;
         SingleRef.style.marginBottom = '5px'; // Add space as needed
         matchedSpans.forEach((span, index) => {
             //console.log(span);

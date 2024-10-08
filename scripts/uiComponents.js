@@ -165,7 +165,7 @@ selection.removeAllRanges();  // Clears the selection
 }
 
 
-async function searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph) {
+export async function searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph) {
     // Remove the button after it's clicked
     crossRefButton.remove();
 
@@ -396,50 +396,7 @@ export function secondFrame(referenceCount) {
     // Append the toggle button to the button container
     buttonContainer.appendChild(toggleButton);
 
-    // Create the second button for CrossRef search
-    const crossRefAllButton = document.createElement('button');
-    crossRefAllButton.textContent = 'Search CrossRef';
-    crossRefAllButton.className = 'crossref-all-button';
-    crossRefAllButton.style.marginLeft = '5px';
-
-    // Add event listener to trigger the search for all references when clicked
-    crossRefAllButton.addEventListener('click', async () => {
-        const crossRefButtons = document.querySelectorAll('.crossref-search-button');
-    
-        // Create a concurrency limiter
-        const MAX_CONCURRENT_REQUESTS = 3;
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-    
-        let activeRequests = 0;
-    
-        for (let i = 0; i < crossRefButtons.length; i++) {
-            // Wait until there are fewer than MAX_CONCURRENT_REQUESTS
-            while (activeRequests >= MAX_CONCURRENT_REQUESTS) {
-                await delay(100); // Check every 100 ms if there's space for new requests
-            }
-    
-            activeRequests++; // Increment active requests count
-    
-            // Manually call the function that was originally triggered by the button click
-            const textReference = getMergedTextByMyId(i);
-            checkExists(textReference)
-                .then((searchResults) => {
-                    searchResultGUI(searchResults, crossRefButtons[i], crossRefButtons[i].RP);
-                })
-                .finally(() => {
-                    activeRequests--; // Decrement after the request is finished
-                });
-    
-            await delay(100); // Small delay between starting new requests
-        }
-    });
-    
-    // Simulate a sleep function for delays
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    
-    buttonContainer.appendChild(crossRefAllButton);
+ 
     referenceHeadline.appendChild(buttonContainer);
     referenceHeadline.appendChild(toggleButton);
 

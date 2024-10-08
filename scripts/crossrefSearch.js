@@ -1,4 +1,47 @@
+import { searchResultGUI } from './uiComponents.js'
+
 // Functions imported by uiComponents.js to run and evaluate crossref search
+
+// Function to perform the CrossRef search for all buttons
+export async function performCrossRefSearch() {
+    const crossRefButtons = document.querySelectorAll('.crossref-search-button');
+
+    // Create a concurrency limiter
+    const MAX_CONCURRENT_REQUESTS = 3;
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    let activeRequests = 0;
+
+    for (let i = 0; i < crossRefButtons.length; i++) {
+        // Wait until there are fewer than MAX_CONCURRENT_REQUESTS
+        while (activeRequests >= MAX_CONCURRENT_REQUESTS) {
+            await delay(100); // Check every 100 ms if there's space for new requests
+        }
+
+        activeRequests++; // Increment active requests count
+
+        // Manually call the function that was originally triggered by the button click
+        const textReference = getMergedTextByMyId(i);
+        checkExists(textReference)
+            .then((searchResults) => {
+                searchResultGUI(searchResults, crossRefButtons[i], crossRefButtons[i].RP);
+            })
+            .finally(() => {
+                activeRequests--; // Decrement after the request is finished
+            });
+
+        await delay(100); // Small delay between starting new requests
+    }
+}
+
+// Simulate a sleep function for delays
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Call the function to trigger the search automatically
+
+
 
 export function getMergedTextByMyId(MyId) {
     const divs = document.querySelectorAll(`[MyId="${MyId}"]`);

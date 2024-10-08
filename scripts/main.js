@@ -3,6 +3,7 @@ import { readRenderPDF } from './pdfLoader.js';
 import { findReferenceSection, userDecisionReferenceSection } from './findReferenceList.js';
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
 import { inTextSearch } from './inTextCitations.js';
+import { performCrossRefSearch } from './crossrefSearch.js';
 
 async function main() {
     // Display a description that helps the user understand the software
@@ -48,6 +49,7 @@ async function main() {
     secondFrame(referenceCount);
     thirdFrame();
     //UpdateFrames();
+    performCrossRefSearch();
 
 }
 

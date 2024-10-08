@@ -352,7 +352,7 @@ export function secondFrame(referenceCount) {
     
     // Create and add headline for references
     const referenceHeadline = document.createElement('div');
-
+    referenceHeadline.id = "referenceHeadline"
     const Refspinner = document.createElement('div')
     Refspinner.id = "loading-spinner" 
     Refspinner.className  = "spinner"
@@ -390,6 +390,11 @@ export function secondFrame(referenceCount) {
 
     toggleButton.addEventListener('click', () => {
         // Toggle the max-height between 100px and the full height of the content (to show/hide the reference frame)
+        if (toggleButton.textContent === '▲') {
+            toggleButton.textContent = '▼';
+        } else {
+            toggleButton.textContent = '▲'
+        }
         if (ReferenceFrame.style.maxHeight === '400px') {
             ReferenceFrame.style.maxHeight = ReferenceFrame.scrollHeight + 'px'; // Expand to content height
         } else {

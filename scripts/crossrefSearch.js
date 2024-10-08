@@ -100,7 +100,7 @@ async function crossrefSearch(textReference) {
             return null; // Return null in case of an error
         }
     } else {
-        alert('No text found in the selected divs.');
+        console.log('No text found in the selected divs.');
         return null; // Return null if no text is found
     }
 }

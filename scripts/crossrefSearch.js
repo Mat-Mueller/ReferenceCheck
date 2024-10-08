@@ -4,15 +4,16 @@ import { searchResultGUI } from './uiComponents.js'
 
 // Function to perform the CrossRef search for all buttons
 export async function performCrossRefSearch() {
-    const crossRefButtons = document.querySelectorAll('.crossref-search-button');
-
+    const References = document.querySelectorAll('.Reference-frame');
+    console.log(References)
+    console.log("starting CR search")
     // Create a concurrency limiter
     const MAX_CONCURRENT_REQUESTS = 3;
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     let activeRequests = 0;
 
-    for (let i = 0; i < crossRefButtons.length; i++) {
+    for (let i = 0; i < References.length; i++) {
         // Wait until there are fewer than MAX_CONCURRENT_REQUESTS
         while (activeRequests >= MAX_CONCURRENT_REQUESTS) {
             await delay(100); // Check every 100 ms if there's space for new requests
@@ -24,7 +25,7 @@ export async function performCrossRefSearch() {
         const textReference = getMergedTextByMyId(i);
         checkExists(textReference)
             .then((searchResults) => {
-                searchResultGUI(searchResults, crossRefButtons[i], crossRefButtons[i].RP);
+                searchResultGUI(searchResults, References[i]);
             })
             .finally(() => {
                 activeRequests--; // Decrement after the request is finished

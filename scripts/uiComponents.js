@@ -165,9 +165,8 @@ selection.removeAllRanges();  // Clears the selection
 }
 
 
-export async function searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph) {
+export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
     // Remove the button after it's clicked
-    crossRefButton.remove();
 
     // If search data is available, process it and show results
     if (searchResults.length > 0) {
@@ -288,7 +287,7 @@ export async function searchResultGUI(searchResults, crossRefButton, ReferenceFr
        
         const matchedSpans = [...new Set(SingleRef.myLinks)];
         const matchCount = matchedSpans.length;
-        SingleRef.innerHTML = `has been found ${matchCount} times in the document.`;
+        SingleRef.innerHTML = `Has been found ${matchCount} times in the document.`;
         SingleRef.style.marginBottom = '5px'; // Add space as needed
         matchedSpans.forEach((span, index) => {
             //console.log(span);
@@ -433,6 +432,7 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.className = "ReferenceFrameParagraph"
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
         ReferenceFrameParagraph.setAttribute('year', MyYear)
+        ReferenceFrameParagraph.id = j;
                 // check if there is an abbreviation
                 const result = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
 
@@ -472,6 +472,9 @@ export function secondFrame(referenceCount) {
         // Add the CrossRef search button
         const buttoncontainer = document.createElement('div');
         buttoncontainer.className = "buttoncontainer"
+        ReferenceFrameParagraph.appendChild(buttoncontainer)
+
+        /*
         const crossRefButton = document.createElement('button');
         crossRefButton.textContent = 'CR';
         crossRefButton.className = 'crossref-search-button';
@@ -482,9 +485,8 @@ export function secondFrame(referenceCount) {
             const searchResults = await checkExists(textReference);
             searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph);
         });
-        ReferenceFrameParagraph.appendChild(buttoncontainer)
         buttoncontainer.appendChild(crossRefButton);
-
+        */
         // make a scholar button
         const ScholarRefButton = document.createElement('button');
         ScholarRefButton.textContent = 'GS';
@@ -509,7 +511,9 @@ export function secondFrame(referenceCount) {
 
 
     DragDrop() // sollten wir eventuell verschieben
-    
+    //document.querySelector('.ReferenceFrameParagraph[id="0"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+
 }
 
 let currentMatchIndex = -1; // To keep track of the current match
@@ -583,7 +587,7 @@ function UpdateFrames() {
         const TextFrameParagraph = document.getElementById('References');       
         // Append the text to the existing paragraph
         if (TextFrameParagraph) {
-            TextFrameParagraph.innerHTML = `Found <b>${referenceFrames.length}</b> References with ` + `<b>${countWithoutMatch}</b> Reference${countWithoutMatch === 1 ? '' : 's'} without match:`;
+            TextFrameParagraph.innerHTML = `<b>${referenceFrames.length}</b> References (<b>${countWithoutMatch}</b> without match):`;
         }
         const ThirdFrameHead = document.getElementById('ThirdFrameHead');       
         // Append the text to the existing paragraph

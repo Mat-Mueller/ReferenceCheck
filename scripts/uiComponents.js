@@ -273,9 +273,11 @@ function appendResultToDiv(item, resultsDiv) {
             // If "et" and "al." are in arr1, we only compare the first author
             const hasEtAl = arr1.includes("et") && arr1.includes("al.");
             
+            if (arr2.length === 0 ) {return false}
+
             if (hasEtAl) {
               // Normalize both strings to avoid encoding issues
-            //   console.log(arr1[0].normalize().length, arr2[0].normalize().length)
+              console.log(arr2)
               return arr1[0].normalize() === arr2[0].normalize();
             }       
             // Standard comparison when "et" and "al." are not present
@@ -460,23 +462,50 @@ export function secondFrame(referenceCount) {
         //assign author names to ReferenceFrameParagraph
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '').toLowerCase();
         // Step 2: Extract the part before the (year)
-        let lastNames
-        if (cleanedText && cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0]) {
-            const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
-            //console.log(authorsPart)
-        // Step 3: Split the remaining string by commas or ampersands and extract the last names
-             lastNames = authorsPart.replace(" (hrsg.)", "").replace(" (eds.).", "").replace(" (", "").replace(", ,", ",").replace(".", "").split(/,|&/).map(author => author.trim());
-             lastNames = lastNames.filter(name => name !== "");
+        let lastNames;
+        if (cleanedText) {
+            // Attempt to match the authors part using a regular expression
+            const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
+        
+            // Check if the match was successful
+            if (matchResult) {
+                const authorsPart = matchResult[0]; // Safely access the matched part
+                
+                // Step 3: Split the remaining string by commas or ampersands and extract the last names
+                lastNames = authorsPart
+                    .replace(" (hrsg.)", "")
+                    .replace(" (eds.).", "")
+                    .replace(" (", "")
+                    .replace(", ,", ",")
+                    .replace(".", "")
+                    .split(/,|&/)
+                    .map(author => author.trim());
+        
+                // Filter out any empty names
+                lastNames = lastNames.filter(name => name !== "");
+            } else {
+                // If no match is found, set lastNames to an empty array
+                lastNames = [];
+            }
         } else {
-             lastNames = [];
-
+            // If cleanedText is falsy, set lastNames to an empty array
+            lastNames = [];
         }
+        
         ReferenceFrameParagraph.className = "ReferenceFrameParagraph"
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
         ReferenceFrameParagraph.setAttribute('year', MyYear)
         ReferenceFrameParagraph.id = j;
                 // check if there is an abbreviation
-                const result = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
+                const matchResult = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
+
+let result;
+if (matchResult) {
+    result = matchResult[0]; // Safely access the matched part
+} else {
+    result = ""; // Or handle it accordingly if no match is found
+}
+
 
                 const match = result.match(/\(([^)]+)\)/);
 
@@ -781,6 +810,26 @@ function DragDrop() {
 
             // If the drop zone is a valid "Reference-frame" element
             if (dropZone.classList.contains('Reference-frame')) {
+
+                let ListSimilar = []
+                draggables.forEach ((dragged) =>{
+                    if (dragged.title === draggedElement.title) {
+                        ListSimilar.push(dragged)
+                    }
+                })
+                ListSimilar.forEach((dragged) => {
+                MatchDragged(dragged, dropZone)
+            })
+            }
+            else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
+
+            }
+            
+            UpdateFrames()
+        });
+    });
+
+    function MatchDragged(draggedElement, dropZone) {
                 // 1. Set the background color to secondary color
                 draggedElement.style.backgroundColor = secondaryColor;
                 
@@ -811,15 +860,9 @@ function DragDrop() {
                         // Remove the matching element
                         inText.remove();
                     }
-                });
-            }
-            else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
+                });        
 
-            }
-            
-            UpdateFrames()
-        });
-    });
+    }
 
     // Helper function to remove links related to a specific span in all drop zones
     function removeLinksRelatedToSpan(span) {
@@ -857,6 +900,7 @@ export function thirdFrame() {
     InTextCitFrame.id = "InTextCitFrame";
     InTextCitFrame.className = 'search-string-frame'; // Assign collapsible class
     InTextCitFrame.style.flexShrink = '0'; // Set initial max height
+    InTextCitFrame.style.maxHeight = '50%';
 
     // Create the toggle button for expanding/collapsing the in-text citation frame
 

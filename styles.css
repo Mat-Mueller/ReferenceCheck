@@ -57,7 +57,7 @@ body {
 
 .frame {
     width: 50%;
-    height: 93%;
+    height: 100%;
     overflow-y: auto;
     overflow-x: auto;
     padding: 20px;

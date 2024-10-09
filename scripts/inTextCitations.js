@@ -113,16 +113,33 @@ function GetallPossibleNames() {
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
         // Step 2: Extract the part before the (year)
         let lastNames
-        //console.log(cleanedText)
-        if (cleanedText ) {
-            const authorsPart = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/)[0];
-        // Step 3: Split the remaining string by commas or ampersands and extract the last names
-             lastNames = authorsPart.replace(" (", "").replace(", ,", ",").replace(" (Eds.).", "").split(/,|&/).map(author => author.trim());
-             lastNames = lastNames.filter(name => name !== "");
+        console.log(cleanedText)
+        if (cleanedText) {
+            // Attempt to match the authors part using a regular expression
+            const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
+        
+            // Check if the match was successful
+            if (matchResult) {
+                const authorsPart = matchResult[0]; // Safely access the matched part
+        
+                // Split the remaining string by commas or ampersands and extract the last names
+                lastNames = authorsPart.replace(" (", "")
+                    .replace(", ,", ",")
+                    .replace(" (Eds.).", "")
+                    .split(/,|&/)
+                    .map(author => author.trim());
+        
+                // Filter out any empty names
+                lastNames = lastNames.filter(name => name !== "");
+            } else {
+                // Handle the case where no match was found
+                lastNames = [];
+            }
         } else {
-             lastNames = [];
-
+            // Handle the case where cleanedText is falsy (null/undefined/empty)
+            lastNames = [];
         }
+        
         lastNames.forEach((name) => {AlllastNames.push(name)})
     }
     //console.log(AlllastNames)

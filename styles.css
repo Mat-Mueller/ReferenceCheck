@@ -180,6 +180,7 @@ body {
 .toggle-in-text-button {
     cursor: pointer;
     margin-bottom: 0px;
+    margin-left: auto;
 }
 
 /* Adjust image size within controls */
@@ -291,9 +292,10 @@ margin-left : 3px;
   }
 
   #referenceHeadline {
-    display: flex;               /* Enable flexbox for horizontal layout */
-    justify-content: space-between; /* Distribute space between the elements */
-    align-items: center;          /* Align items vertically in the middle */
+    display: flex;
+    align-items: center; /* Vertically centers items (optional) */
+    justify-content: flex-start; /* Default: Aligns items to the left */
     padding: 5px;               /* Add some padding around the container */
+    gap: 10px; /* Add space between the left elements */
 }
   

@@ -61,6 +61,7 @@ export async function checkExists(textReference) {
     var searchResults = await crossrefSearch(textReference);
     searchResults = formatResults(searchResults);
     searchResults = computeMatch(textReference, searchResults);
+    console.log(searchResults)
     return searchResults
 }
 
@@ -78,17 +79,6 @@ async function crossrefSearch(textReference) {
             
             const response = await fetch(apiUrl);
             const searchResults = await response.json();
-            const rateLimit = response.headers.get('X-Rate-Limit-Limit');
-            const rateLimitRemaining = response.headers.get('X-Rate-Limit-Remaining');
-            const rateLimitInterval = response.headers.get('X-Rate-Limit-Interval');
-            /*
-            console.log([...response.headers.entries()]);
-            console.log(`Rate Limit: ${rateLimit}`);
-            console.log(`Rate Limit Remaining: ${rateLimitRemaining}`);
-            console.log(`Rate Limit Interval: ${rateLimitInterval}`);
-
-            console.log(`Search results returned from crossref: ${searchResults}`); // Log the response from the API
-            */
             document.body.style.cursor = 'default'; // Revert cursor to default
             
             const searchResultsData = searchResults.message.items.slice(0, 2); // Get the first 2 results
@@ -108,6 +98,7 @@ async function crossrefSearch(textReference) {
 
 
 function formatResults(searchResults) {
+    //if (searchResults) {
     searchResults.forEach(item => {
         // Format the authors
         if (!item.author || item.author.length === 0) {
@@ -127,8 +118,9 @@ function formatResults(searchResults) {
         }
 
         // Clean and split title words
+        if (item.title) {
         item.titleWords = item.title[0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/);
-
+        } else {item.titleWords = []}
         // Clean and split journal name
         item.journalWords = item['container-title'] ? item['container-title'][0].replace(/[^\w\s]/gi, '').toLowerCase().split(/\s+/) : [];
 
@@ -143,6 +135,7 @@ function formatResults(searchResults) {
         item.doiString = item.DOI ? item.DOI.toLowerCase() : '';
     });
     return searchResults
+//} 
 }
 
 

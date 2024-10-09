@@ -170,7 +170,7 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
     ReferenceFrameParagraph.removeChild(ReferenceFrameParagraph.lastChild)
     console.log(ReferenceFrameParagraph)
 
-    if (searchResults.length > 0) {
+    if (searchResults.length > 0 || searchResults === "NA") {
         const resultsDiv = document.createElement('div'); // Create a div to contain results
         resultsDiv.className = 'crossref-results';
         resultsDiv.style.marginTop = '5px'; // Add margin above results
@@ -349,9 +349,10 @@ function appendResultToDiv(item, resultsDiv) {
         if (matchCount === 0) {
             if (ReferenceFrameParagraph){
                 
-                ReferenceFrameParagraph.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                ReferenceFrameParagraph.style.border = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
+
             } else {
-                SingleRef.parentElement.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                SingleRef.parentElement.style.border = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
 
             }
                 //divs.forEach(div => {
@@ -360,9 +361,9 @@ function appendResultToDiv(item, resultsDiv) {
         } else {
             if (ReferenceFrameParagraph){
                 
-                ReferenceFrameParagraph.style.backgroundColor = "#FFFFFF"//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                ReferenceFrameParagraph.style.border = ""//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
             } else {
-                SingleRef.parentElement.style.backgroundColor = "#FFFFFF"//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                SingleRef.parentElement.style.border = ""//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
 
             }
 
@@ -422,7 +423,7 @@ export function secondFrame(referenceCount) {
     const toggleButton = document.createElement('button');
     toggleButton.textContent = '▲'; // ▼
     toggleButton.className = 'toggle-in-text-button';
-    toggleButton.style.float = "right"; // Add some space between the buttons
+
 
     toggleButton.addEventListener('click', () => {
         // Toggle the max-height between 100px and the full height of the content (to show/hide the reference frame)
@@ -652,13 +653,14 @@ function UpdateFrames() {
         let countWithoutMatch = 0;
         
         referenceFrames.forEach(reference => {
-            // Get the computed color of the reference frame
-            const referenceColor = getComputedStyle(reference).getPropertyValue('background-color').trim();
-            // If the reference color doesn't match the accent color, increment the counter
-            if (referenceColor === accentColor) {
+            // Get the computed border color of the reference frame
+            const referenceBorderColor = getComputedStyle(reference).getPropertyValue('border-color').trim();
+            // If the border color matches the accent color, increment the counter
+            if (referenceBorderColor === accentColor) {
                 countWithoutMatch++;
             }
         });
+        
         
 
         const citationSpans = document.querySelectorAll('span.citation')

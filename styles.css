@@ -95,6 +95,20 @@ body {
     position: relative;
 }
 
+.InTexts {
+    border: 1px solid #ccc;
+    margin-right: 5px;
+    padding: 5px 10px; /* Combines top/bottom and left/right padding */
+    margin-bottom: 5px;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    position: relative;
+    display: inline-block; /* Ensures the width fits the content */
+    white-space: nowrap; /* Prevents the content from wrapping to the next line */
+    cursor: pointer; /* Makes the element look clickable */
+}
+
+
 #dragArea {
     width: 100%;
     height: 300px;

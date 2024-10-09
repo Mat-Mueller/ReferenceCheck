@@ -712,7 +712,7 @@ function UpdateFrames() {
     if (ThirdFrameHead) {
         const totalCitations = document.querySelectorAll('span.citation').length;
         const matchedCitations = document.querySelectorAll('span.citation[found="true"]').length;
-        ThirdFrameHead.innerHTML = `<br>Found <b>${totalCitations}</b> in-text citations with ` + 
+        ThirdFrameHead.innerHTML = `Found <b>${totalCitations}</b> in-text citations with ` + 
         `<b>${totalCitations - matchedCitations}</b> in-text citation${totalCitations - matchedCitations === 1 ? '' : 's'} without match:`;
     }
 }
@@ -777,26 +777,40 @@ function DragDrop() {
             if (dropZone.classList.contains('Reference-frame')) {
                 // 1. Set the background color to secondary color
                 draggedElement.style.backgroundColor = secondaryColor;
+                
+                // Mark the draggedElement as found
                 if (!draggedElement.hasAttribute('found')) {
                     draggedElement.setAttribute('found', 'true');
-                  }
+                }
+            
                 // 2. Add event listener to scroll to the drop zone (Reference-frame)
                 draggedElement.addEventListener('click', () => {
                     dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 });
-
+            
                 // 3. Append a link to the drop zone
-                
-                let currentLinks = dropZone.querySelector('.SingleRef').myLinks
-                removeLinksRelatedToSpan(draggedElement)
-                currentLinks.push(draggedElement)
-
-                console.log(currentLinks)
-                ShowLinks(dropZone.querySelector('.SingleRef'))
-                
-            } else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
+                let currentLinks = dropZone.querySelector('.SingleRef').myLinks;
+                removeLinksRelatedToSpan(draggedElement);
+                currentLinks.push(draggedElement);
+            
+                console.log(currentLinks);
+                ShowLinks(dropZone.querySelector('.SingleRef'));
+            
+                // 4. Go through all .InTexts elements and delete the one that matches the dragged element
+                const inTextElements = document.querySelectorAll('.InTexts'); // Select all elements with the class '.InTexts'
+            
+                inTextElements.forEach(inText => {
+                    // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
+                    if (inText.innerHTML.trim() === draggedElement.getAttribute('title').trim()) {
+                        // Remove the matching element
+                        inText.remove();
+                    }
+                });
+            }
+            else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
 
             }
+            
             UpdateFrames()
         });
     });
@@ -832,19 +846,15 @@ function DragDrop() {
 export function thirdFrame() {
     const scholarContainer = document.getElementById('scholar-container');
 
-
-
     // Create the third frame for in-text citations (collapsible frame)
     const InTextCitFrame = document.createElement('div');
     InTextCitFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
     InTextCitFrame.style.maxHeight = '400px'; // Set initial max height
 
-
-
     // Create the toggle button for expanding/collapsing the in-text citation frame
     const toggleInTextButton = document.createElement('button');
     toggleInTextButton.className = 'toggle-in-text-button';
-    toggleInTextButton.style.display = 'none';
+    toggleInTextButton.style.display = 'none'; // Hide the button as per the simplified logic
     toggleInTextButton.textContent = 'Show/Hide In-Text Citations';
 
     // Toggle the frame height when the button is clicked
@@ -856,43 +866,31 @@ export function thirdFrame() {
         }
     });
 
-    // Create the "Show All/Show Problematic" button
-    const showToggleButton = document.createElement('button');
-    showToggleButton.style.display = 'none';
-    showToggleButton.textContent = 'Show Problematic'; // Default to show only problematics
-    let showAll = false; // Flag to track toggle state
-
-    // Function to render the spans based on the current filter (all or problematic)
+    // Function to render only problematic spans
     const renderSpans = () => {
         // Clear existing paragraphs in InTextCitFrame (if any)
         const existingParagraphs = InTextCitFrame.querySelectorAll('.Reference-frame');
         existingParagraphs.forEach(paragraph => paragraph.remove());
 
-        // Determine which spans to show
-        let spansToShow;
-        if (showAll) {
-            spansToShow = document.querySelectorAll('span.citation'); // Show all spans
-        } else {
-            spansToShow = document.querySelectorAll('span:not([found])'); // Show only problematic spans
-        }
+        // Select only problematic spans (i.e., spans without the 'found' attribute)
+        const problematicSpans = document.querySelectorAll('span:not([found])'); // Show only problematic spans
 
-
-        // Highlight unfound citations in red
-        document.querySelectorAll('span:not([found])').forEach((span, index) => {
+        // Highlight problematic citations in red
+        problematicSpans.forEach((span) => {
             span.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+        });
 
-        })
-
-
-        // Loop through each span to create a clickable list item in the frame
-        spansToShow.forEach((span, index) => {
+        // Loop through each problematic span and create a clickable list item
+        problematicSpans.forEach((span) => {
             const cleanedCit = span.getAttribute('title'); // Get the cleaned citation text
 
             if (cleanedCit) { // Only add if cleanedCit is available
                 const InTextCitFrameParagraph = document.createElement('div');
-                InTextCitFrameParagraph.className = 'Reference-frame';
+                InTextCitFrameParagraph.className = 'InTexts';
                 InTextCitFrameParagraph.innerHTML = cleanedCit; // Display the cleaned citation text
-                InTextCitFrameParagraph.style.cursor = 'pointer'; // Make it look clickable
+                InTextCitFrameParagraph.ParentSpan = span;   
+                // Ensure the width of the div fits its content
+
 
                 // When the paragraph is clicked, scroll to the respective span in the document
                 InTextCitFrameParagraph.addEventListener('click', () => {
@@ -905,33 +903,21 @@ export function thirdFrame() {
         });
     };
 
-    // Add event listener to toggle between showing all and problematic
-    showToggleButton.addEventListener('click', () => {
-        showAll = !showAll; // Toggle the state
-        showToggleButton.textContent = showAll ? 'Show Problematic' : 'Show All'; // Update button text
-        renderSpans(); // Re-render spans based on the new state
-    });
-
     const ThirdFrameHead = document.createElement('div');
-    const problematicCitationsCount = document.querySelectorAll('span:not([found])').length;
-    //ThirdFrameHead.innerHTML = `<strong>Found ${problematicCitationsCount} problematic in-text citations:</strong>`;
-    ThirdFrameHead.style.marginBottom = '15px'
-    ThirdFrameHead.style.paddingtop = '0px'
-    ThirdFrameHead.id = 'ThirdFrameHead'
-    InTextCitFrame.appendChild(ThirdFrameHead)
+    ThirdFrameHead.id = 'ThirdFrameHead';
+    InTextCitFrame.appendChild(ThirdFrameHead);
 
-
-    // Append the toggle buttons to the InTextCitFrame
+    // Append the toggle button (if necessary) to the InTextCitFrame
     InTextCitFrame.appendChild(toggleInTextButton);
-    InTextCitFrame.appendChild(showToggleButton);
 
     // Append the InTextCitFrame to the scholar container
     scholarContainer.appendChild(InTextCitFrame);
 
     // Initial render showing only problematic spans
     renderSpans();
-    UpdateFrames()
+    UpdateFrames(); // Assuming UpdateFrames() is needed elsewhere
 }
+
 
 export function showLoadingSpinner() {
     document.getElementById('loading-spinner').style.display = 'block';

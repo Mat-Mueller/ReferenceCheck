@@ -89,7 +89,7 @@ body {
     padding-top: 5px;
     padding-left: 10px;
     padding-right: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     border-radius: 5px;
     background-color: #FFFFFF;
     position: relative;
@@ -281,6 +281,7 @@ margin-left : 3px;
     height: 20px;
     animation: spin 1s linear infinite; /* Faster spin */
     display: none; /* Initially hidden */
+    margin-left: 10px;
   }
   
   
@@ -293,6 +294,6 @@ margin-left : 3px;
     display: flex;               /* Enable flexbox for horizontal layout */
     justify-content: space-between; /* Distribute space between the elements */
     align-items: center;          /* Align items vertically in the middle */
-    padding: 10px;               /* Add some padding around the container */
+    padding: 5px;               /* Add some padding around the container */
 }
   

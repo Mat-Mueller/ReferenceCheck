@@ -167,17 +167,14 @@ selection.removeAllRanges();  // Clears the selection
 
 export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
     // If search data is available, process it and show results
+    ReferenceFrameParagraph.removeChild(ReferenceFrameParagraph.lastChild)
+    console.log(ReferenceFrameParagraph)
+
     if (searchResults.length > 0) {
         const resultsDiv = document.createElement('div'); // Create a div to contain results
         resultsDiv.className = 'crossref-results';
         resultsDiv.style.marginTop = '5px'; // Add margin above results
 
-        // Add a heading for the best match
-        const bestMatchHeading = document.createElement('p');
-        bestMatchHeading.innerHTML = '<strong>Best Crossref match:</strong>';
-        //bestMatchHeading.style.fontSize = '18px';
-        bestMatchHeading.style.marginBottom = '10px';
-        resultsDiv.appendChild(bestMatchHeading);
 
         // Show the first (best) result
         const firstResult = searchResults[0];
@@ -396,19 +393,21 @@ export function secondFrame(referenceCount) {
     referenceHeadline.appendChild(Refspinner)
     const referenceTitle = document.createElement('p');
     referenceTitle.id = "References"
+    referenceTitle.style.margin = "0px"
     referenceTitle.innerHTML = '<strong>References:</strong>';
+    /*
     referenceTitle.style.marginBottom = '5px'
     referenceTitle.style.marginTop = '10px'
     referenceTitle.style.paddingBottom = '0px'
 
     referenceTitle.style.marginLeft = '10px'
-
+    */
     referenceHeadline.appendChild(referenceTitle)
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.id = 'searchField';
     searchInput.placeholder = 'Search...';
-    searchInput.style.marginLeft = '50px';
+    //searchInput.style.marginLeft = '50px';
     searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {  // Check if the Enter key was pressed
             searchRef(event);      // Call the search function and pass the event
@@ -503,6 +502,8 @@ export function secondFrame(referenceCount) {
         // Create first paragraph with inline style
         var SingleRef = document.createElement('p');
         const clickableText = makeLinksClickable(mergedText);
+        SingleRef.style.margin = "0px"
+
         SingleRef.innerHTML = clickableText;
         //SingleRef.innerHTML = mergedText;
         SingleRef.style.marginBottom = '15px'; // Add some space below
@@ -520,6 +521,40 @@ export function secondFrame(referenceCount) {
         const buttoncontainer = document.createElement('div');
         buttoncontainer.className = "buttoncontainer"
         ReferenceFrameParagraph.appendChild(buttoncontainer)
+
+
+
+        //create empty results
+        // Add a heading for the best match
+        const bestMatchHeading = document.createElement('p');
+        bestMatchHeading.innerHTML = '<strong>Best Crossref match:</strong>';
+        //bestMatchHeading.style.fontSize = '18px';
+        bestMatchHeading.style.marginBottom = '10px';
+        ReferenceFrameParagraph.appendChild(bestMatchHeading);
+        
+        
+        const resultFrame = document.createElement('div');
+        resultFrame.className = 'result-frame';
+
+        // Create a single paragraph element for the result
+        const resultParagraph = document.createElement('p');
+        resultParagraph.style.fontSize = '16px';
+        resultParagraph.style.margin = '0px';
+        resultParagraph.style.backgroundColor = "#FFFFFF";
+        //resultParagraph.style.height = "20px"
+
+
+        
+        const Refspinner = document.createElement('div')
+        Refspinner.className  = "spinner"
+        Refspinner.style.display = "block"
+        resultParagraph.appendChild(Refspinner)
+
+        resultFrame.appendChild(resultParagraph);
+        resultFrame.style.marginBottom = '10px';
+
+        // Append the result frame to the resultsDiv
+        ReferenceFrameParagraph.appendChild(resultFrame);
 
         /*
         const crossRefButton = document.createElement('button');

@@ -170,7 +170,7 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
     ReferenceFrameParagraph.removeChild(ReferenceFrameParagraph.lastChild)
     console.log(ReferenceFrameParagraph)
 
-    if (searchResults.length > 0 || searchResults === "NA") {
+    if (searchResults.length > 0 ) {
         const resultsDiv = document.createElement('div'); // Create a div to contain results
         resultsDiv.className = 'crossref-results';
         resultsDiv.style.marginTop = '5px'; // Add margin above results
@@ -184,7 +184,8 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
         ReferenceFrameParagraph.appendChild(resultsDiv);
 
         // If there are more results, create a "Load more results" button
-        if (searchResults.length > 10) {
+        /*
+        if (searchResults.length > 1) {
             const loadMoreButton = document.createElement('button');
             loadMoreButton.textContent = 'Load more results';
             loadMoreButton.style.display = 'block';
@@ -210,7 +211,7 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
                     }
                 }
             });
-        }
+        }*/
 
     } else {
         const noResultsMsg = document.createElement('p');
@@ -643,42 +644,81 @@ function searchRef() {
 
 
 function UpdateFrames() {
-        // Get the accent color from the CSS variable
-        const accentColor =  "rgb(227, 87, 75)" //getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+    // Get the accent color from the CSS variable
+    const accentColor = "rgb(227, 87, 75)" // or use getComputedStyle...
 
-        // Select all elements with class '.Reference-frame'
-        const referenceFrames = document.querySelectorAll('.Reference-frame');
+    // Select all elements with class '.Reference-frame'
+    const referenceFrames = document.querySelectorAll('.Reference-frame');
     
-        // Count how many reference frames do not match the accent color
-        let countWithoutMatch = 0;
+    // Count how many reference frames match the accent color
+    let countWithoutMatch = 0;
+    const unmatchedReferences = [];
+
+    referenceFrames.forEach(reference => {
+        // Get the computed border color of the reference frame
+        const referenceBorderColor = getComputedStyle(reference).getPropertyValue('border-color').trim();
+        // If the border color matches the accent color, increment the counter
+        if (referenceBorderColor === accentColor) {
+            countWithoutMatch++;
+            unmatchedReferences.push(reference); // Store unmatched references
+        }
+    });
+
+    // Find the TextFrameParagraph where the new text needs to be added
+    const TextFrameParagraph = document.getElementById('References');
+    
+    // Append the text to the existing paragraph
+    if (TextFrameParagraph) {
+        // Clear previous content
+        TextFrameParagraph.innerHTML = '';
+
+        // Create the total references part (non-clickable)
+        const totalReferencesElement = document.createElement('b');
+        totalReferencesElement.textContent = `${referenceFrames.length} References `;
+        TextFrameParagraph.appendChild(totalReferencesElement);
+
+        // Create the clickable 'countWithoutMatch' element
+        const countWithoutMatchElement = document.createElement('b');
+        countWithoutMatchElement.innerHTML = `${countWithoutMatch}`;
+        countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
+        countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
+        // Create the text around the clickable number
+        const withoutMatchText = document.createTextNode(` without match:`);
         
-        referenceFrames.forEach(reference => {
-            // Get the computed border color of the reference frame
-            const referenceBorderColor = getComputedStyle(reference).getPropertyValue('border-color').trim();
-            // If the border color matches the accent color, increment the counter
-            if (referenceBorderColor === accentColor) {
-                countWithoutMatch++;
+        // Append the elements
+        TextFrameParagraph.appendChild(document.createTextNode("("));
+        TextFrameParagraph.appendChild(countWithoutMatchElement);
+        TextFrameParagraph.appendChild(withoutMatchText);
+        TextFrameParagraph.appendChild(document.createTextNode(")"));
+
+        // Initialize a counter to track clicks
+        let unmatchedClickCount = 0;
+
+        // Add click event listener to the 'countWithoutMatchElement'
+        countWithoutMatchElement.addEventListener('click', () => {
+            // Scroll through unmatched references
+            if (unmatchedReferences.length > 0) {
+                unmatchedReferences[unmatchedClickCount % unmatchedReferences.length].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                unmatchedClickCount++; // Cycle to the next unmatched reference on each click
             }
         });
-        
-        
+    }
 
-        const citationSpans = document.querySelectorAll('span.citation')
-        const MatchedcitationSpans = document.querySelectorAll('span.citation[found="true"]')
-
-        
-        // Find the TextFrameParagraph where the new text needs to be added
-        const TextFrameParagraph = document.getElementById('References');       
-        // Append the text to the existing paragraph
-        if (TextFrameParagraph) {
-            TextFrameParagraph.innerHTML = `<b>${referenceFrames.length}</b> References (<b>${countWithoutMatch}</b> without match):`;
-        }
-        const ThirdFrameHead = document.getElementById('ThirdFrameHead');       
-        // Append the text to the existing paragraph
-        if (ThirdFrameHead) {
-            ThirdFrameHead.innerHTML = `<br>Found <b>${citationSpans.length}</b> in-text citations with ` + `<b>${citationSpans.length - MatchedcitationSpans.length}</b> in-text citation${citationSpans.length - MatchedcitationSpans.length === 1 ? '' : 's'} without match:  `
-        }
+    const ThirdFrameHead = document.getElementById('ThirdFrameHead');
+    // Append the text to the existing paragraph
+    if (ThirdFrameHead) {
+        const totalCitations = document.querySelectorAll('span.citation').length;
+        const matchedCitations = document.querySelectorAll('span.citation[found="true"]').length;
+        ThirdFrameHead.innerHTML = `<br>Found <b>${totalCitations}</b> in-text citations with ` + 
+        `<b>${totalCitations - matchedCitations}</b> in-text citation${totalCitations - matchedCitations === 1 ? '' : 's'} without match:`;
+    }
 }
+
+
+
 
 function DragDrop() {
     let dragStartTime = 0;
@@ -846,10 +886,10 @@ export function thirdFrame() {
 
         // Loop through each span to create a clickable list item in the frame
         spansToShow.forEach((span, index) => {
-            const cleanedCit = span.getAttribute('cleanedCit'); // Get the cleaned citation text
+            const cleanedCit = span.getAttribute('title'); // Get the cleaned citation text
 
             if (cleanedCit) { // Only add if cleanedCit is available
-                const InTextCitFrameParagraph = document.createElement('p');
+                const InTextCitFrameParagraph = document.createElement('div');
                 InTextCitFrameParagraph.className = 'Reference-frame';
                 InTextCitFrameParagraph.innerHTML = cleanedCit; // Display the cleaned citation text
                 InTextCitFrameParagraph.style.cursor = 'pointer'; // Make it look clickable

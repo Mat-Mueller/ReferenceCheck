@@ -1,4 +1,4 @@
-import { displaySoftwareDescription,referenceSectionGUI, referenceSeparationGUI, firstFrame, secondFrame, thirdFrame, clearRightContainer } from './uiComponents.js';
+import { displaySoftwareDescription,referenceSectionGUI, referenceSeparationGUI, DragDrop, secondFrame, thirdFrame, clearRightContainer } from './uiComponents.js';
 import { readRenderPDF } from './pdfLoader.js';
 import { findReferenceSection, userDecisionReferenceSection } from './findReferenceList.js';
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
@@ -49,7 +49,7 @@ async function main() {
     secondFrame(referenceCount);
     thirdFrame();
     //UpdateFrames();
-    
+    DragDrop()
     performCrossRefSearch();
 
 }

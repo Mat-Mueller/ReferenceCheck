@@ -617,7 +617,7 @@ if (matchResult) {
     scholarContainer.appendChild(OuterFrame);
 
 
-    DragDrop() // sollten wir eventuell verschieben
+     // sollten wir eventuell verschieben
     //document.querySelector('.ReferenceFrameParagraph[id="0"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
 
@@ -755,12 +755,12 @@ if (TextFrameParagraph) {
 
 
 
-function DragDrop() {
+export function DragDrop() {
     let dragStartTime = 0;
     let draggedElement = null; // Keep track of the dragged element
 
     // Select all draggable span elements with class "citation"
-    const draggables = document.querySelectorAll('span.citation');
+    const draggables = document.querySelectorAll('span.citation, .InTexts');
     
     // Select all drop zones with class "Reference-frame"
     const dropZones = document.querySelectorAll('.Reference-frame');
@@ -810,25 +810,54 @@ function DragDrop() {
 
             // If the drop zone is a valid "Reference-frame" element
             if (dropZone.classList.contains('Reference-frame')) {
-
-                let ListSimilar = []
-                draggables.forEach ((dragged) =>{
-                    if (dragged.title === draggedElement.title) {
-                        ListSimilar.push(dragged)
+                let draggedElementToUse = draggedElement; // Initialize to use the original draggedElement
+                const draggableSpans = document.querySelectorAll('span.citation');
+                // Check if draggedElement is of class 'InTexts'
+                if (draggedElement.classList.contains('InTexts')) {
+                    // Loop through all 'span.citation' elements to find the corresponding one
+                    
+                    
+                    draggableSpans.forEach((dragged) => {
+                        console.log(dragged.title.trim(),draggedElement.innerHTML.trim())
+                        // Check if the 'title' of the 'span' matches the 'innerHTML' of the InTexts element
+                        if (decodeHTMLEntities(dragged.title.trim()) === decodeHTMLEntities(draggedElement.innerHTML.trim())) {
+                            draggedElementToUse = dragged; // Use the matching span as the new draggedElement
+                            console.log(draggedElementToUse)
+                            return; // Exit the loop after finding the first match
+                        }
+                    });
+                }
+            
+                // Now that we have the correct draggedElement (either the original or the matching span)
+                let ListSimilar = [];
+                
+                // Find similar draggable elements
+                draggableSpans.forEach((dragged) => {
+                    if (dragged.title.trim() === draggedElementToUse.title.trim()) {
+                        ListSimilar.push(dragged);
                     }
-                })
+                });
+                
+                // Perform actions for each similar dragged element
                 ListSimilar.forEach((dragged) => {
-                MatchDragged(dragged, dropZone)
-            })
-            }
-            else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
-
+                    MatchDragged(dragged, dropZone);
+                });
             }
             
+            
+            else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
+            }           
             UpdateFrames()
         });
     });
 
+
+    function decodeHTMLEntities(text) {
+        const parser = new DOMParser();
+        const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
+        return decodedString;
+    }
+    
     function MatchDragged(draggedElement, dropZone) {
                 // 1. Set the background color to secondary color
                 draggedElement.style.backgroundColor = secondaryColor;
@@ -856,7 +885,7 @@ function DragDrop() {
             
                 inTextElements.forEach(inText => {
                     // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
-                    if (inText.innerHTML.trim() === draggedElement.getAttribute('title').trim()) {
+                    if (decodeHTMLEntities(inText.innerHTML.trim()) === decodeHTMLEntities(draggedElement.getAttribute('title').trim())) {
                         // Remove the matching element
                         inText.remove();
                     }

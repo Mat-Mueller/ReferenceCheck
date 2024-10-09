@@ -382,8 +382,9 @@ export function secondFrame(referenceCount) {
     const OuterFrame = document.createElement('div');
     OuterFrame.className = "OuterFrame"
     const ReferenceFrame = document.createElement('div');
+    ReferenceFrame.id = "ReferenceFrame"
     ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
-    ReferenceFrame.setAttribute('style', 'max-height: 400px; border: 0px solid #ccc !important; box-shadow: none !important;');
+    ReferenceFrame.setAttribute('style', 'border: 0px solid #ccc !important; box-shadow: none !important;');
 
     
     // Create and add headline for references
@@ -396,14 +397,7 @@ export function secondFrame(referenceCount) {
     const referenceTitle = document.createElement('p');
     referenceTitle.id = "References"
     referenceTitle.style.margin = "0px"
-    referenceTitle.innerHTML = '<strong>References:</strong>';
-    /*
-    referenceTitle.style.marginBottom = '5px'
-    referenceTitle.style.marginTop = '10px'
-    referenceTitle.style.paddingBottom = '0px'
 
-    referenceTitle.style.marginLeft = '10px'
-    */
     referenceHeadline.appendChild(referenceTitle)
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
@@ -433,10 +427,10 @@ export function secondFrame(referenceCount) {
         } else {
             toggleButton.textContent = '▲'
         }
-        if (ReferenceFrame.style.maxHeight === '400px') {
+        if (ReferenceFrame.style.maxHeight === '600px') {
             ReferenceFrame.style.maxHeight = ReferenceFrame.scrollHeight + 'px'; // Expand to content height
         } else {
-            ReferenceFrame.style.maxHeight = '400px'; // Collapse back to minimum height
+            ReferenceFrame.style.maxHeight = '600px'; // Collapse back to minimum height
         }
     });
 
@@ -644,6 +638,8 @@ function searchRef() {
 
 
 function UpdateFrames() {
+
+
     // Get the accent color from the CSS variable
     const accentColor = "rgb(227, 87, 75)" // or use getComputedStyle...
 
@@ -667,54 +663,64 @@ function UpdateFrames() {
     // Find the TextFrameParagraph where the new text needs to be added
     const TextFrameParagraph = document.getElementById('References');
     
-    // Append the text to the existing paragraph
-    if (TextFrameParagraph) {
-        // Clear previous content
-        TextFrameParagraph.innerHTML = '';
+// Append the text to the existing paragraph
+if (TextFrameParagraph) {
+    // Clear previous content
+    TextFrameParagraph.innerHTML = '';
 
-        // Create the total references part (non-clickable)
-        const totalReferencesElement = document.createElement('b');
-        totalReferencesElement.textContent = `${referenceFrames.length} References `;
-        TextFrameParagraph.appendChild(totalReferencesElement);
+    // Create a wrapper for all the bold text
+    const boldWrapper = document.createElement('b');
 
-        // Create the clickable 'countWithoutMatch' element
-        const countWithoutMatchElement = document.createElement('b');
-        countWithoutMatchElement.innerHTML = `${countWithoutMatch}`;
-        countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
-        countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
-        // Create the text around the clickable number
-        const withoutMatchText = document.createTextNode(` without match:`);
-        
-        // Append the elements
-        TextFrameParagraph.appendChild(document.createTextNode("("));
-        TextFrameParagraph.appendChild(countWithoutMatchElement);
-        TextFrameParagraph.appendChild(withoutMatchText);
-        TextFrameParagraph.appendChild(document.createTextNode(")"));
+    // Create the total references part (non-clickable)
+    const totalReferencesElement = document.createElement('span');
+    totalReferencesElement.textContent = `${referenceFrames.length} References `;
+    boldWrapper.appendChild(totalReferencesElement);
 
-        // Initialize a counter to track clicks
-        let unmatchedClickCount = 0;
+    // Create the clickable 'countWithoutMatch' element
+    const countWithoutMatchElement = document.createElement('span');
+    countWithoutMatchElement.innerHTML = `${countWithoutMatch}`;
+    countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
+    countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
 
-        // Add click event listener to the 'countWithoutMatchElement'
-        countWithoutMatchElement.addEventListener('click', () => {
-            // Scroll through unmatched references
-            if (unmatchedReferences.length > 0) {
-                unmatchedReferences[unmatchedClickCount % unmatchedReferences.length].scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-                unmatchedClickCount++; // Cycle to the next unmatched reference on each click
-            }
-        });
-    }
+    // Create the text around the clickable number
+    const withoutMatchText = document.createTextNode(` without match`);
+
+    // Append the elements inside the bold wrapper
+    boldWrapper.appendChild(document.createTextNode("("));
+    boldWrapper.appendChild(countWithoutMatchElement);
+    boldWrapper.appendChild(withoutMatchText);
+    boldWrapper.appendChild(document.createTextNode(")"));
+
+    // Append the bold wrapper to the TextFrameParagraph
+    TextFrameParagraph.appendChild(boldWrapper);
+
+    // Initialize a counter to track clicks
+    let unmatchedClickCount = 0;
+
+    // Add click event listener to the 'countWithoutMatchElement'
+    countWithoutMatchElement.addEventListener('click', () => {
+        // Scroll through unmatched references
+        if (unmatchedReferences.length > 0) {
+            unmatchedReferences[unmatchedClickCount % unmatchedReferences.length].scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+            unmatchedClickCount++; // Cycle to the next unmatched reference on each click
+        }
+    });
+}
+
 
     const ThirdFrameHead = document.getElementById('ThirdFrameHead');
     // Append the text to the existing paragraph
     if (ThirdFrameHead) {
         const totalCitations = document.querySelectorAll('span.citation').length;
         const matchedCitations = document.querySelectorAll('span.citation[found="true"]').length;
-        ThirdFrameHead.innerHTML = `Found <b>${totalCitations}</b> in-text citations with ` + 
-        `<b>${totalCitations - matchedCitations}</b> in-text citation${totalCitations - matchedCitations === 1 ? '' : 's'} without match:`;
+        
+        ThirdFrameHead.innerHTML = `<b>Found ${totalCitations} in-text citations with ` + 
+        `${totalCitations - matchedCitations} in-text citation${totalCitations - matchedCitations === 1 ? '' : 's'} without match</b>`;
     }
+    
 }
 
 
@@ -848,23 +854,12 @@ export function thirdFrame() {
 
     // Create the third frame for in-text citations (collapsible frame)
     const InTextCitFrame = document.createElement('div');
-    InTextCitFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
-    InTextCitFrame.style.maxHeight = '400px'; // Set initial max height
+    InTextCitFrame.id = "InTextCitFrame";
+    InTextCitFrame.className = 'search-string-frame'; // Assign collapsible class
+    InTextCitFrame.style.flexShrink = '0'; // Set initial max height
 
     // Create the toggle button for expanding/collapsing the in-text citation frame
-    const toggleInTextButton = document.createElement('button');
-    toggleInTextButton.className = 'toggle-in-text-button';
-    toggleInTextButton.style.display = 'none'; // Hide the button as per the simplified logic
-    toggleInTextButton.textContent = 'Show/Hide In-Text Citations';
 
-    // Toggle the frame height when the button is clicked
-    toggleInTextButton.addEventListener('click', () => {
-        if (InTextCitFrame.style.maxHeight === '400px') {
-            InTextCitFrame.style.maxHeight = InTextCitFrame.scrollHeight + 'px'; // Expand to content height
-        } else {
-            InTextCitFrame.style.maxHeight = '400px'; // Collapse back to initial height
-        }
-    });
 
     // Function to render only problematic spans
     const renderSpans = () => {
@@ -905,10 +900,11 @@ export function thirdFrame() {
 
     const ThirdFrameHead = document.createElement('div');
     ThirdFrameHead.id = 'ThirdFrameHead';
+    //ThirdFrameHead.style.margin = ""
     InTextCitFrame.appendChild(ThirdFrameHead);
 
     // Append the toggle button (if necessary) to the InTextCitFrame
-    InTextCitFrame.appendChild(toggleInTextButton);
+
 
     // Append the InTextCitFrame to the scholar container
     scholarContainer.appendChild(InTextCitFrame);

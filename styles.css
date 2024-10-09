@@ -73,6 +73,9 @@ body {
     border-radius: 5px;
     border: 1px solid #ccc;
     margin-bottom: 5px;
+    flex: 1 1; 
+    overflow: hidden;
+    
 }
 .search-string-frame, 
 .result-frame {
@@ -93,6 +96,11 @@ body {
     border-radius: 5px;
     background-color: #FFFFFF;
     position: relative;
+}
+
+#ReferenceFrame {
+    max-height: calc(100% - 50px)
+
 }
 
 .InTexts {
@@ -185,8 +193,6 @@ body {
 /* Collapsible frame with smooth transition */
 .collapsible-frame {
     overflow-y: auto;
-    max-height: 400px;
-    min-height: 400px;
     transition: max-height 0.3s ease-out;
 }
 
@@ -309,7 +315,20 @@ margin-left : 3px;
     display: flex;
     align-items: center; /* Vertically centers items (optional) */
     justify-content: flex-start; /* Default: Aligns items to the left */
-    padding: 5px;               /* Add some padding around the container */
+    padding: 10px;               /* Add some padding around the container */
     gap: 10px; /* Add space between the left elements */
+}
+
+#ThirdFrameHead {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+#scholar-container {
+    display: flex;
+    flex-direction: column;
+    height: 93vh; /* Full viewport height */
+
 }
   

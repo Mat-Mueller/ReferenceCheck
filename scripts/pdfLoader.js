@@ -130,6 +130,7 @@ async function renderAllPages(pdfDocument) {
             const lineElement = document.createElement('div');
             lineElement.textContent = line.text.replace(/\s+/g, ' ').trim(); // Remove any trailing space
             lineElement.className = 'textLine';
+            lineElement.setAttribute('data-page-num', pageNum);
             lineElement.style.position = 'absolute';
             lineElement.style.whiteSpace = 'pre'; // Preserve whitespace
             lineElement.style.left = `${line.x}px`; // Set X position based on the first text item

@@ -312,7 +312,13 @@ function appendResultToDiv(item, resultsDiv) {
               span.setAttribute('found', 'true');
             }
             span.addEventListener('click', () => {
-              ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            const element = ReferenceFrameParagraph
+              const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
+              const offsetTop = element.offsetTop - parentElement.offsetTop;
+              parentElement.scrollTo({
+                  top: offsetTop,
+                  behavior: 'smooth' // Smooth scrolling
+              });
             });
           }
 
@@ -547,7 +553,9 @@ if (matchResult) {
         SingleRef.classList.add('SingleRef');
         SingleRef.myLinks = matchedSpans
         ShowLinks(SingleRef, ReferenceFrameParagraph)
-
+        //SingleRef.innerHTML += ''
+        const textNode = document.createTextNode(" Best Crossref match:");
+SingleRef.appendChild(textNode);
         ReferenceFrameParagraph.appendChild(SingleRef)
         // Add the CrossRef search button
         const buttoncontainer = document.createElement('div');
@@ -562,7 +570,7 @@ if (matchResult) {
         bestMatchHeading.innerHTML = '<strong>Best Crossref match:</strong>';
         //bestMatchHeading.style.fontSize = '18px';
         bestMatchHeading.style.marginBottom = '10px';
-        ReferenceFrameParagraph.appendChild(bestMatchHeading);
+        //ReferenceFrameParagraph.appendChild(bestMatchHeading);
         
         
         const resultFrame = document.createElement('div');

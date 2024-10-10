@@ -57,7 +57,7 @@ body {
 
 .frame {
     width: 50%;
-    height: 100%;
+    height: 95%;
     overflow-y: auto;
     overflow-x: auto;
     padding: 20px;
@@ -257,7 +257,7 @@ button.active {
 }
 
 #pdf-container {
-
+    overflow:auto;
 
 
 }
@@ -265,7 +265,7 @@ button.active {
 #dummy {
     transform-origin: 0 0; /* Keeps the zoom effect centered */
     transition: transform 0.2s ease-in-out; /* Smooth zoom effect */
-
+    
 }
 .textLayer{
     transform-origin: 0 0; /* Keeps the zoom effect centered */
@@ -328,7 +328,7 @@ margin-left : 3px;
 #scholar-container {
     display: flex;
     flex-direction: column;
-    height: 93vh; /* Full viewport height */
+    
 
 }
 

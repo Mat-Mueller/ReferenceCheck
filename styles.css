@@ -32,6 +32,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 #controls img {
@@ -60,7 +62,7 @@ body {
     height: 95%;
     overflow-y: auto;
     overflow-x: auto;
-    padding: 20px;
+    padding: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 5px;
     background-color: #fff;
@@ -341,4 +343,21 @@ margin-left : 3px;
 #InTextCitFrame {
 
     overflow: auto;
+}
+
+.menu-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    margin-left: auto; /* Move to the right */
+}
+
+.menu-icon .bar {
+    height: 4px;
+    width: 100%;
+    background-color: white; /* Make the bars white */
+    border-radius: 2px;
 }

@@ -331,4 +331,9 @@ margin-left : 3px;
     height: 93vh; /* Full viewport height */
 
 }
+
+#searchField {
+
+    margin-left: auto;
+}
   

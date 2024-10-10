@@ -295,7 +295,13 @@ function appendResultToDiv(item, resultsDiv) {
               span.setAttribute('found', 'true');
             }
             span.addEventListener('click', () => {
-              ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              const element = ReferenceFrameParagraph
+              const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
+              const offsetTop = element.offsetTop - parentElement.offsetTop;
+              parentElement.scrollTo({
+                  top: offsetTop,
+                  behavior: 'smooth' // Smooth scrolling
+              });
             });
           }
 
@@ -420,6 +426,7 @@ export function secondFrame(referenceCount) {
     const toggleButton = document.createElement('button');
     toggleButton.textContent = '▲'; // ▼
     toggleButton.className = 'toggle-in-text-button';
+    toggleButton.style.display = "none";
 
 
     toggleButton.addEventListener('click', () => {
@@ -646,14 +653,23 @@ function searchRef() {
     currentMatchIndex = (currentMatchIndex + 1) % matchingElements.length;
     
     // Scroll to the next match
-    const element = matchingElements[currentMatchIndex];
-    
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const element = matchingElements[currentMatchIndex];    
+    const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
+    // Calculate the position of the target element relative to the parent
+    const offsetTop = element.offsetTop - parentElement.offsetTop;
+
+    // Scroll the parent element to the calculated top position
+    parentElement.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth' // Smooth scrolling
+    });
+    //element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    /*
     document.getElementById('scholar-container').scrollTo({
-        top: 0,
+        //top: 0,
         behavior: 'smooth'
     });
-
+    */
     const ElementColor = element.style.backgroundColor;
 
     // Optional: highlight the element to visually indicate the match
@@ -730,10 +746,20 @@ if (TextFrameParagraph) {
     countWithoutMatchElement.addEventListener('click', () => {
         // Scroll through unmatched references
         if (unmatchedReferences.length > 0) {
+            /*
             unmatchedReferences[unmatchedClickCount % unmatchedReferences.length].scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
             });
+            */
+            const element = unmatchedReferences[unmatchedClickCount % unmatchedReferences.length]  
+            const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
+            const offsetTop = element.offsetTop - parentElement.offsetTop;
+            parentElement.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth' // Smooth scrolling
+            });
+
             unmatchedClickCount++; // Cycle to the next unmatched reference on each click
         }
     });
@@ -868,8 +894,13 @@ export function DragDrop() {
                 }
             
                 // 2. Add event listener to scroll to the drop zone (Reference-frame)
-                draggedElement.addEventListener('click', () => {
-                    dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                const element = dropZone
+                const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
+                const offsetTop = element.offsetTop - parentElement.offsetTop;
+                parentElement.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth' // Smooth scrolling
                 });
             
                 // 3. Append a link to the drop zone

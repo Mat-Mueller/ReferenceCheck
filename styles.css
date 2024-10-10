@@ -253,11 +253,11 @@ button.active {
 
 /* Additional frame styles */
 .frame {
-    overflow-y: auto;
+
 }
 
 #pdf-container {
-    overflow:auto;
+
 
 
 }
@@ -336,4 +336,9 @@ margin-left : 3px;
 
     margin-left: auto;
 }
-  
+
+
+#InTextCitFrame {
+
+    overflow: auto;
+}

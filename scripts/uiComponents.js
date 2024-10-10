@@ -554,7 +554,7 @@ if (matchResult) {
         SingleRef.myLinks = matchedSpans
         ShowLinks(SingleRef, ReferenceFrameParagraph)
         //SingleRef.innerHTML += ''
-        const textNode = document.createTextNode(" Best Crossref match:");
+        const textNode = document.createTextNode(". Best Crossref match:");
 SingleRef.appendChild(textNode);
         ReferenceFrameParagraph.appendChild(SingleRef)
         // Add the CrossRef search button
@@ -968,7 +968,7 @@ export function thirdFrame() {
     InTextCitFrame.id = "InTextCitFrame";
     InTextCitFrame.className = 'search-string-frame'; // Assign collapsible class
     InTextCitFrame.style.flexShrink = '0'; // Set initial max height
-    InTextCitFrame.style.maxHeight = '50%';
+    InTextCitFrame.style.maxHeight = '40%';
 
     // Create the toggle button for expanding/collapsing the in-text citation frame
 

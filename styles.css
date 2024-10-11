@@ -345,6 +345,10 @@ margin-left : 3px;
     overflow: auto;
 }
 
+
+
+
+/* Style for the menu icon */
 .menu-icon {
     display: flex;
     flex-direction: column;
@@ -352,12 +356,46 @@ margin-left : 3px;
     width: 30px;
     height: 22px;
     cursor: pointer;
-    margin-left: auto; /* Move to the right */
+    margin-left: auto;
 }
 
 .menu-icon .bar {
     height: 4px;
     width: 100%;
-    background-color: white; /* Make the bars white */
+    background-color: white;
     border-radius: 2px;
+}
+
+/* The dropdown menu list */
+.menu {
+    list-style-type: none;
+    padding: 10px;
+    background-color: #333;
+    position: absolute;
+    top: 60px; /* This makes the menu appear just below the icon */
+    right: 20px;
+    display: none; /* Hidden by default */
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Give it a dropdown feel */
+}
+
+.menu li {
+    margin: 10px 0;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 10px;
+}
+
+.menu a:hover {
+    background-color: #575757;
+    border-radius: 5px;
+}
+
+/* Show the menu when active */
+.menu.active {
+    display: block;
 }

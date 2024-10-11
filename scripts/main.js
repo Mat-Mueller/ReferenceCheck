@@ -1,4 +1,4 @@
-import { displaySoftwareDescription,referenceSectionGUI, referenceSeparationGUI, DragDrop, secondFrame, thirdFrame, clearRightContainer } from './uiComponents.js';
+import { displaySoftwareDescription, createMenue, referenceSectionGUI, referenceSeparationGUI, DragDrop, secondFrame, thirdFrame, clearRightContainer } from './uiComponents.js';
 import { readRenderPDF } from './pdfLoader.js';
 import { findReferenceSection, userDecisionReferenceSection } from './findReferenceList.js';
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
@@ -8,7 +8,7 @@ import { performCrossRefSearch } from './crossrefSearch.js';
 async function main() {
     // Display a description that helps the user understand the software
     displaySoftwareDescription();
-
+    createMenue();
     // Read and render user-input PDF
     await readRenderPDF();
 

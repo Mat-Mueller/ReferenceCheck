@@ -31,6 +31,13 @@ export function displaySoftwareDescription() {
     loadHTML('software_description.html', scholarContainer);
 }
 
+export function createMenue () {
+    document.getElementById('menu-icon').addEventListener('click', function() {
+        const menu = document.getElementById('menu');
+        menu.classList.toggle('active'); // Toggle the 'active' class to show/hide the menu
+    });
+}
+
 
 export function referenceSectionGUI(referenceFound) {
     // Clear previous analysis results or messages

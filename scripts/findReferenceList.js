@@ -242,7 +242,8 @@ export function findReferenceSection(selectedValue) {
         range.setStart(startPoint.firstChild || startPoint, 0);
 
         // Set the end of the range at the last child of the last div
-        range.setEnd(endPoint.lastChild || endPoint, endPoint.textContent.length);
+        console.log(endPoint.lastChild )
+        range.setEnd(endPoint.lastChild || endPoint, endPoint.textContent.length - 1);
 
         // Clear existing selections
         selection.removeAllRanges();

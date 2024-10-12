@@ -12,6 +12,13 @@ async function main() {
     // Read and render user-input PDF
     await readRenderPDF();
 
+
+}
+
+// Initialize the main event listener
+document.addEventListener("DOMContentLoaded", main());
+
+export async function analysis() {
     // Try to detect reference section automatically
     let refSecAuto = findReferenceSection("byTitle");
 
@@ -52,7 +59,5 @@ async function main() {
     DragDrop()
     performCrossRefSearch();
 
-}
 
-// Initialize the main event listener
-document.addEventListener("DOMContentLoaded", main());
+}

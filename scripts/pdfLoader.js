@@ -3,6 +3,7 @@
 import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs';
 import { checkFooter, checkHeader } from './headerFooterDetect.js';
 import {createZoomButtons} from "./zoomin.js"
+import {analysis} from "./main.js"
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.worker.min.mjs';
 
@@ -10,19 +11,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 export async function readRenderPDF() {
     const file = await initializePDFLoader();
     
-    let pdfDocument = null;
-    if (file && file.type === 'application/pdf') {
-        pdfDocument = await loadPDF(file);  // Call loadPDF function to render the PDF
-    } else {
-        alert('Please select a valid PDF file.');
-    }
 
-    // Wait for all pages to be rendered
-    await renderAllPages(pdfDocument);
-
-    // Detect footers and headers
-    checkFooter()
-    checkHeader()
 }
 
 // Initialize PDF loader by setting up drag-and-drop and file input handling
@@ -34,11 +23,25 @@ function initializePDFLoader() {
         };
     
         // Get file via drop
-        window.handleDrop = function (event) {
+        window.handleDrop = async function (event) {
             event.preventDefault();
             event.stopPropagation();
     
             const file = event.dataTransfer.files[0];  // Get the dropped file
+            let pdfDocument = null;
+            if (file && file.type === 'application/pdf') {
+                pdfDocument = await loadPDF(file);  // Call loadPDF function to render the PDF
+            } else {
+                alert('Please select a valid PDF file.');
+            }
+        
+            // Wait for all pages to be rendered
+            await renderAllPages(pdfDocument);
+        
+            // Detect footers and headers
+            checkFooter()
+            checkHeader()
+            analysis()
             if (file) {
                 resolve(file);  // Resolve promise and return file
             } else {
@@ -48,8 +51,22 @@ function initializePDFLoader() {
 
         // Get file via file selection
         const fileInput = document.getElementById('pdf-upload');
-        fileInput.addEventListener('change', function (event) {
+        fileInput.addEventListener('change', async function (event) {
             const file = event.target.files[0];  // Get file
+            let pdfDocument = null;
+            if (file && file.type === 'application/pdf') {
+                pdfDocument = await loadPDF(file);  // Call loadPDF function to render the PDF
+            } else {
+                alert('Please select a valid PDF file.');
+            }
+        
+            // Wait for all pages to be rendered
+            await renderAllPages(pdfDocument);
+        
+            // Detect footers and headers
+            checkFooter()
+            checkHeader()
+            analysis()
             if (file) {
                 resolve(file);  // Resolve promise and return file
             } else {

@@ -344,7 +344,16 @@ margin-left : 3px;
 #searchField {
 
     margin-left: auto;
+    width: 100px;     /* Sets the width of the element */
 }
+#searchSpanField {
+    z-index: 1000;
+    position: fixed;  /* This sets the element's position to fixed */
+    top: 50px;        /* Distance from the top */
+    right: 51%;       /* Distance from the right side of the viewport */
+    width: 100px;     /* Sets the width of the element */
+}
+
 
 
 #InTextCitFrame {
@@ -408,8 +417,8 @@ margin-left : 3px;
 }
 
 .reload-icon {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     background-image: url('reload.png');
     background-size: cover;
     background-repeat: no-repeat;

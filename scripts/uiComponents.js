@@ -696,6 +696,40 @@ function searchRef() {
     }, 200);
 }
 
+export function searchSpanRef() {
+
+    const searchTerm = event.target.value.toLowerCase();
+    const texts = Array.from(document.querySelectorAll('.textLine, .highlight'));    
+    // Filter the elements that match the search term
+    const matchingElements = texts.filter((element) =>
+        element.textContent.toLowerCase().includes(searchTerm) || element.id.toLowerCase() === searchTerm
+    );
+    
+    if (matchingElements.length === 0) {
+        console.log('No matches found.');
+        return; // No matches, exit function
+    }
+    
+    // Increment index and loop around if necessary
+    currentMatchIndex = (currentMatchIndex + 1) % matchingElements.length;
+    
+    // Scroll to the next match
+    const element = matchingElements[currentMatchIndex];    
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+   
+
+    const ElementColor = element.style.backgroundColor;
+
+    // Optional: highlight the element to visually indicate the match
+    element.style.backgroundColor = 'yellow';
+    
+    // Remove highlight after some time (optional)
+    setTimeout(() => {
+        element.style.backgroundColor = ElementColor;
+    }, 200);
+
+}
+
 
 function UpdateFrames() {
 

@@ -86,6 +86,16 @@ body {
     overflow: hidden;
     
 }
+.OuterFrame2 {
+    
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+
+    overflow: hidden;
+    
+}
 .search-string-frame, 
 .result-frame {
     border: 1px solid #ccc;
@@ -329,8 +339,13 @@ margin-left : 3px;
 }
 
 #ThirdFrameHead {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+
+    
 }
 
 
@@ -357,7 +372,7 @@ margin-left : 3px;
 
 
 #InTextCitFrame {
-
+    border: 0px solid #ccc !important;
     overflow: auto;
 }
 
@@ -430,4 +445,15 @@ margin-left : 3px;
 
 .reload-icon:hover {
     transform: rotate(90deg);
+}
+
+
+#Trash1 {
+    background-image: url('trash-can.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+    margin-left: auto;
 }

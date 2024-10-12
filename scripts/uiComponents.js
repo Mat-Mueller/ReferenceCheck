@@ -821,9 +821,12 @@ if (TextFrameParagraph) {
         const totalCitations = document.querySelectorAll('span.citation').length;
         const matchedCitations = document.querySelectorAll('span.citation[found="true"]').length;
         
-        ThirdFrameHead.innerHTML = `<b>Found ${totalCitations} in-text citations with ` + 
-        `${totalCitations - matchedCitations} in-text citation${totalCitations - matchedCitations === 1 ? '' : 's'} without match</b>`;
-    }
+        const ThirdFrameTitle = document.createElement('b')
+
+        ThirdFrameTitle.innerHTML = `Found ${totalCitations} in-text citations (` + 
+        `${totalCitations - matchedCitations} without match)`;
+        ThirdFrameHead.appendChild(ThirdFrameTitle);
+        }
     
 }
 
@@ -1003,13 +1006,16 @@ export function DragDrop() {
 
 export function thirdFrame() {
     const scholarContainer = document.getElementById('scholar-container');
-
+    const OuterFrame = document.createElement('div');
+    OuterFrame.className = "OuterFrame2"
+    scholarContainer.appendChild(OuterFrame)
+    OuterFrame.style.flexShrink = '0'; // Set initial max height
+    OuterFrame.style.maxHeight = '40%';
     // Create the third frame for in-text citations (collapsible frame)
     const InTextCitFrame = document.createElement('div');
     InTextCitFrame.id = "InTextCitFrame";
     InTextCitFrame.className = 'search-string-frame'; // Assign collapsible class
-    InTextCitFrame.style.flexShrink = '0'; // Set initial max height
-    InTextCitFrame.style.maxHeight = '40%';
+    InTextCitFrame.style.marginBottom = "0px";
 
     // Create the toggle button for expanding/collapsing the in-text citation frame
 
@@ -1054,13 +1060,16 @@ export function thirdFrame() {
     const ThirdFrameHead = document.createElement('div');
     ThirdFrameHead.id = 'ThirdFrameHead';
     //ThirdFrameHead.style.margin = ""
-    InTextCitFrame.appendChild(ThirdFrameHead);
+    OuterFrame.appendChild(ThirdFrameHead);
+    const trash = document.createElement('div');
+    trash.id = "Trash1";
+    ThirdFrameHead.appendChild(trash)
 
     // Append the toggle button (if necessary) to the InTextCitFrame
 
 
     // Append the InTextCitFrame to the scholar container
-    scholarContainer.appendChild(InTextCitFrame);
+    OuterFrame.appendChild(InTextCitFrame);
 
     // Initial render showing only problematic spans
     renderSpans();

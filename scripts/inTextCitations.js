@@ -1,7 +1,7 @@
 // Called by main.js, finds and highlights in-text citations
 
 import { getMergedTextByMyId } from './crossrefSearch.js';
-
+import {MakeRefName} from './magic.js';
 
 export function inTextSearch() {
     console.log("doing intext search etc.")
@@ -112,33 +112,8 @@ function GetallPossibleNames() {
         //assign author names to ReferenceFrameParagraph
         const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '');
         // Step 2: Extract the part before the (year)
-        let lastNames
-        console.log(cleanedText)
-        if (cleanedText) {
-            // Attempt to match the authors part using a regular expression
-            const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
-        
-            // Check if the match was successful
-            if (matchResult) {
-                const authorsPart = matchResult[0]; // Safely access the matched part
-        
-                // Split the remaining string by commas or ampersands and extract the last names
-                lastNames = authorsPart.replace(" (", "")
-                    .replace(", ,", ",")
-                    .replace(" (Eds.).", "")
-                    .split(/,|&/)
-                    .map(author => author.trim());
-        
-                // Filter out any empty names
-                lastNames = lastNames.filter(name => name !== "");
-            } else {
-                // Handle the case where no match was found
-                lastNames = [];
-            }
-        } else {
-            // Handle the case where cleanedText is falsy (null/undefined/empty)
-            lastNames = [];
-        }
+        let lastNames = MakeRefName(cleanedText);
+
         
         lastNames.forEach((name) => {AlllastNames.push(name)})
     }

@@ -32,7 +32,7 @@ function initializePDFLoader() {
             if (file && file.type === 'application/pdf') {
                 pdfDocument = await loadPDF(file);  // Call loadPDF function to render the PDF
             } else {
-                alert('Please select a valid PDF file.');
+                //alert('Please select a valid PDF file.');
             }
         
             // Wait for all pages to be rendered

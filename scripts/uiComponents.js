@@ -821,11 +821,11 @@ if (TextFrameParagraph) {
         const totalCitations = document.querySelectorAll('span.citation').length;
         const matchedCitations = document.querySelectorAll('span.citation[found="true"]').length;
         
-        const ThirdFrameTitle = document.createElement('b')
+        const ThirdFrameTitle = document.getElementById("ThirdFrameTitle")
 
         ThirdFrameTitle.innerHTML = `Found ${totalCitations} in-text citations (` + 
         `${totalCitations - matchedCitations} without match)`;
-        ThirdFrameHead.appendChild(ThirdFrameTitle);
+
         }
     
 }
@@ -841,7 +841,7 @@ export function DragDrop() {
     const draggables = document.querySelectorAll('span.citation, .InTexts');
     
     // Select all drop zones with class "Reference-frame"
-    const dropZones = document.querySelectorAll('.Reference-frame');
+    const dropZones = document.querySelectorAll('.Reference-frame, .Trashs');
 
     // Get CSS variable values for secondary and accent colors
     const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color');
@@ -883,11 +883,11 @@ export function DragDrop() {
 
         // Drop event (handles the actual drop)
         dropZone.addEventListener('drop', (e) => {
+
             e.preventDefault();
             dropZone.classList.remove('hover');
 
-            // If the drop zone is a valid "Reference-frame" element
-            if (dropZone.classList.contains('Reference-frame')) {
+            
                 let draggedElementToUse = draggedElement; // Initialize to use the original draggedElement
                 const draggableSpans = document.querySelectorAll('span.citation');
                 // Check if draggedElement is of class 'InTexts'
@@ -915,7 +915,9 @@ export function DragDrop() {
                         ListSimilar.push(dragged);
                     }
                 });
-                
+                            // If the drop zone is a valid "Reference-frame" element
+
+            if (dropZone.classList.contains('Reference-frame')) {
                 // Perform actions for each similar dragged element
                 ListSimilar.forEach((dragged) => {
                     MatchDragged(dragged, dropZone);
@@ -923,7 +925,11 @@ export function DragDrop() {
             }
             
             
-            else {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
+            else if (dropZone.classList.contains('Trashs')) {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
+                ListSimilar.forEach((dragged) => {
+                    DeleteDragged(dragged, dropZone);
+                });
+            
             }           
             UpdateFrames()
         });
@@ -973,6 +979,23 @@ export function DragDrop() {
                         inText.remove();
                     }
                 });        
+
+    }
+
+    function DeleteDragged(draggedElement, dropZone) {
+        
+        draggedElement.style.backgroundColor = "";
+        draggedElement.setAttribute('found', 'deleted');
+        draggedElement.classList.remove("citation")
+        const inTextElements = document.querySelectorAll('.InTexts'); // Select all elements with the class '.InTexts'
+            
+        inTextElements.forEach(inText => {
+            // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
+            if (decodeHTMLEntities(inText.innerHTML.trim()) === decodeHTMLEntities(draggedElement.getAttribute('title').trim())) {
+                // Remove the matching element
+                inText.remove();
+            }
+        }); 
 
     }
 
@@ -1061,8 +1084,12 @@ export function thirdFrame() {
     ThirdFrameHead.id = 'ThirdFrameHead';
     //ThirdFrameHead.style.margin = ""
     OuterFrame.appendChild(ThirdFrameHead);
+    const ThirdFrameTitle = document.createElement('b');
+    ThirdFrameTitle.id = "ThirdFrameTitle"
+    ThirdFrameHead.appendChild(ThirdFrameTitle)
     const trash = document.createElement('div');
     trash.id = "Trash1";
+    trash.className = "Trashs"
     ThirdFrameHead.appendChild(trash)
 
     // Append the toggle button (if necessary) to the InTextCitFrame

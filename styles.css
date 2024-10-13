@@ -349,6 +349,12 @@ margin-left : 3px;
 }
 
 
+#Helperdiv {
+    display: flex;
+    gap: 5px;
+    margin-left: auto;
+}
+
 #scholar-container {
     display: flex;
     flex-direction: column;

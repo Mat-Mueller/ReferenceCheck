@@ -284,7 +284,7 @@ function appendResultToDiv(item, resultsDiv) {
 
             if (hasEtAl) {
               // Normalize both strings to avoid encoding issues
-              console.log(arr2)
+              //console.log(arr2)
               return arr1[0].normalize() === arr2[0].normalize();
             }       
             // Standard comparison when "et" and "al." are not present
@@ -1058,14 +1058,15 @@ export function thirdFrame() {
         });
 
         // Loop through each problematic span and create a clickable list item
-        problematicSpans.forEach((span) => {
+        problematicSpans.forEach((span, index) => {
             const cleanedCit = span.getAttribute('title'); // Get the cleaned citation text
 
             if (cleanedCit) { // Only add if cleanedCit is available
                 const InTextCitFrameParagraph = document.createElement('div');
                 InTextCitFrameParagraph.className = 'InTexts';
                 InTextCitFrameParagraph.innerHTML = cleanedCit; // Display the cleaned citation text
-                InTextCitFrameParagraph.ParentSpan = span;   
+                InTextCitFrameParagraph.ParentSpan = span; 
+                InTextCitFrameParagraph.id = `InTexts-${index + 1}`  
                 // Ensure the width of the div fits its content
 
 
@@ -1086,11 +1087,22 @@ export function thirdFrame() {
     OuterFrame.appendChild(ThirdFrameHead);
     const ThirdFrameTitle = document.createElement('b');
     ThirdFrameTitle.id = "ThirdFrameTitle"
+
     ThirdFrameHead.appendChild(ThirdFrameTitle)
+
+    const sortIcon = document.createElement('div');
+    const Helperdiv = document.createElement('div');
+    Helperdiv.id = "Helperdiv";
+    sortIcon.id = "sortIcon";
+    sortIcon.innerHTML = "ABC" 
+    sortIcon.style.cursor = "pointer";
+    sortIcon.addEventListener("click", sorting);
+    ThirdFrameHead.appendChild(Helperdiv)
+    Helperdiv.appendChild(sortIcon)
     const trash = document.createElement('div');
     trash.id = "Trash1";
     trash.className = "Trashs"
-    ThirdFrameHead.appendChild(trash)
+    Helperdiv.appendChild(trash)
 
     // Append the toggle button (if necessary) to the InTextCitFrame
 
@@ -1103,6 +1115,38 @@ export function thirdFrame() {
     UpdateFrames(); // Assuming UpdateFrames() is needed elsewhere
 }
 
+// Define the sorting function
+function sorting() {
+    const sortIcon = document.getElementById("sortIcon");
+    const parentDiv = document.getElementById('InTextCitFrame'); 
+    const divsArray = Array.from(parentDiv.children); 
+
+    if (sortIcon.innerHTML === "ABC") {
+        // Sort alphabetically based on text content
+        divsArray.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+        // Change sortIcon's innerHTML to "1.2.3."
+        sortIcon.innerHTML = "1.2.3.";
+    } else if (sortIcon.innerHTML === "1.2.3.") {
+        // Sort numerically based on the div IDs
+        divsArray.sort((a, b) => {
+            const idA = parseInt(a.id.split('-')[1]); // Get the numeric part of the ID
+            const idB = parseInt(b.id.split('-')[1]); // Get the numeric part of the ID
+            return idA - idB; // Compare numerically
+        });
+
+        // Change sortIcon's innerHTML back to "ABC"
+        sortIcon.innerHTML = "ABC";
+    }
+
+    // Clear the parent div and append the sorted divs
+    parentDiv.innerHTML = "";
+    divsArray.forEach(div => parentDiv.appendChild(div));
+}
+
+  
+
+  
 
 export function showLoadingSpinner() {
     document.getElementById('loading-spinner').style.display = 'block';

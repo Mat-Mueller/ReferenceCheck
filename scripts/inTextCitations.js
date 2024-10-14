@@ -5,8 +5,6 @@ import {MakeRefName} from './magic.js';
 
 export function inTextSearch() {
     console.log("doing intext search etc.")
-
-
     identifyAndWrapCitations();
     cleanCitations()
     assignnames()
@@ -275,7 +273,6 @@ function identifyAndWrapCitations() {
 
     // Get all divs with class 'textLine', excluding those with the attribute 'myid', and convert NodeList to an array
     const allDivs = Array.from(document.querySelectorAll('div.textLine:not([myid])'));
-
     let hasChanged = false
 
     // Loop through the array of divs

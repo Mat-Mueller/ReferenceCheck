@@ -61,13 +61,13 @@ export async function checkExists(textReference) {
     var searchResults = await crossrefSearch(textReference);
     searchResults = formatResults(searchResults);
     searchResults = computeMatch(textReference, searchResults);
-    console.log(searchResults)
+    //console.log(searchResults)
     return searchResults
 }
 
 
 async function crossrefSearch(textReference) {
-    console.log(`Text passed to crossrefSearch(): ${textReference}`);
+    //console.log(`Text passed to crossrefSearch(): ${textReference}`);
 
     if (textReference.length > 0) {
         try {
@@ -82,7 +82,7 @@ async function crossrefSearch(textReference) {
             document.body.style.cursor = 'default'; // Revert cursor to default
             
             const searchResultsData = searchResults.message.items.slice(0, 2); // Get the first 2 results
-            console.log(`Sliced search results returned from crossref: ${searchResultsData}`);
+            //console.log(`Sliced search results returned from crossref: ${searchResultsData}`);
 
             return searchResultsData; // Return the API data after it is fetched
         } catch (error) {

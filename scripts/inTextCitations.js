@@ -332,10 +332,8 @@ function identifyAndWrapCitations() {
 
             // Join the wrapped citations back with "; "
             let wrappedCitationText = wrappedCitations.join('; ');
-
             // Rebuild the modifiedText with the before, wrapped citations, and after part
             modifiedText = beforeText + wrappedCitationText + afterText;
-
             // Look for the next "(" after this one
             openParenthesisIndex = modifiedText.indexOf('(', closeParenthesisIndex + 1);
         }

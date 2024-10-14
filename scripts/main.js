@@ -49,7 +49,7 @@ export async function analysis() {
     
     // Search for in-text citations and set up GUI for results
     inTextSearch();
-
+    MoveToFirstSpan()
     // Set up GUI for results and crossref search
     clearRightContainer();
     //firstFrame(referenceCount);

@@ -7,6 +7,24 @@ export function clearRightContainer() {
     scholarContainer.innerHTML = ''; // Clear previous content
 }
 
+
+export function MoveToFirstSpan() {
+    // Find the first span with the class 'citation'
+    const firstCitation = document.querySelector('span.citation');
+
+    if (firstCitation) {
+        // Scroll the element into view
+        firstCitation.scrollIntoView({
+            behavior: 'smooth',  // You can use 'smooth' for a smooth scrolling animation or 'auto' for an instant scroll
+            block: 'center',     // Scroll so that the element is centered in the viewport
+            inline: 'nearest'    // Align it nearest to the horizontal center (if necessary)
+        });
+    } else {
+        console.log('No citation span found');
+    }
+}
+
+
 export function displaySoftwareDescription() {
     const scholarContainer = document.getElementById('scholar-container');
 

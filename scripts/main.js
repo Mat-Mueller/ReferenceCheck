@@ -1,4 +1,4 @@
-import { displaySoftwareDescription, createMenue, referenceSectionGUI, referenceSeparationGUI, DragDrop, secondFrame, thirdFrame, clearRightContainer } from './uiComponents.js';
+import { displaySoftwareDescription, createMenue, referenceSectionGUI, referenceSeparationGUI, DragDrop, secondFrame, thirdFrame, clearRightContainer, MoveToFirstSpan  } from './uiComponents.js';
 import { readRenderPDF } from './pdfLoader.js';
 import { findReferenceSection, userDecisionReferenceSection } from './findReferenceList.js';
 import { subdivide, userDecisionSeparation } from './separateReferences.js';

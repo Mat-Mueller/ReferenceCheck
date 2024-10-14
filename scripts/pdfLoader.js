@@ -97,7 +97,7 @@ async function renderAllPages(pdfDocument) {
     dummy.id = "dummy"
     for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
         const page = await pdfDocument.getPage(pageNum); // Wait for the page to be loaded
-        const viewport = page.getViewport({ scale: 1.5 });
+        const viewport = page.getViewport({ scale: 2 });
         const textLayerDiv = document.createElement('div');
         textLayerDiv.className = 'textLayer';
         textLayerDiv.style.height = `${viewport.height}px`;

@@ -748,6 +748,22 @@ if (TextFrameParagraph) {
 
 
 
+function onDragStartHandler() {
+    // Loop through each drop zone and apply a highlight effect
+    const dropZones = document.querySelectorAll('#ReferenceFrame, #Trash1');
+
+    dropZones.forEach(dropZone => {
+        // Apply the border highlight (corrected syntax)
+        dropZone.style.border = '4px solid red';  // Example: highlight with red border
+
+        // Remove the highlight after 1 second (1000 milliseconds)
+        setTimeout(() => {
+            dropZone.style.border = '';  // Reset the border to its original state
+        }, 1000);
+    });
+}
+
+
 export function DragDrop() {
     let dragStartTime = 0;
     let draggedElement = null; // Keep track of the dragged element
@@ -771,6 +787,7 @@ export function DragDrop() {
             dragStartTime = new Date().getTime(); // Track drag start time
             draggedElement = draggable; // Keep reference to the dragged element
             e.dataTransfer.setData('text/plain', ''); // Some browsers require data to be set
+            onDragStartHandler(dropZones)
         });
 
         // Click event listener (for valid drops)

@@ -256,7 +256,7 @@ function cleanCitations() {
         }
         // Set a new attribute 'cleanedCit' with the cleaned text
         span.setAttribute('cleanedCit', cleanedText.replace("(", "").replace(/;/g, " "));
-        span.setAttribute('title', cleanedText.replace(/;/g, " "));
+        //span.setAttribute('title', cleanedText.replace(/;/g, " "));
         // Find the first 4-digit year in the cleanedText
         let yearMatch = cleanedText.match(/\b\d{4}[a-zA-Z]?\b/);
         if (yearMatch) {

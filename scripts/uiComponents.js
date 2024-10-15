@@ -648,6 +648,16 @@ export function searchSpanRef() {
 
 function UpdateFrames() {
 
+///// Set Span Titles
+const citationElements = document.querySelectorAll('span.citation');
+citationElements.forEach(function (element) {
+    if (element.getAttribute('Found') === 'true') {
+        element.setAttribute('title', 'Succesfully matched with reference');
+    } else {
+        element.setAttribute('title', 'No reference found!');
+    }
+    
+});
 
     // Get the accent color from the CSS variable
     const accentColor = "rgb(227, 87, 75)" // or use getComputedStyle...

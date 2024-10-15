@@ -26,7 +26,7 @@ function initializePDFLoader() {
         window.handleDrop = async function (event) {
             event.preventDefault();
             event.stopPropagation();
-    
+            //LoadingPage()
             const file = event.dataTransfer.files[0];  // Get the dropped file
             let pdfDocument = null;
             if (file && file.type === 'application/pdf') {
@@ -47,12 +47,14 @@ function initializePDFLoader() {
             } else {
                 reject(new Error("No file selected"));
             }
+            //LoadingPage()
         };
 
         // Get file via file selection
         const fileInput = document.getElementById('pdf-upload');
         fileInput.addEventListener('change', async function (event) {
             const file = event.target.files[0];  // Get file
+            //LoadingPage()
             let pdfDocument = null;
             if (file && file.type === 'application/pdf') {
                 pdfDocument = await loadPDF(file);  // Call loadPDF function to render the PDF
@@ -72,6 +74,7 @@ function initializePDFLoader() {
             } else {
                 reject(new Error("No file selected"));
             }
+            //LoadingPage()
         });
     });
 }
@@ -174,6 +177,15 @@ async function renderAllPages(pdfDocument) {
 
 
     createZoomButtonsandSearchField()
+}
+
+function LoadingPage() {
+    var loadingElement = document.getElementById("loadingScreen");
+    if (loadingElement.style.display === "none") {
+        loadingElement.style.display = "flex";
+    } else {
+        loadingElement.style.display = "none";
+    }
 }
 
 

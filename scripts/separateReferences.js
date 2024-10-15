@@ -50,9 +50,11 @@ export function subdivide(selection, selectedCriterion) {
             }
 
             let distances = calculateDistances(pElements, selectedCriterion);
+            console.log(distances)
             let indents = calculateIndents(pElements, selectedCriterion);
 
             const mostCommonDistance = findMostCommonDistance(distances);
+            console.log(mostCommonDistance)
             const [noIndent, yesIndent] = findIndentThresholds(indents);
 
             let mergedContent = "";
@@ -130,8 +132,25 @@ function isIndentNoIndent(pElements, index, noIndent) {
 
 function findMostCommonDistance(distances) {
     if (distances.length === 0) return 0;
+
+    // Count occurrences of each distance
     const distanceCount = distances.reduce((acc, dist) => (acc[dist] = (acc[dist] || 0) + 1, acc), {});
+
+    // Sort distances by frequency (descending) and by distance value (ascending in case of tie)
     const sortedDistances = Object.entries(distanceCount).sort((a, b) => b[1] - a[1] || a[0] - b[0]);
-    return sortedDistances.length >= 2 ? Math.min(...sortedDistances.map(([dist]) => parseFloat(dist))) : parseFloat(sortedDistances[0][0]);
+
+    // Check if we have at least two different distances with counts
+    if (sortedDistances.length >= 2) {
+        const [mostCommon, secondMostCommon] = sortedDistances;
+
+        // If both distances have the same frequency, return the smaller distance
+        if (mostCommon[1] === secondMostCommon[1]) {
+            return Math.min(parseFloat(mostCommon[0]), parseFloat(secondMostCommon[0]));
+        }
+    }
+
+    // Otherwise, return the most common distance
+    return parseFloat(sortedDistances[0][0]);
 }
+
 

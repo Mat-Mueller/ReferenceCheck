@@ -828,9 +828,9 @@ export function DragDrop() {
                     
                     
                     draggableSpans.forEach((dragged) => {
-                        console.log(dragged.title.trim(),draggedElement.innerHTML.trim())
+                        console.log(dragged.getAttribute("cleanedCit").trim(),draggedElement.innerHTML.trim())
                         // Check if the 'title' of the 'span' matches the 'innerHTML' of the InTexts element
-                        if (decodeHTMLEntities(dragged.title.trim()) === decodeHTMLEntities(draggedElement.innerHTML.trim())) {
+                        if (decodeHTMLEntities(dragged.getAttribute("cleanedCit").trim()) === decodeHTMLEntities(draggedElement.innerHTML.trim())) {
                             draggedElementToUse = dragged; // Use the matching span as the new draggedElement
                             console.log(draggedElementToUse)
                             return; // Exit the loop after finding the first match
@@ -843,7 +843,7 @@ export function DragDrop() {
                 
                 // Find similar draggable elements
                 draggableSpans.forEach((dragged) => {
-                    if (dragged.title.trim() === draggedElementToUse.title.trim()) {
+                    if (dragged.getAttribute("cleanedCit").trim() === draggedElementToUse.getAttribute("cleanedCit").trim()) {
                         ListSimilar.push(dragged);
                     }
                 });
@@ -906,7 +906,7 @@ export function DragDrop() {
             
                 inTextElements.forEach(inText => {
                     // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
-                    if (decodeHTMLEntities(inText.innerHTML.trim()) === decodeHTMLEntities(draggedElement.getAttribute('title').trim())) {
+                    if (decodeHTMLEntities(inText.innerHTML.trim()) === decodeHTMLEntities(draggedElement.getAttribute('cleanedCit').trim())) {
                         // Remove the matching element
                         inText.remove();
                     }
@@ -924,7 +924,7 @@ export function DragDrop() {
             
         inTextElements.forEach(inText => {
             // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
-            if (decodeHTMLEntities(inText.innerHTML.trim()) === decodeHTMLEntities(draggedElement.getAttribute('title').trim())) {
+            if (decodeHTMLEntities(inText.innerHTML.trim()) === decodeHTMLEntities(draggedElement.getAttribute('cleanedCit').trim())) {
                 // Remove the matching element
                 inText.remove();
             }
@@ -992,12 +992,13 @@ export function thirdFrame() {
 
         // Loop through each problematic span and create a clickable list item
         problematicSpans.forEach((span, index) => {
-            const cleanedCit = span.getAttribute('title'); // Get the cleaned citation text
+            const cleanedCit = span.getAttribute('cleanedCit'); // Get the cleaned citation text
 
             if (cleanedCit) { // Only add if cleanedCit is available
                 const InTextCitFrameParagraph = document.createElement('div');
                 InTextCitFrameParagraph.className = 'InTexts';
                 InTextCitFrameParagraph.innerHTML = cleanedCit; // Display the cleaned citation text
+                InTextCitFrameParagraph.setAttribute("cleanedCit", cleanedCit)
                 InTextCitFrameParagraph.ParentSpan = span; 
                 InTextCitFrameParagraph.id = `InTexts-${index + 1}`  
                 // Ensure the width of the div fits its content

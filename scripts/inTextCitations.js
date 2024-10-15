@@ -255,7 +255,7 @@ function cleanCitations() {
             cleanedText = words.join(";")
         }
         // Set a new attribute 'cleanedCit' with the cleaned text
-        span.setAttribute('cleanedCit', cleanedText.replace("(", ""));
+        span.setAttribute('cleanedCit', cleanedText.replace("(", "").replace(/;/g, " "));
         span.setAttribute('title', cleanedText.replace(/;/g, " "));
         // Find the first 4-digit year in the cleanedText
         let yearMatch = cleanedText.match(/\b\d{4}[a-zA-Z]?\b/);
@@ -353,7 +353,7 @@ function assignnames() {
     citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
             //console.log(cleanedText)
-            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(";and", "").replace(";und", "").split(';').filter(name => name !== "")//.replace(",", "");
+            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(";and", "").replace(";und", "").split(' ').filter(name => name !== "")//.replace(",", "");
             authorsCit.pop()
             span.setAttribute('authors', authorsCit.join(";"))
     })

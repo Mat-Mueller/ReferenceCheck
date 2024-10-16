@@ -379,7 +379,7 @@ margin-left : 3px;
 
 #InTextCitFrame {
     border: 0px solid #ccc !important;
-    overflow-y: scroll;
+    overflow-y: scroll  !important;
 }
 
 
@@ -484,3 +484,93 @@ margin-left : 3px;
     left: 50%;
 
   }
+
+  #settings {
+    display: none;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  }
+  
+  #settings-1 {
+    height: 100; /* You can adjust the height if necessary */
+    border-radius: 5px;
+    margin: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: left; /* Center align horizontally */
+    justify-content: center; /* Adjust vertical spacing */
+    background-color: white;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+#settings-2, #settings-3 {
+    flex: 1;
+    height: 100px;
+    display: flex; /* Flexbox to align text */
+    align-items: center; /* Vertical centering */
+    justify-content: center; /* Horizontal centering */
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    background-color: white;
+    flex-direction: column; /* Stack items vertically */
+}
+
+#subdivButton, #subdivButton2 {
+
+}
+
+#settings-4 {
+    height: 110px;
+    border-radius: 5px;
+    margin: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column; /* Stack rows vertically */
+    align-items: flex-start; /* Align items to the left */
+}
+
+.citavipicker {
+    height: 3px !important;
+    width: 3px !important;
+
+}
+
+a[href="javascript:"] {
+    display: none;  /* Ensures it respects width and height */
+    max-width: 5px; /* Set the desired width */
+    max-height: 5px; /* Set the desired height */
+    overflow: hidden; /* Prevent the image from overflowing */
+}
+#subdivButton, #subdivButton2 {
+    display: inline-block; /* Ensure buttons are treated as inline blocks */
+    width: 100px; /* Optional: set button width */
+    border-radius: 5px;
+    height: 40px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#continue-button {
+    align-self: flex-end; /* Align "Continue" button to the left */
+    margin-right: 10px;
+}
+#subdivButtoonCont {
+    display: flex;
+    justify-content: center; /* Space between the buttons */
+    width: 100%; /* Make sure the buttons fill the row */
+}

@@ -1,5 +1,8 @@
 import { getMergedTextByMyId, checkExists } from './crossrefSearch.js';
 import {MakeRefName, matching} from './magic.js';
+import {checkFooter, checkHeader} from './headerFooterDetect.js'
+import { subdivide, userDecisionSeparation } from './separateReferences.js';
+import {findNearestTextDivBelow, findNearestTextDivAbove} from './findReferenceList.js'
 
 
 export function clearRightContainer() {
@@ -26,7 +29,7 @@ export function MoveToFirstSpan() {
 
 
 export function displaySoftwareDescription() {
-    const scholarContainer = document.getElementById('scholar-container');
+    const scholarContainer = document.getElementById('description');
 
     // Function for loading external html file
     function loadHTML(url, container) {
@@ -57,10 +60,258 @@ export function createMenue () {
 }
 
 
-export function referenceSectionGUI(referenceFound) {
-    // Clear previous analysis results or messages
-    const scholarContainer = document.getElementById("scholar-container");
+function activateButton(button) {
+    button.style.backgroundColor = 'yellow';
+}
 
+function deactivateButton(button) {
+    button.style.backgroundColor = 'white';
+}
+
+
+function setStart() {
+    let isSelecting = false; // Define isSelecting outside to keep track of selection
+
+    return new Promise((resolve) => {
+        function handleClick(e) {
+            const frame = document.getElementById('pdf-container'); // Get the PDF container element
+
+            // Check if the click is within the frame
+            if (frame && frame.contains(e.target)) {
+                let startContainer, startOffset;
+                
+                // First click: Set the start of the selection
+                if (!isSelecting) {
+                    isSelecting = true;
+                    const nearestDiv = findNearestTextDivBelow(e.clientX, e.clientY); // Find the nearest div to click
+                    if (nearestDiv) {
+                        startContainer = nearestDiv;
+                        startOffset = 0; // Start from the beginning of the div
+                        console.log("Selection started at div:", startContainer);
+                        
+                        // Stop listening for further clicks after selection
+                        document.removeEventListener("click", handleClick);
+
+                        // Resolve the Promise with the selected start container
+                        resolve(startContainer);
+                    }
+                }
+            }
+        }
+
+        // Add click event listener to start the selection
+        document.addEventListener("click", handleClick);
+    });
+}
+
+function setEnd() {
+    let isSelecting = false; // Define isSelecting outside to keep track of selection
+
+    return new Promise((resolve) => {
+        function handleClick(e) {
+            const frame = document.getElementById('pdf-container'); // Get the PDF container element
+
+            // Check if the click is within the frame
+            if (frame && frame.contains(e.target)) {
+                let startContainer, startOffset;
+                
+                // First click: Set the start of the selection
+                if (!isSelecting) {
+                    isSelecting = true;
+                    const nearestDiv = findNearestTextDivAbove(e.clientX, e.clientY); // Find the nearest div to click
+                    if (nearestDiv) {
+                        startContainer = nearestDiv;
+                        startOffset = 0; // Start from the beginning of the div
+                        console.log("Selection ended at div:", startContainer);
+                        
+                        // Stop listening for further clicks after selection
+                        document.removeEventListener("click", handleClick);
+
+                        // Resolve the Promise with the selected start container
+                        resolve(startContainer);
+                    }
+                }
+            }
+        }
+
+        // Add click event listener to start the selection
+        document.addEventListener("click", handleClick);
+    });
+}
+
+export async function referenceSectionGUI(Points) {
+    const scholarContainer = document.getElementById("scholar-container");
+    let referenceCount 
+    let startPoint
+    let endPoint
+
+    if (Points) {
+        startPoint = Points[0]
+        endPoint = Points[1]
+    }
+    // get rif of citavi as it fucks with the paragraph computation ///////////////////////// not working!!!!!!!!
+    document.querySelectorAll('.citavipicker').forEach(function(element) {
+        element.style.display = "none"
+    });
+
+    // make settings visible
+    const settings = document.getElementById("settings")
+    settings.style.display = "block"
+
+    // Header and Footer stuff
+    const hasFooter = checkFooter()
+    const hasHeader = checkHeader()
+    console.log(hasFooter, hasHeader)
+    let Notifi = ""
+
+    if (hasHeader) {
+        document.getElementById("checkHeader").checked = true;
+    } else {document.getElementById("checkHeader").checked = false;}
+    if (hasFooter) {
+        document.getElementById("checkFooter").checked = true;
+        
+    } else {document.getElementById("checkFooter").checked = false;}
+    
+    if (hasHeader && hasFooter ) {
+        document.getElementById("settings-1text").innerHTML = "Found a header and a footer in the PDF."
+    } else if (hasHeader && !(hasFooter) ) {
+        document.getElementById("settings-1text").innerHTML = "Found a header in the PDF."
+    } else if (!(hasHeader) && (hasFooter) ) {
+        document.getElementById("settings-1text").innerHTML = "Found a footer in the PDF."
+    } else if (!(hasHeader) && !(hasFooter) ) {
+        document.getElementById("settings-1text").innerHTML = "Found no footer or header in the PDF."
+    }
+
+    /// Reference section Stuff
+
+    const settings2 = document.getElementById("settings-2")
+    const settings3 = document.getElementById("settings-3")
+    if (startPoint) {
+        document.getElementById("settings-2text").innerText = "Reference section found and highlighted"
+    } else document.getElementById("settings-2text").innerText = "No reference section found. Please select start of section manually"
+    if (endPoint) {
+        document.getElementById("settings-3text").innerText = "Reference section found and highlighted"
+    } else document.getElementById("settings-3text").innerText = "No reference section found. Please select end of section manually"
+
+    const SetManually1 = document.createElement('button')
+    SetManually1.innerText = "Reset manually"
+    settings2.appendChild(SetManually1)
+    SetManually1.addEventListener('click', async function () {
+        startPoint = await setStart();
+        document.getElementById("settings-2text").innerText = "Start of reference section set."
+        if (startPoint && endPoint) {
+            NowSeperate()
+        }
+    })
+    
+    const SetManually2 = document.createElement('button')
+    SetManually2.innerText = "Reset manually"
+    settings3.appendChild(SetManually2)
+    SetManually2.addEventListener('click', async function () {
+        endPoint = await setEnd();
+        document.getElementById("settings-3text").innerText = "End of reference section set."
+        if (startPoint && endPoint) {
+            NowSeperate()
+        }
+    })
+    const settings4 = document.getElementById("settings-4")
+    const Cont =  document.getElementById("continue-button")
+    
+    
+    
+    const subdivButton = document.getElementById("subdivButton")
+    subdivButton.innerText = `Separate by paragraph`;    
+    
+
+    const subdivButton2 = document.getElementById("subdivButton2")
+    subdivButton2.innerText = `Separate by indent`;    
+    
+
+    if (startPoint && endPoint) {
+        NowSeperate()
+    } else { 
+        document.getElementById("settings-4text").innerText = "Please select reference section first"
+        Cont.disabled = true
+    }
+    
+    function NowSeperate() {
+            /// first delete all footer and headers
+        if (document.getElementById("checkFooter").checked){
+            const footerDivs = document.querySelectorAll('div[data-footer="true"]');
+            footerDivs.forEach(function (div) {  
+                div.classList.remove('textLine');  
+            });
+        }
+        if (document.getElementById("checkHeader").checked ) {
+            const headerDivs = document.querySelectorAll('div[data-header="true"]');
+            headerDivs.forEach(function (div) {
+                div.classList.remove('textLine');
+            });
+        }       
+        Cont.disabled = false;
+        const paragraphCount = subdivide(startPoint, endPoint, "byParagraph");
+        const indentCount = subdivide(startPoint, endPoint, "byIndent");
+        document.getElementById("settings-4text").innerText = `Found ${paragraphCount} references by paragraphs. Found ${indentCount} references by indent.`;
+
+        referenceCount = indentCount
+        const count = document.querySelectorAll('.textLine.highlight').length;
+        const Set4Text = document.createElement("div")
+        Set4Text.innerText = `found ${paragraphCount} References`;
+    
+       
+        // decide which button to activate based on count / paragraphCount and count / indentCount
+        // Assuming these values are defined earlier in your script
+    
+    
+        // Calculate the ratios
+        const ratioParagraph = count / paragraphCount;
+        const ratioIndent = count / indentCount;
+    
+        console.log(ratioParagraph, ratioIndent); // Log both ratios
+    
+        // Decision rule
+     if (ratioParagraph > 1.7 && ratioParagraph < 4 && ratioIndent > 1.7 && ratioIndent < 4) {
+        // Both ratios are within range, pick the smaller one
+        if (ratioParagraph <= ratioIndent) {
+            activateButton(subdivButton)
+            deactivateButton(subdivButton2)
+            referenceCount = subdivide(startPoint, endPoint, "byParagraph")
+        } else {
+            activateButton(subdivButton2)
+            deactivateButton(subdivButton)
+    
+        }
+     } else if (ratioParagraph > 1.7 && ratioParagraph < 4) {
+        activateButton(subdivButton)
+        deactivateButton(subdivButton2)
+    
+        referenceCount = subdivide(startPoint, endPoint, "byParagraph")
+     } else if (ratioIndent > 1.7 && ratioIndent < 4) {
+        activateButton(subdivButton2)
+        deactivateButton(subdivButton)
+    
+     } 
+    
+     subdivButton.addEventListener('click', function() {
+        activateButton(subdivButton)        
+        deactivateButton(subdivButton2)
+        referenceCount = subdivide(startPoint, endPoint, "byParagraph")
+     })
+    
+     subdivButton2.addEventListener('click', function() {
+        activateButton(subdivButton2)
+        deactivateButton(subdivButton)
+        referenceCount = subdivide(startPoint, endPoint, "byIndent")
+     })
+    
+
+
+    }
+
+
+
+
+    /*
     if (referenceFound) {
         // Create a frame for the success message
         const TextFrame = document.createElement('div');
@@ -110,6 +361,15 @@ export function referenceSectionGUI(referenceFound) {
 
         scholarContainer.appendChild(TextFrame);
     }
+        */
+
+    settings4.appendChild(Cont)
+    return new Promise((resolve) => {
+        Cont.addEventListener('click', function () {
+
+            resolve(referenceCount); // Resolve the promise with startPoint and endPoint values
+        });
+    });
 }
 
 

@@ -16,7 +16,15 @@ export function userDecisionSeparation(referenceSection) {
 }
 
 
-export function subdivide(selection, selectedCriterion) {
+export function subdivide(startPoint, endPoint, selectedCriterion) {
+    const range = document.createRange();
+    range.setStart(startPoint, 0);  // Start at the startPoint (assuming it's a DOM node)
+    range.setEnd(endPoint, endPoint.length);  // End at the endPoint (assuming it's a DOM node)
+
+    // Make the selection in the document using the range
+    const selection = window.getSelection();
+    selection.removeAllRanges(); // Clear any existing selection
+    selection.addRange(range);   // Apply the new selection
     if (!selection.isCollapsed) {
         let highlightCounter = 0;
 

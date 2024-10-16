@@ -22,14 +22,11 @@ export function checkFooter() {
     // Check if at least half of the footer divs contain only a number
     const halfThreshold = Math.floor(footerDivs.length / 2);
     if (numberOnlyCount >= halfThreshold) {
+        return true
         console.log("deleting footer")
-        // If the condition is met, remove the 'textLine' class from those divs that only contain a number
-        footerDivs.forEach(function (div) {
 
-                div.classList.remove('textLine');
 
-        });
-    }
+    } else {return false}
 }
 
 export function checkHeader() {
@@ -48,12 +45,8 @@ export function checkHeader() {
     console.log(uniqueHeaderArray)
 
     if (uniqueHeaderArray.length < (HeaderArray.length / 2)) {
+        return true
 
-        headerDivs.forEach(function (div) {
-
-            div.classList.remove('textLine');
-
-        });
-    }
+    } else {return false}
 
 }

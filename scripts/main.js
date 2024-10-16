@@ -5,6 +5,10 @@ import { subdivide, userDecisionSeparation } from './separateReferences.js';
 import { inTextSearch } from './inTextCitations.js';
 import { performCrossRefSearch } from './crossrefSearch.js';
 
+
+
+
+
 async function main() {
     // Display a description that helps the user understand the software
     displaySoftwareDescription();
@@ -20,11 +24,13 @@ document.addEventListener("DOMContentLoaded", main());
 
 export async function analysis() {
     // Try to detect reference section automatically
+    console.log("Try to detect reference section automatically")
     let refSecAuto = findReferenceSection("byTitle");
 
     // Let user decide on where reference section is
-    clearRightContainer();
-    referenceSectionGUI(refSecAuto);
+    document.getElementById("description").style.display = "none";// clearRightContainer();
+    let referenceCount = (await referenceSectionGUI(refSecAuto ));
+    /*
     try {
         // Wait for promise containing user choice for reference section
         var refSecUser = await userDecisionReferenceSection(refSecAuto);
@@ -32,6 +38,7 @@ export async function analysis() {
     } catch (error) {
         console.error("Error finding reference section:", error);
     }
+        
 
     // Compute number of references by method to inform user
     const paragraphCount = subdivide(refSecUser, "byParagraph");
@@ -46,7 +53,7 @@ export async function analysis() {
     } catch (error) {
         console.error("Error separating references:", error);
     }
-    
+    */
     // Search for in-text citations and set up GUI for results
     inTextSearch();
     MoveToFirstSpan()

@@ -94,7 +94,7 @@ export function startStop() {
 }
 
 
-function findNearestTextDivBelow(x, y) {
+export function findNearestTextDivBelow(x, y) {
     const pdfContainer = document.getElementById('pdf-container');
     const divs = pdfContainer.querySelectorAll('div.textLine'); // Only target divs with the 'textLine' class
     let nearestDiv = null;
@@ -118,7 +118,7 @@ function findNearestTextDivBelow(x, y) {
 }
 
 
-function findNearestTextDivAbove(x, y) {
+export function findNearestTextDivAbove(x, y) {
     const pdfContainer = document.getElementById('pdf-container');
     const divs = pdfContainer.querySelectorAll('div.textLine'); // Only target divs with the 'textLine' class
     let nearestDiv = null;
@@ -212,7 +212,7 @@ export function findReferenceSection(selectedValue) {
                 const divText = divs[i].textContent.trim().toLowerCase(); // Get the text and convert to lowercase
                 const Endtitles = [
                     'appendix',
-
+                    'declaration'
                 ];
 
                 if (Endtitles.some(Endtitles => divText.includes(Endtitles))) {
@@ -254,7 +254,7 @@ export function findReferenceSection(selectedValue) {
         // GlobalRange = range
 
         // Call the Sudivide function with the selection
-        return selection;
+        return [startPoint, endPoint];
 
 
     } else {

@@ -37,7 +37,40 @@
                 Drag and drop a PDF here or use the file upload button.
             </div>
         </div>
-        <div class="frame" id="scholar-container"></div>
+        <div class="frame" id="scholar-container">
+            <div id="description" style="background-color: white;"> </div>
+            <div id="settings" display="none">
+                <h2 style="padding-left: 10px;">Import settings:</h2>                
+                <div id="settings-1">
+                    <p id="settings-1text"> </p>
+                    <div>
+                    <label>
+                        <input type="checkbox" id="checkHeader" name="checkHeader"> PDF has header
+                    </label>
+                    <label>
+                        <input type="checkbox" id="checkFooter" name="checkFooter"> PDF has footer
+                    </label>
+                </div>
+                </div>
+                <div class="content">
+                    <div id="settings-2">
+                        <p id="settings-2text"> </p>
+                    </div>
+                    <div id="settings-3">
+                        <p id="settings-3text"> </p>
+                    </div>
+                </div>
+                <div id="settings-4">
+                    <p id="settings-4text"> Please select </p>
+                    <div id="subdivButtoonCont">
+                    <button id="subdivButton"></button>
+                    <button id="subdivButton2"></button>
+                </div>
+                    <button  id="continue-button">Continue</button>
+                </div>
+            </div>
+
+        </div>
     </div>
     <div id="loadingScreen" class="loading-screen">
         <div id="MainLoading"  class="spinner">Loading...</div>

@@ -40,8 +40,7 @@ function initializePDFLoader() {
             await renderAllPages(pdfDocument);
         
             // Detect footers and headers
-            checkFooter()
-            checkHeader()
+
             analysis()
             if (file) {
                 resolve(file);  // Resolve promise and return file

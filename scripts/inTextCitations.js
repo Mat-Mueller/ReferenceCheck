@@ -198,11 +198,12 @@ function cleanCitations() {
                 let lastWord = words[words.length - 1]; // Get the word before the span
 
                 // Check if the word before the last word is "and", "&", or "al."
+                const nonWordRegex = /[.,;:!"?)]$/;
                 if (
                     words.length > 1 &&
                     (
-                        words[words.length - 2].toLowerCase() === 'and' ||
-                        words[words.length - 2].toLowerCase() === 'und' ||
+                        (words[words.length - 2].toLowerCase() === 'and' && !nonWordRegex.test(words[words.length - 3])) ||
+                        (words[words.length - 2].toLowerCase() === 'und' && !nonWordRegex.test(words[words.length - 3]))||
                         words[words.length - 2].toLowerCase() === '&' ||
                         words[words.length - 1].toLowerCase().replace(",", "") === 'al.'
                     )
@@ -255,7 +256,7 @@ function cleanCitations() {
             cleanedText = words.join(";")
         }
         // Set a new attribute 'cleanedCit' with the cleaned text
-        span.setAttribute('cleanedCit', cleanedText.replace("(", "").replace(/;/g, " "));
+        span.setAttribute('cleanedCit', cleanedText.replace("(", ""));
         //span.setAttribute('title', cleanedText.replace(/;/g, " "));
         // Find the first 4-digit year in the cleanedText
         let yearMatch = cleanedText.match(/\b\d{4}[a-zA-Z]?\b/);
@@ -353,7 +354,7 @@ function assignnames() {
     citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
             //console.log(cleanedText)
-            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(" and", "").replace(" und", "").split(' ').filter(name => name !== "")//.replace(",", "");
+            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(";and", "").replace(";und", "").split(';').filter(name => name !== "")//.replace(",", "");
             authorsCit.pop()
             span.setAttribute('authors', authorsCit.join(";"))
     })

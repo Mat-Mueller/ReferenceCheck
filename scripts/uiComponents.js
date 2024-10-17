@@ -465,6 +465,10 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
         // Append the resultsDiv to the ReferenceFrameParagraph
         ReferenceFrameParagraph.appendChild(resultsDiv);
 
+
+
+
+
         // If there are more results, create a "Load more results" button
         /*
         if (searchResults.length > 1) {
@@ -503,6 +507,8 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
 }
 
 // Helper function to append a single result to the resultsDiv
+
+
 function appendResultToDiv(item, resultsDiv) {
     if (item.title && item.URL) {
         const resultFrame = document.createElement('div');
@@ -527,8 +533,48 @@ function appendResultToDiv(item, resultsDiv) {
 
         // Append the result frame to the resultsDiv
         resultsDiv.appendChild(resultFrame);
+
+        // Check if there is an abstract
+        if (item.abstract) {
+            // Create a link for showing the abstract
+            resultParagraph.innerHTML += '&nbsp;'
+            resultParagraph.innerHTML += '&nbsp;'
+            const showAbstractLink = document.createElement('a');
+            showAbstractLink.href = "#"; // Make it behave like a link
+            //showAbstractLink.style.color = 'blue'; // Optional: styling to look like a link
+            showAbstractLink.style.cursor = 'pointer'; // Change cursor to pointer
+            showAbstractLink.innerText = "Show abstract";
+
+            // Append the "Show abstract" link to the resultParagraph
+            resultParagraph.appendChild(showAbstractLink);
+
+            // Add an event listener for the "Show abstract" click
+            showAbstractLink.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default link behavior
+
+                // Create a new paragraph for the abstract
+                const abstractParagraph = document.createElement('p');
+                abstractParagraph.style.fontSize = '14px';
+                abstractParagraph.style.marginTop = '10px';
+                abstractParagraph.style.backgroundColor = "#f9f9f9";
+
+                // Remove HTML tags from the abstract
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = item.abstract; // Set the HTML content
+                const cleanAbstract = tempDiv.textContent || tempDiv.innerText || ''; // Extract plain text
+
+                abstractParagraph.innerHTML = "<b>Abstract: </b>" + cleanAbstract; 
+
+                // Append the abstract paragraph to the resultFrame
+                resultFrame.appendChild(abstractParagraph);
+
+                // Remove or hide the "Show abstract" link after clicking (optional)
+                showAbstractLink.remove();
+            });
+        }
     }
 }
+
 
 
 
@@ -690,22 +736,24 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.setAttribute('year', MyYear)
         ReferenceFrameParagraph.id = j;
                 // check if there is an abbreviation
-                const matchResult = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
+        const matchResult = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
 
-let result;
-if (matchResult) {
-    result = matchResult[0]; // Safely access the matched part
-} else {
-    result = ""; // Or handle it accordingly if no match is found
-}
+        let result;
+        if (matchResult) {
+            result = matchResult[0]; // Safely access the matched part
+        } else {
+            result = ""; // Or handle it accordingly if no match is found
+        }
 
 
-                const match = result.match(/\(([^)]+)\)/);
+        const match = result.match(/\(([^)]+)\)/);
 
-                if (match) {
-                    ReferenceFrameParagraph.setAttribute('Abbr', match[1]); // Outputs: "example text"
-                    console.log(match[1])
-                } else {ReferenceFrameParagraph.setAttribute('Abbr', "");}
+        if (match) {
+            ReferenceFrameParagraph.setAttribute('Abbr', match[1]); // Outputs: "example text"
+            console.log(match[1])
+        } else {
+            ReferenceFrameParagraph.setAttribute('Abbr', "");
+        }
         ReferenceFrameParagraph.className = 'Reference-frame';
 
         divs.forEach ((div) => {
@@ -713,6 +761,9 @@ if (matchResult) {
             div.addEventListener('click', () => {   
                     ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });    
             });
+        })
+        ReferenceFrameParagraph.addEventListener('click', () => {
+            divs[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
         })
 
         const matchedSpans = matching(ReferenceFrameParagraph)

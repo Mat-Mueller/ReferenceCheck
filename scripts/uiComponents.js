@@ -955,21 +955,23 @@ export function searchSpanRef() {
 }
 
 
-function UpdateFrames() {
+function UpdateFramesAndMatches() {
 
 ///// Set Span Titles
 const citationElements = document.querySelectorAll('span.citation');
 citationElements.forEach(function (element) {
     if (element.getAttribute('Found') === 'true') {
         element.setAttribute('title', 'Succesfully matched with reference');
-    } else {
+    } else if (!element.getAttribute('Found')) {
         element.setAttribute('title', 'No reference found!');
+    } else if (element.getAttribute('Found') === 'ambig') {
+        element.setAttribute('title', 'Found more than one matching reference!')
     }
     
 });
 
     // Get the accent color from the CSS variable
-    const accentColor = "rgb(227, 87, 75)" // or use getComputedStyle...
+    const accentColor = "rgb(227, 87, 75)" 
 
     // Select all elements with class '.Reference-frame'
     const referenceFrames = document.querySelectorAll('.Reference-frame');
@@ -1182,7 +1184,7 @@ export function DragDrop() {
                 });
             
             }           
-            UpdateFrames()
+            UpdateFramesAndMatches()
         });
     });
 
@@ -1287,6 +1289,7 @@ export function thirdFrame() {
     OuterFrame.style.flexShrink = '0'; // Set initial max height
     OuterFrame.style.maxHeight = '40%';
     // Create the third frame for in-text citations (collapsible frame)
+    const helper = document.createElement('div')
     const InTextCitFrame = document.createElement('div');
     InTextCitFrame.id = "InTextCitFrame";
     InTextCitFrame.className = 'search-string-frame'; // Assign collapsible class
@@ -1302,11 +1305,13 @@ export function thirdFrame() {
         existingParagraphs.forEach(paragraph => paragraph.remove());
 
         // Select only problematic spans (i.e., spans without the 'found' attribute)
-        const problematicSpans = document.querySelectorAll('span:not([found])'); // Show only problematic spans
+        const problematicSpans = document.querySelectorAll('span:not([found="true"])');
+; // Show only problematic spans
+        console.log(problematicSpans)
 
         // Highlight problematic citations in red
         problematicSpans.forEach((span) => {
-            span.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+            if (span.getAttribute("found")) {span.style.backgroundColor = "orange"} else {span.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');}
         });
 
         // Loop through each problematic span and create a clickable list item
@@ -1365,7 +1370,7 @@ export function thirdFrame() {
 
     // Initial render showing only problematic spans
     renderSpans();
-    UpdateFrames(); // Assuming UpdateFrames() is needed elsewhere
+    UpdateFramesAndMatches(); // Assuming UpdateFrames() is needed elsewhere
 }
 
 // Define the sorting function

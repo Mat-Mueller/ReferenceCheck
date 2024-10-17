@@ -2,6 +2,13 @@
 export function BestMatch(span, referenceFrames) {
     let Myauthors = span.getAttribute("authors")
     let MyYear = span.getAttribute("year")
+
+    referenceFrames.forEach((Ref) => {
+      let Refsauth = Ref.getAttribute("authors")
+      let Refsyear = Ref.getAttribute("year")
+
+    })
+
     return Myauthors
 
 }
@@ -84,6 +91,9 @@ export function matching(ReferenceFrameParagraph) {
         matchedSpans.push(span);
         if (!span.hasAttribute('found')) {
           span.setAttribute('found', 'true');
+        } else {
+          span.setAttribute('found', 'ambig')
+
         }
         span.addEventListener('click', () => {
           const element = ReferenceFrameParagraph
@@ -103,7 +113,7 @@ export function matching(ReferenceFrameParagraph) {
           span.setAttribute('found', 'true');
         }
         span.addEventListener('click', () => {
-                        const element = ReferenceFrameParagraph
+          const element = ReferenceFrameParagraph
           const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
           const offsetTop = element.offsetTop - parentElement.offsetTop;
           parentElement.scrollTo({

@@ -379,7 +379,8 @@ margin-left : 3px;
 
 #InTextCitFrame {
     border: 0px solid #ccc !important;
-    overflow-y: scroll  !important;
+    overflow-y: auto;
+    max-height: 80%;
 }
 
 

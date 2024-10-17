@@ -206,9 +206,10 @@ function cleanCitations() {
                 
                 words = mergeNameFragments(Allnames, words)
                 let lastWord = words[words.length - 1]; // Get the word before the span
-
+                console.log(words)
                 // Check if the word before the last word is "and", "&", or "al."
                 const nonWordRegex = /[.,;:!"?)]$/;
+                console.log(words, nonWordRegex.test(words[words.length - 3]))
                 if (
                     words.length > 1 &&
                     (
@@ -218,6 +219,7 @@ function cleanCitations() {
                         words[words.length - 1].toLowerCase().replace(",", "") === 'al.'
                     )
                 ) {
+                    console.log(words)
                     // Include both the second-to-last word and the last word
                     let secondLastWord = words[words.length - 2];
                     let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
@@ -225,6 +227,7 @@ function cleanCitations() {
                 } else {
                     // If no "and" is present, just include the last word
                     cleanedText = `${lastWord};${cleanedText}`;
+                    console.log(cleanedText)
 
                 }
             }
@@ -247,13 +250,15 @@ function cleanCitations() {
                     
                 }
             }
+            console.log(words)
             words = mergeNameFragments(Allnames, words)
             words = combineHyphenatedWords(words)
             lastWord = words[words.length - 2]
+            const nonWordRegex = /[.,;:!"?)]$/;
             if (lastWord === "al." || lastWord === "al.,") {
                 // Get the last three words if the last word is "al.,"
                 words = words.slice(words.length - 4, words.length);
-            } else if (words[words.length - 3] === "&" || words[words.length - 3] === "and" || words[words.length - 3] === "und") {
+            } else if (words[words.length - 3] === "&" || (words[words.length - 3] === "and" && !nonWordRegex.test(words[words.length - 4]) ) || (words[words.length - 3] === "und" && !nonWordRegex.test(words[words.length - 4]))) {
                 // Get the last three words if the second-to-last word is "&" or "and"
                 words = words.slice(words.length - 4, words.length);
             } else {

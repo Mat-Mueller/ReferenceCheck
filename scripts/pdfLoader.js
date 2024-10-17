@@ -122,9 +122,10 @@ async function renderAllPages(pdfDocument) {
             const currentX = textItem.transform[4]; // X coordinate
             const lineText = textItem.str;
             const fontSize = textItem.transform[0]; // Extract font size
+            //console.log(fontSize, lineText, currentY)
             const fontName = textItem.fontName; // Extract font name (for bold, italic, etc.)
 
-            let line = lines.find(line => Math.abs(line.y - currentY) < 2); // Find line with a similar Y coordinate
+            let line = lines.find(line => Math.abs(line.y - currentY) < 0.75 * fontSize); // Find line with a similar Y coordinate
 
             if (!line) {
                 line = {

@@ -155,6 +155,7 @@ function precleaned() {
 }
 
 function mergeNameFragments(knownNames, guessedNames) {
+    console.log(guessedNames)
     const knownNamesSet = new Set(
         knownNames
             .map(name => name.toLowerCase())
@@ -165,10 +166,13 @@ function mergeNameFragments(knownNames, guessedNames) {
     for (let i = 0; i < guessedNames.length; i++) {
       let combinedName = guessedNames[i].toLowerCase();
       
-      // Check if the next word forms a known name when combined with the current one
+      // Check if the next word forms a known name when combined with the current one ///// Thats dirty ////////////////////////////////////////////////////
       while (i + 1 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase())) {
         combinedName += ' ' + guessedNames[++i].toLowerCase();
       }
+      while (i + 2 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase() + ' ' + guessedNames[i + 2].toLowerCase())) {
+        combinedName += ' ' + guessedNames[++i].toLowerCase();  // Append the next fragment
+        combinedName += ' ' + guessedNames[++i].toLowerCase();       }
   
       // Push the merged name (or single name) to the result
       mergedNames.push(combinedName);

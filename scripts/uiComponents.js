@@ -194,7 +194,7 @@ export async function referenceSectionGUI(Points) {
     } else document.getElementById("settings-3text").innerText = "No reference section found. Please select end of section manually"
 
     const SetManually1 = document.createElement('button')
-    SetManually1.innerText = "Reset manually"
+    SetManually1.innerText = "Reset start manually"
     settings2.appendChild(SetManually1)
     SetManually1.addEventListener('click', async function () {
         startPoint = await setStart();
@@ -205,7 +205,7 @@ export async function referenceSectionGUI(Points) {
     })
     
     const SetManually2 = document.createElement('button')
-    SetManually2.innerText = "Reset manually"
+    SetManually2.innerText = "Reset end manually"
     settings3.appendChild(SetManually2)
     SetManually2.addEventListener('click', async function () {
         endPoint = await setEnd();
@@ -217,11 +217,8 @@ export async function referenceSectionGUI(Points) {
     const settings4 = document.getElementById("settings-4")
     const Cont =  document.getElementById("continue-button")
     
-    
-    
     const subdivButton = document.getElementById("subdivButton")
     subdivButton.innerText = `Separate by paragraph`;    
-    
 
     const subdivButton2 = document.getElementById("subdivButton2")
     subdivButton2.innerText = `Separate by indent`;    
@@ -603,6 +600,7 @@ export function secondFrame(referenceCount) {
     const scholarContainer = document.getElementById('scholar-container');
     // Second frame for references (collapsible frame)
     const OuterFrame = document.createElement('div');
+    OuterFrame.innerHTML = "";
     OuterFrame.className = "OuterFrame"
     const ReferenceFrame = document.createElement('div');
     ReferenceFrame.id = "ReferenceFrame"

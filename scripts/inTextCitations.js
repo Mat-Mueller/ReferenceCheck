@@ -155,7 +155,7 @@ function precleaned() {
 }
 
 function mergeNameFragments(knownNames, guessedNames) {
-    console.log(guessedNames)
+    //console.log(guessedNames)
     const knownNamesSet = new Set(
         knownNames
             .map(name => name.toLowerCase())
@@ -172,7 +172,8 @@ function mergeNameFragments(knownNames, guessedNames) {
       }
       while (i + 2 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase() + ' ' + guessedNames[i + 2].toLowerCase())) {
         combinedName += ' ' + guessedNames[++i].toLowerCase();  // Append the next fragment
-        combinedName += ' ' + guessedNames[++i].toLowerCase();       }
+        combinedName += ' ' + guessedNames[++i].toLowerCase(); 
+          }
   
       // Push the merged name (or single name) to the result
       mergedNames.push(combinedName);
@@ -195,9 +196,14 @@ function cleanCitations() {
         // Check if the cleanedText is just a number (e.g., a year like 1966) --- narrative cit
         if (/^\d+$/.test(cleanedText)) {
             precedingText = getPreviousText(span);
+            console.log(precedingText)
             //console.log(precedingText.split(' '))
             if (precedingText) {
-                let words = precedingText.replace("-", "").split(' ');
+                let words = precedingText.replace("-", "").split(' ').filter(word => word !== '');
+                while (words.length > 0 && /^[^a-zA-Z]+$/.test(words[words.length - 1])) {
+                    words.pop(); // Remove the last element if it contains non-letter characters
+                }
+                console.log(words)
                 words = mergeNameFragments(Allnames, words)
                 let lastWord = words[words.length - 1]; // Get the word before the span
 

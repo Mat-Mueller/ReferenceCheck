@@ -30,6 +30,7 @@ export async function analysis() {
     // Let user decide on where reference section is
     document.getElementById("description").style.display = "none";// clearRightContainer();
     let referenceCount = (await referenceSectionGUI(refSecAuto ));
+    
     /*
     try {
         // Wait for promise containing user choice for reference section
@@ -58,7 +59,8 @@ export async function analysis() {
     inTextSearch();
     MoveToFirstSpan()
     // Set up GUI for results and crossref search
-    clearRightContainer();
+    //clearRightContainer();
+    document.getElementById("settings").style.display = "none"
     //firstFrame(referenceCount);
     secondFrame(referenceCount);
     thirdFrame();

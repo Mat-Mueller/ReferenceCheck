@@ -100,7 +100,7 @@ async function crossrefSearch(textReference) {
 function formatResults(searchResults) {
     //if (searchResults) {
     searchResults.forEach(item => {
-        console.log(item.abstract)
+        
         // Format the authors
         if (!item.author || item.author.length === 0) {
             item.formattedAuthors = 'Unknown';

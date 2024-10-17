@@ -1,5 +1,10 @@
 
+export function BestMatch(span, referenceFrames) {
+    let Myauthors = span.getAttribute("authors")
+    let MyYear = span.getAttribute("year")
+    return Myauthors
 
+}
 
 export function MakeRefName(cleanedText) {
     let lastNames 
@@ -55,6 +60,7 @@ export function matching(ReferenceFrameParagraph) {
       let SpanYear = span.getAttribute('year');
   
       function arraysAreIdentical(arr1, arr2) {
+        
         // If "et" and "al." are in arr1, we only compare the first author
         const hasEtAl = arr1.includes("et") && arr1.includes("al.");
         

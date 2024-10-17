@@ -1,5 +1,5 @@
 import { getMergedTextByMyId, checkExists } from './crossrefSearch.js';
-import {MakeRefName, matching} from './magic.js';
+import {MakeRefName, matching, BestMatch} from './magic.js';
 import {checkFooter, checkHeader} from './headerFooterDetect.js'
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
 import {findNearestTextDivBelow, findNearestTextDivAbove} from './findReferenceList.js'
@@ -762,9 +762,7 @@ export function secondFrame(referenceCount) {
                     ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });    
             });
         })
-        ReferenceFrameParagraph.addEventListener('click', () => {
-            divs[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
-        })
+
 
         const matchedSpans = matching(ReferenceFrameParagraph)
     
@@ -779,6 +777,10 @@ export function secondFrame(referenceCount) {
         SingleRef.style.marginRight = "60px";
         ReferenceFrameParagraph.appendChild(SingleRef);
 
+        SingleRef.addEventListener('click', () => {
+            divs[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
+        })
+
         // Create second paragraph with inline style
         SingleRef = document.createElement('p');
         SingleRef.classList.add('SingleRef');
@@ -786,7 +788,7 @@ export function secondFrame(referenceCount) {
         ShowLinks(SingleRef, ReferenceFrameParagraph)
         //SingleRef.innerHTML += ''
         const textNode = document.createTextNode(". Best Crossref match:");
-SingleRef.appendChild(textNode);
+        SingleRef.appendChild(textNode);
         ReferenceFrameParagraph.appendChild(SingleRef)
         // Add the CrossRef search button
         const buttoncontainer = document.createElement('div');
@@ -827,19 +829,6 @@ SingleRef.appendChild(textNode);
         // Append the result frame to the resultsDiv
         ReferenceFrameParagraph.appendChild(resultFrame);
 
-        /*
-        const crossRefButton = document.createElement('button');
-        crossRefButton.textContent = 'CR';
-        crossRefButton.className = 'crossref-search-button';
-        crossRefButton.id = `crossref-button-${j}`
-        crossRefButton.RP = ReferenceFrameParagraph
-        crossRefButton.addEventListener('click', async () => {
-            const textReference = getMergedTextByMyId(j);
-            const searchResults = await checkExists(textReference);
-            searchResultGUI(searchResults, crossRefButton, ReferenceFrameParagraph);
-        });
-        buttoncontainer.appendChild(crossRefButton);
-        */
         // make a scholar button
         const ScholarRefButton = document.createElement('button');
         ScholarRefButton.textContent = 'GS';
@@ -853,7 +842,7 @@ SingleRef.appendChild(textNode);
         })
         buttoncontainer.appendChild(ScholarRefButton);
         ;
-        // If no matches were found, highlight in red
+
 
         // Append the ReferenceFrameParagraph to the main ReferenceFrame
         ReferenceFrame.appendChild(ReferenceFrameParagraph);
@@ -863,9 +852,20 @@ SingleRef.appendChild(textNode);
     scholarContainer.appendChild(OuterFrame);
 
 
-     // sollten wir eventuell verschieben
-    //document.querySelector('.ReferenceFrameParagraph[id="0"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
+
+    MatchGuessing()    // should move somewhere else                                        ///////////////////////////////////////////////////////////////////
+}
+
+function MatchGuessing() {
+    // find problematic spans
+    const problematicSpans = document.querySelectorAll('span:not([found])');
+    const referenceFrames = document.querySelectorAll('.Reference-frame');
+
+    problematicSpans.forEach(span => {
+
+        console.log(BestMatch(span, referenceFrames))
+    })
 
 }
 

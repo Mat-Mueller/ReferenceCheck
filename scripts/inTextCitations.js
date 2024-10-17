@@ -196,14 +196,14 @@ function cleanCitations() {
         // Check if the cleanedText is just a number (e.g., a year like 1966) --- narrative cit
         if (/^\d+$/.test(cleanedText)) {
             precedingText = getPreviousText(span);
-            console.log(precedingText)
+            
             //console.log(precedingText.split(' '))
             if (precedingText) {
                 let words = precedingText.replace("-", "").split(' ').filter(word => word !== '');
                 while (words.length > 0 && /^[^a-zA-Z]+$/.test(words[words.length - 1])) {
                     words.pop(); // Remove the last element if it contains non-letter characters
                 }
-                console.log(words)
+                
                 words = mergeNameFragments(Allnames, words)
                 let lastWord = words[words.length - 1]; // Get the word before the span
 

@@ -33,7 +33,7 @@ export function checkHeader() {
     const headerDivs = document.querySelectorAll('div[data-header="true"]');
 
     headerDivs.forEach(function (div) {
-        const textContent = div.textContent.trim();
+        const textContent = div.textContent.trim().split(" ")[0];
         HeaderArray.push(textContent)
     });
     let uniqueHeaderArray = [...new Set(HeaderArray)];

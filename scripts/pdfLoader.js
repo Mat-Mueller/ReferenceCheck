@@ -264,7 +264,6 @@ function detectFootnotesForAllTextLayers() {
         console.log(`Most frequent font size on page ${pageIndex + 1}: ${mostFrequentFontSize}px`);
 
         // Step 3: Check the last lines to see if they have a smaller font size than the most frequent one
-        let foundFootnote = false; // Track if we've already started finding footnote lines
         for (let i = textLines.length - 1; i >= 0; i--) {
             const line = textLines[i];
             const fontSize = parseFloat(window.getComputedStyle(line).fontSize);
@@ -272,8 +271,8 @@ function detectFootnotesForAllTextLayers() {
             // If the current line has a smaller font size, mark it as a footnote
             if (fontSize < mostFrequentFontSize) {
                 line.classList.add("footnote"); // Add a "footnote" class to the line
-                foundFootnote = true;
-            } else if (foundFootnote) {
+
+            } else  {
                 // If we've already found footnotes and the font size is not smaller, stop the loop
                 break;
             }

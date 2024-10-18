@@ -24,11 +24,13 @@ function initializePDFLoader() {
     
         // Get file via drop
         window.handleDrop = async function (event) {
+            if (event.dataTransfer.files[0]) {
             LoadingPage()
             event.preventDefault();
             event.stopPropagation();
             
             const file = event.dataTransfer.files[0];  // Get the dropped file
+            console.log(file)
             let pdfDocument = null;
             if (file && file.type === 'application/pdf') {
                 pdfDocument = await loadPDF(file);  // Call loadPDF function to render the PDF
@@ -49,6 +51,7 @@ function initializePDFLoader() {
                 reject(new Error("No file selected"));
             }
             UNLoadingPage()
+        }
             
         };
 

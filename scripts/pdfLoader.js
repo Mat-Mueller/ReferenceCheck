@@ -38,7 +38,8 @@ function initializePDFLoader() {
         
             // Wait for all pages to be rendered
             await renderAllPages(pdfDocument);
-        
+            detectFootnotesForAllTextLayers();
+            createZoomButtonsandSearchField();        
             // Detect footers and headers
 
             analysis()
@@ -65,7 +66,8 @@ function initializePDFLoader() {
         
             // Wait for all pages to be rendered
             await renderAllPages(pdfDocument);
-        
+            detectFootnotesForAllTextLayers();
+            createZoomButtonsandSearchField();
             // Detect footers and headers
             checkFooter()
             checkHeader()
@@ -122,24 +124,64 @@ async function renderAllPages(pdfDocument) {
             const currentX = textItem.transform[4]; // X coordinate
             const lineText = textItem.str;
             const fontSize = textItem.transform[0]; // Extract font size
-            //console.log(fontSize, lineText, currentY)
             const fontName = textItem.fontName; // Extract font name (for bold, italic, etc.)
-
-            let line = lines.find(line => Math.abs(line.y - currentY) < 0.75 * fontSize); // Find line with a similar Y coordinate
-
+        
+            // Find the line with a similar Y coordinate
+            let line = lines.find(line => Math.abs(line.y - currentY) < 0.75 * fontSize);
+        
+            // If no line exists for this Y coordinate, create a new line entry
             if (!line) {
                 line = {
                     text: '',
                     x: currentX,
                     y: currentY,
-                    fontSize: fontSize, // Store font size for the line
-                    fontName: fontName // Store font name for the line
+                    fontSizeFrequency: {}, // Track frequency of font sizes in this line
+                    fontSize: null,         // Final font size for the line, to be determined
+                    fontName: fontName,     // Store font name for the line
+                    snippets: []            // Track individual snippets for further processing
                 };
                 lines.push(line);
             }
-
+        
+            // Append text to the line
             line.text += lineText;
+        
+            // Store snippet font size for frequency tracking
+            if (!line.fontSizeFrequency[fontSize]) {
+                line.fontSizeFrequency[fontSize] = 1;
+            } else {
+                line.fontSizeFrequency[fontSize]++;
+            }
+        
+            // Store each snippet along with its font size (for future reference, if needed)
+            line.snippets.push({
+                text: lineText,
+                x: currentX,
+                fontSize: fontSize,
+                fontName: fontName
+            });
         });
+        
+        // After all items are processed, determine the most frequent font size for each line
+        lines.forEach(function (line) {
+            let maxFrequency = 0;
+            let mostFrequentFontSize = null;
+        
+            // Determine the most frequent font size for the line
+            for (const size in line.fontSizeFrequency) {
+                if (line.fontSizeFrequency[size] > maxFrequency) {
+                    maxFrequency = line.fontSizeFrequency[size];
+                    mostFrequentFontSize = parseFloat(size);
+                }
+            }
+        
+            // Assign the most frequent font size to the entire line
+            line.fontSize = mostFrequentFontSize;
+        
+            // Apply the most frequent font size to the entire line (optional, if rendering the line)
+            // lineElement.style.fontSize = `${line.fontSize}px`; // Apply to rendered element if needed
+        });
+        
 
         // Sort lines by their Y coordinate (descending order)
         lines.sort((a, b) => b.y - a.y);
@@ -178,8 +220,65 @@ async function renderAllPages(pdfDocument) {
     }
 
 
-    createZoomButtonsandSearchField()
+    
 }
+
+function detectFootnotesForAllTextLayers() {
+
+
+    console.log("detecting Footnote lines")
+    const textLayers = document.querySelectorAll('.textLayer'); // Get all text layers (each corresponding to a page)
+
+    textLayers.forEach((textLayer, pageIndex) => {
+        console.log(pageIndex)
+        // Step 1: Collect all text lines and their font sizes in this text layer
+        const textLines = textLayer.querySelectorAll('.textLine');
+        const fontSizeFrequency = {}; // To track font size frequencies
+        const fontSizes = []; // To store all font sizes
+
+        textLines.forEach(line => {
+            const fontSize = parseFloat(window.getComputedStyle(line).fontSize);
+            fontSizes.push(fontSize);
+
+            // Count the frequency of each font size
+            if (!fontSizeFrequency[fontSize]) {
+                fontSizeFrequency[fontSize] = 1;
+            } else {
+                fontSizeFrequency[fontSize]++;
+            }
+        });
+
+        // Step 2: Determine the most frequent (common) font size
+        let mostFrequentFontSize = null;
+        let maxFrequency = 0;
+        for (const size in fontSizeFrequency) {
+            if (fontSizeFrequency[size] > maxFrequency) {
+                maxFrequency = fontSizeFrequency[size];
+                mostFrequentFontSize = parseFloat(size); // Get the most frequent font size
+            }
+        }
+
+        console.log(`Most frequent font size on page ${pageIndex + 1}: ${mostFrequentFontSize}px`);
+
+        // Step 3: Check the last lines to see if they have a smaller font size than the most frequent one
+        let foundFootnote = false; // Track if we've already started finding footnote lines
+        for (let i = textLines.length - 1; i >= 0; i--) {
+            const line = textLines[i];
+            const fontSize = parseFloat(window.getComputedStyle(line).fontSize);
+
+            // If the current line has a smaller font size, mark it as a footnote
+            if (fontSize < mostFrequentFontSize) {
+                line.classList.add("footnote"); // Add a "footnote" class to the line
+                foundFootnote = true;
+            } else if (foundFootnote) {
+                // If we've already found footnotes and the font size is not smaller, stop the loop
+                break;
+            }
+        }
+    });
+}
+
+
 
 function LoadingPage() {
     console.log("Loading Screen")

@@ -23,9 +23,6 @@ export function checkFooter() {
     const halfThreshold = Math.floor(footerDivs.length / 2);
     if (numberOnlyCount >= halfThreshold) {
         return true
-        console.log("deleting footer")
-
-
     } else {return false}
 }
 

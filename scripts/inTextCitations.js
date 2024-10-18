@@ -56,7 +56,7 @@ function getPreviousText(span) {
         if (counter === 9) {   //// bisher haben wir keine Ids gehabt um den Previsou text zu identifizieren. Jetzt schon, dh wir sollten den Rest der Prozedur überdenken. Bis dahin gilt: never change a working code
 
             const pageNumber = span.parentElement.id.split('-')[1] - 1
-            const allDivs = document.querySelectorAll(`div[id^="textLine-${pageNumber}-"]`);
+            const allDivs = document.querySelectorAll(`div[id^="textLine-${pageNumber}-"]:not(.footnote)`);
 
             let highestDiv = null;
             let highestNumber = -1;
@@ -197,7 +197,6 @@ function cleanCitations() {
         if (/^\d+$/.test(cleanedText)) {
             precedingText = getPreviousText(span);
             
-            console.log(precedingText.split(' '))
             if (precedingText) {
                 let words = precedingText.replace("-", "").split(' ').filter(word => word !== '');
                 while (words.length > 0 && /^[^a-zA-Z]+$/.test(words[words.length - 1])) {
@@ -206,10 +205,8 @@ function cleanCitations() {
                 
                 words = mergeNameFragments(Allnames, words)
                 let lastWord = words[words.length - 1]; // Get the word before the span
-                console.log(words)
                 // Check if the word before the last word is "and", "&", or "al."
                 const nonWordRegex = /[.,;:!"?)]$/;
-                console.log(words, nonWordRegex.test(words[words.length - 3]))
                 if (
                     words.length > 1 &&
                     (
@@ -219,7 +216,6 @@ function cleanCitations() {
                         words[words.length - 1].toLowerCase().replace(",", "") === 'al.'
                     )
                 ) {
-                    console.log(words)
                     // Include both the second-to-last word and the last word
                     let secondLastWord = words[words.length - 2];
                     let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
@@ -227,12 +223,10 @@ function cleanCitations() {
                 } else {
                     // If no "and" is present, just include the last word
                     cleanedText = `${lastWord};${cleanedText}`;
-                    console.log(cleanedText)
 
                 }
             }
         } else {   ///////////   if its a Parenthetical citation
-            console.log(cleanedText)
             let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').replace(",", "").split(" ");
             words = mergeNameFragments(Allnames, words)
             let lastWord = words[words.length - 2];
@@ -251,7 +245,6 @@ function cleanCitations() {
                     
                 }
             }
-            console.log(words)
             words = mergeNameFragments(Allnames, words)
             words = combineHyphenatedWords(words)
             lastWord = words[words.length - 2]
@@ -266,7 +259,6 @@ function cleanCitations() {
                 // Get only the last word in other cases
                 words = words.slice(words.length - 2, words.length);
             }
-            console.log(words)
             // If words array has less than 5 words, prepend with text from getPreviousText()
             //console.log(words)
             cleanedText = words.join(";")

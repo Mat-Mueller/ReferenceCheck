@@ -957,7 +957,7 @@ export function searchSpanRef() {
 
 function UpdateFramesAndMatches() {
 
-///// Set Span Titles
+///// update Span Titles
 const citationElements = document.querySelectorAll('span.citation');
 citationElements.forEach(function (element) {
     if (element.getAttribute('Found') === 'true') {
@@ -1004,7 +1004,7 @@ if (TextFrameParagraph) {
 
     // Create the clickable 'countWithoutMatch' element
     const countWithoutMatchElement = document.createElement('span');
-    countWithoutMatchElement.innerHTML = `${countWithoutMatch} references without match`;
+    countWithoutMatchElement.innerHTML = `Found ${countWithoutMatch} references without match`;
     countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
     countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
 
@@ -1277,6 +1277,19 @@ export function DragDrop() {
 
 
 export function thirdFrame() {
+    ///// Set Span Titles
+const citationElements = document.querySelectorAll('span.citation');
+citationElements.forEach(function (element) {
+    if (element.getAttribute('Found') === 'true') {
+        element.setAttribute('title', 'Succesfully matched with reference');
+    } else if (!element.getAttribute('Found')) {
+        element.setAttribute('title', 'No reference found!');
+    } else if (element.getAttribute('Found') === 'ambig') {
+        element.setAttribute('title', 'Found more than one matching reference!')
+    }
+    
+});
+
     const scholarContainer = document.getElementById('scholar-container');
     const OuterFrame = document.createElement('div');
     OuterFrame.className = "OuterFrame2"
@@ -1304,10 +1317,7 @@ export function thirdFrame() {
 ; // Show only problematic spans
         console.log(problematicSpans)
 
-        // Highlight problematic citations in red
-        problematicSpans.forEach((span) => {
-            if (span.getAttribute("found")) {span.style.backgroundColor = "orange"} else {span.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');}
-        });
+
 
         // Loop through each problematic span and create a clickable list item
         problematicSpans.forEach((span, index) => {
@@ -1319,8 +1329,16 @@ export function thirdFrame() {
                 InTextCitFrameParagraph.innerHTML = cleanedCit; // Display the cleaned citation text
                 InTextCitFrameParagraph.setAttribute("cleanedCit", cleanedCit)
                 InTextCitFrameParagraph.ParentSpan = span; 
-                InTextCitFrameParagraph.id = `InTexts-${index + 1}`  
+                InTextCitFrameParagraph.id = `InTexts-${index + 1}`
+                InTextCitFrameParagraph.title = span.title  
                 // Ensure the width of the div fits its content
+                if (span.getAttribute("found")) {
+                    span.style.backgroundColor = "orange"
+                    InTextCitFrameParagraph.style.backgroundColor = "orange"
+                } else {
+                    span.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                    InTextCitFrameParagraph.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                }
 
 
                 // When the paragraph is clicked, scroll to the respective span in the document

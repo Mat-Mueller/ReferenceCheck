@@ -746,13 +746,19 @@ export function secondFrame(referenceCount) {
         }
 
 
+        /// asigning abbreviations for references
         const match = result.match(/\(([^)]+)\)/);
 
         if (match) {
             ReferenceFrameParagraph.setAttribute('Abbr', match[1]); // Outputs: "example text"
             console.log(match[1])
         } else {
+            let abbr = lastNames
+            if (abbr.length > 1) {
+                ReferenceFrameParagraph.setAttribute('Abbr',  abbr.map(author => author[0].trim()).join(""))
+            } else {
             ReferenceFrameParagraph.setAttribute('Abbr', "");
+        }
         }
         ReferenceFrameParagraph.className = 'Reference-frame';
 
@@ -1195,9 +1201,9 @@ export function DragDrop() {
                 draggedElement.style.backgroundColor = secondaryColor;
                 
                 // Mark the draggedElement as found
-                if (!draggedElement.hasAttribute('found')) {
-                    draggedElement.setAttribute('found', 'true');
-                }
+
+                draggedElement.setAttribute('found', 'true');
+
             
                 // 2. Add event listener to scroll to the drop zone (Reference-frame)
 

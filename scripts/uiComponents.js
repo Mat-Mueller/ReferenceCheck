@@ -754,8 +754,8 @@ export function secondFrame(referenceCount) {
             console.log(match[1])
         } else {
             let abbr = lastNames
-            if (abbr.length > 1) {
-                ReferenceFrameParagraph.setAttribute('Abbr',  abbr.map(author => author[0].trim()).join(""))
+            if (abbr.length === 1) {
+                ReferenceFrameParagraph.setAttribute('Abbr',  abbr[0].split(" ").map(author => author[0].trim()).join(""))
             } else {
             ReferenceFrameParagraph.setAttribute('Abbr', "");
         }
@@ -1080,7 +1080,7 @@ function onDragStartHandler() {
 
         // Remove the highlight after 1 second (1000 milliseconds)
         setTimeout(() => {
-            dropZone.style.border = '';  // Reset the border to its original state
+            dropZone.style.border = '0px solid red';  // Reset the border to its original state
         }, 1000);
     });
 }

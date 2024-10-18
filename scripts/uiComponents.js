@@ -1001,25 +1001,21 @@ if (TextFrameParagraph) {
     // Create a wrapper for all the bold text
     const boldWrapper = document.createElement('b');
 
-    // Create the total references part (non-clickable)
-    const totalReferencesElement = document.createElement('span');
-    totalReferencesElement.textContent = `${referenceFrames.length} References `;
-    boldWrapper.appendChild(totalReferencesElement);
 
     // Create the clickable 'countWithoutMatch' element
     const countWithoutMatchElement = document.createElement('span');
-    countWithoutMatchElement.innerHTML = `${countWithoutMatch}`;
+    countWithoutMatchElement.innerHTML = `${countWithoutMatch} references without match`;
     countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
     countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
 
     // Create the text around the clickable number
-    const withoutMatchText = document.createTextNode(` without match`);
+    const withoutMatchText = document.createTextNode(` (${referenceFrames.length} total)`);
 
     // Append the elements inside the bold wrapper
-    boldWrapper.appendChild(document.createTextNode("("));
+    
     boldWrapper.appendChild(countWithoutMatchElement);
     boldWrapper.appendChild(withoutMatchText);
-    boldWrapper.appendChild(document.createTextNode(")"));
+
 
     // Append the bold wrapper to the TextFrameParagraph
     TextFrameParagraph.appendChild(boldWrapper);
@@ -1059,8 +1055,7 @@ if (TextFrameParagraph) {
         
         const ThirdFrameTitle = document.getElementById("ThirdFrameTitle")
 
-        ThirdFrameTitle.innerHTML = `Found ${totalCitations} in-text citations (` + 
-        `${totalCitations - matchedCitations} without match)`;
+        ThirdFrameTitle.innerHTML = `Found ${totalCitations - matchedCitations} intext citations without match (${totalCitations} total)`;
 
         }
     

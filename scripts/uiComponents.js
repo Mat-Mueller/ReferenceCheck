@@ -233,17 +233,20 @@ export async function referenceSectionGUI(Points) {
     
     function NowSeperate() {
             /// first delete all footer and headers
+            console.log(document.getElementById("checkHeader").checked)
         if (document.getElementById("checkFooter").checked){
             const footerDivs = document.querySelectorAll('div[data-footer="true"]');
             footerDivs.forEach(function (div) {  
                 div.classList.remove('textLine');  
             });
+
         }
         if (document.getElementById("checkHeader").checked ) {
             const headerDivs = document.querySelectorAll('div[data-header="true"]');
             headerDivs.forEach(function (div) {
                 div.classList.remove('textLine');
             });
+            console.log("removing headers")
         }       
         Cont.disabled = false;
         const paragraphCount = subdivide(startPoint, endPoint, "byParagraph");
@@ -726,7 +729,7 @@ export function secondFrame(referenceCount) {
         const ReferenceFrameParagraph = document.createElement('div');
 
         //assign author names to ReferenceFrameParagraph
-        const cleanedText = mergedText.replace(/,\s?[A-Z]\.| [A-Z]\./g, '').toLowerCase();
+        const cleanedText = mergedText.replace(/(?:,\s?| )([A-Z]\.)+/g, '').toLowerCase();
         // Step 2: Extract the part before the (year)
         let lastNames = MakeRefName(cleanedText);
 

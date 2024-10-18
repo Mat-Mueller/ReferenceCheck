@@ -362,7 +362,12 @@ function assignnames() {
     citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
             //console.log(cleanedText)
-            let authorsCit = cleanedText.replace(",", "").replace("&", "").replace(";and", "").replace(";und", "").split(';').filter(name => name !== "")//.replace(",", "");
+            let authorsCit = cleanedText
+                .replace(",", "")
+                .replace(/[’'´`ʼ′‛‘]s/g, '')
+                .replace("&", "").replace(";and", "")
+                .replace(";und", "")
+                .split(';').filter(name => name !== "")//.replace(",", "");
             authorsCit.pop()
             span.setAttribute('authors', authorsCit.join(";"))
     })

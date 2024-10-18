@@ -95,8 +95,9 @@ export function matching(ReferenceFrameParagraph) {
           span.setAttribute('found', 'ambig')
 
         }
+        const element = ReferenceFrameParagraph
+        span.MatchedWith = element        
         span.addEventListener('click', () => {
-          const element = ReferenceFrameParagraph
           const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
           const offsetTop = element.offsetTop - parentElement.offsetTop;
           parentElement.scrollTo({
@@ -110,10 +111,11 @@ export function matching(ReferenceFrameParagraph) {
         //console.log(ReferenceFrameParagraph.getAttribute('abbr').toLowerCase,  authorsCit[0].toLowerCase)
         matchedSpans.push(span);
         if (!span.hasAttribute('found')) {
-          span.setAttribute('found', 'true');
+          span.setAttribute('found', 'byAbbr');
         }
+        const element = ReferenceFrameParagraph
+        span.MatchedWith = element 
         span.addEventListener('click', () => {
-          const element = ReferenceFrameParagraph
           const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
           const offsetTop = element.offsetTop - parentElement.offsetTop;
           parentElement.scrollTo({

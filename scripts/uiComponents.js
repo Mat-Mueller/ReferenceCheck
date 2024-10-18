@@ -1286,6 +1286,8 @@ citationElements.forEach(function (element) {
         element.setAttribute('title', 'No reference found!');
     } else if (element.getAttribute('Found') === 'ambig') {
         element.setAttribute('title', 'Found more than one matching reference!')
+    } else if (element.getAttribute('Found') === 'byAbbr') {
+        element.setAttribute('title', 'Reference matched by abbreviation. Please check!')
     }
     
 });
@@ -1344,6 +1346,7 @@ citationElements.forEach(function (element) {
                 // When the paragraph is clicked, scroll to the respective span in the document
                 InTextCitFrameParagraph.addEventListener('click', () => {
                     span.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to the span
+                    span.MatchedWith.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 });
 
                 // Append the paragraph to the InTextCitFrame

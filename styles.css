@@ -357,7 +357,7 @@ margin-left : 3px;
 
 #scholar-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     
 
 }
@@ -488,11 +488,12 @@ margin-left : 3px;
 
   #settings {
     display: none;
-  margin-bottom: 5px;
+  margin-bottom: auto;
   border-radius: 5px;
   background-color: #f0f0f0;
   border-radius: 5px;
   border: 1px solid #ccc;
+  
   }
   
   #settings-1 {

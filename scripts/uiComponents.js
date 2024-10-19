@@ -1355,7 +1355,7 @@ citationElements.forEach(function (element) {
                 // When the paragraph is clicked, scroll to the respective span in the document
                 InTextCitFrameParagraph.addEventListener('click', () => {
                     span.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to the span
-                    span.MatchedWith.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (span.getAttribute("found")) {span.MatchedWith.scrollIntoView({ behavior: 'smooth', block: 'center' })};
                 });
 
                 // Append the paragraph to the InTextCitFrame

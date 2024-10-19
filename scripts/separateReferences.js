@@ -111,7 +111,7 @@ function calculateDistances(pElements, selectedCriterion) {
     return pElements.slice(0, -1).map((el, i) => {
         const currentRect = el.getBoundingClientRect();
         const nextRect = pElements[i + 1].getBoundingClientRect();
-        return Math.round((nextRect.top - currentRect.bottom));
+        return Math.round((nextRect.top - currentRect.bottom) ) ;
     });
 }
 
@@ -150,11 +150,7 @@ function findMostCommonDistance(distances) {
     // Check if we have at least two different distances with counts
     if (sortedDistances.length >= 2) {
         const [mostCommon, secondMostCommon] = sortedDistances;
-
-        // If both distances have the same frequency, return the smaller distance
-        if (mostCommon[1] === secondMostCommon[1]) {
-            return Math.min(parseFloat(mostCommon[0]), parseFloat(secondMostCommon[0]));
-        }
+        return Math.min(parseFloat(mostCommon[0]), parseFloat(secondMostCommon[0]));
     }
 
     // Otherwise, return the most common distance

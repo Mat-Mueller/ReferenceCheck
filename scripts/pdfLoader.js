@@ -233,7 +233,7 @@ function detectFootnotesForAllTextLayers() {
     const textLayers = document.querySelectorAll('.textLayer'); // Get all text layers (each corresponding to a page)
 
     textLayers.forEach((textLayer, pageIndex) => {
-        console.log(pageIndex)
+        //console.log(pageIndex)
         // Step 1: Collect all text lines and their font sizes in this text layer
         const textLines = textLayer.querySelectorAll('.textLine');
         const fontSizeFrequency = {}; // To track font size frequencies
@@ -261,7 +261,7 @@ function detectFootnotesForAllTextLayers() {
             }
         }
 
-        console.log(`Most frequent font size on page ${pageIndex + 1}: ${mostFrequentFontSize}px`);
+        //console.log(`Most frequent font size on page ${pageIndex + 1}: ${mostFrequentFontSize}px`);
 
         // Step 3: Check the last lines to see if they have a smaller font size than the most frequent one
         for (let i = textLines.length - 1; i >= 0; i--) {

@@ -62,7 +62,7 @@ export function subdivide(startPoint, endPoint, selectedCriterion) {
             let indents = calculateIndents(pElements, selectedCriterion);
 
             const mostCommonDistance = findMostCommonDistance(distances);
-            console.log(mostCommonDistance)
+            console.log(mostCommonDistance)                ///////////////////// abrunden
             const [noIndent, yesIndent] = findIndentThresholds(indents);
 
             let mergedContent = "";
@@ -111,7 +111,7 @@ function calculateDistances(pElements, selectedCriterion) {
     return pElements.slice(0, -1).map((el, i) => {
         const currentRect = el.getBoundingClientRect();
         const nextRect = pElements[i + 1].getBoundingClientRect();
-        return Math.round((nextRect.top - currentRect.bottom) * 10) / 10;
+        return Math.round((nextRect.top - currentRect.bottom));
     });
 }
 

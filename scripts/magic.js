@@ -24,7 +24,7 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
         // Check if the match was successful
         if (matchResult) {
             const authorsPart = matchResult[0]; // Safely access the matched part
-            console.log(authorsPart)
+            console.log(authorsPart.replace(" (", ""))
             if (authorsPart.replace(" (", "") in full_name_to_abbreviation) {
               ReferenceFrameParagraph.setAttribute('Abbr', full_name_to_abbreviation[authorsPart.replace(" (", "")])
             }

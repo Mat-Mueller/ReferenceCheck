@@ -30,10 +30,11 @@ function initializePDFLoader() {
             event.stopPropagation();
             
             const file = event.dataTransfer.files[0];  // Get the dropped file
-            console.log(file)
+            //console.log(file)
             let pdfDocument = null;
             if (file && file.type === 'application/pdf') {
                 pdfDocument = await loadPDF(file);  // Call loadPDF function to render the PDF
+                document.getElementById("pdfFile").innerText = ": " + file.name;
             } else {
                 //alert('Please select a valid PDF file.');
             }

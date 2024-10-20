@@ -754,9 +754,10 @@ export function secondFrame(referenceCount) {
 
         if (match) {
             ReferenceFrameParagraph.setAttribute('Abbr', match[1]); // Outputs: "example text"
-            console.log(match[1])
+            //console.log(match[1])
         } else {
             let abbr = lastNames
+            
             if (abbr.length === 1) {
                 ReferenceFrameParagraph.setAttribute('Abbr',  abbr[0].split(" ").map(author => author[0].trim()).join(""))
             } else {

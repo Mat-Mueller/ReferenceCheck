@@ -1,4 +1,5 @@
 
+
 export function BestMatch(span, referenceFrames) {
     let Myauthors = span.getAttribute("authors")
     let MyYear = span.getAttribute("year")
@@ -15,6 +16,7 @@ export function BestMatch(span, referenceFrames) {
 
 export function MakeRefName(cleanedText) {
     let lastNames 
+    console.log(cleanedText)
     if (cleanedText) {
         // Attempt to match the authors part using a regular expression
         const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
@@ -30,7 +32,7 @@ export function MakeRefName(cleanedText) {
                 .replace(" (", "")
                 .replace(", ,", ",")
                 .replace(".", "")
-                .split(/,|&/)
+                .split(/,|&| and /) //
                 .map(author => author.trim());
     
             // Filter out any empty names

@@ -212,7 +212,8 @@ export function findReferenceSection(selectedValue) {
                 const divText = divs[i].textContent.trim().toLowerCase(); // Get the text and convert to lowercase
                 const Endtitles = [
                     'appendix',
-                    'declaration'
+                    'declaration',
+                    'erklärung'
                 ];
 
                 if (Endtitles.some(Endtitles => divText.includes(Endtitles))) {

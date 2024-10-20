@@ -22,7 +22,7 @@ export function MakeRefName(cleanedText) {
         // Check if the match was successful
         if (matchResult) {
             const authorsPart = matchResult[0]; // Safely access the matched part
-            
+            console.log(authorsPart)
             // Step 3: Split the remaining string by commas or ampersands and extract the last names
             lastNames = authorsPart
                 .replace(" (hrsg.)", "")

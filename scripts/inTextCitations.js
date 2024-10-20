@@ -198,7 +198,8 @@ function cleanCitations() {
             precedingText = getPreviousText(span);
             
             if (precedingText) {
-                let words = precedingText.replace("-", "").split(' ').filter(word => word !== '');
+                //.replace("-", "")
+                let words = precedingText.split(' ').filter(word => word !== '');
                 while (words.length > 0 && /^[^a-zA-Z]+$/.test(words[words.length - 1])) {
                     words.pop(); // Remove the last element if it contains non-letter characters
                 }

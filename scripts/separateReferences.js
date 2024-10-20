@@ -138,23 +138,54 @@ function isIndentNoIndent(pElements, index, noIndent) {
     return nextRect && Math.round(nextRect.left * 10) / 10 === noIndent;
 }
 
+/**
+ * This function finds the most common distances, groups them into dynamic buckets
+ * based on proximity to each other, and returns the maximum value from the bucket
+ * with the smaller mean among the two most frequent buckets.
+ */
 function findMostCommonDistance(distances) {
     if (distances.length === 0) return 0;
 
-    // Count occurrences of each distance
-    const distanceCount = distances.reduce((acc, dist) => (acc[dist] = (acc[dist] || 0) + 1, acc), {});
-
-    // Sort distances by frequency (descending) and by distance value (ascending in case of tie)
-    const sortedDistances = Object.entries(distanceCount).sort((a, b) => b[1] - a[1] || a[0] - b[0]);
-
-    // Check if we have at least two different distances with counts
-    if (sortedDistances.length >= 2) {
-        const [mostCommon, secondMostCommon] = sortedDistances;
-        return Math.min(parseFloat(mostCommon[0]), parseFloat(secondMostCommon[0]));
+    function calculateMean(arr) {
+        const sum = arr.reduce((acc, value) => acc + value, 0);
+        return sum / arr.length;
     }
 
-    // Otherwise, return the most common distance
-    return parseFloat(sortedDistances[0][0]);
+    const tolerance = 2;
+    const buckets = [];
+
+    distances.forEach(distance => {
+        let addedToBucket = false;
+
+        for (let bucket of buckets) {
+            const mean = calculateMean(bucket.values);
+            if (Math.abs(mean - distance) <= tolerance) {
+                bucket.values.push(distance);
+                bucket.count++;
+                addedToBucket = true;
+                break;
+            }
+        }
+
+        if (!addedToBucket) {
+            buckets.push({ values: [distance], count: 1 });
+        }
+    });
+
+    buckets.sort((a, b) => b.count - a.count);
+
+    if (buckets.length >= 2) {
+        const [bucket1, bucket2] = buckets.slice(0, 2);
+        const meanBucket1 = calculateMean(bucket1.values);
+        const meanBucket2 = calculateMean(bucket2.values);
+        const smallerMeanBucket = meanBucket1 < meanBucket2 ? bucket1 : bucket2;
+        return Math.max(...smallerMeanBucket.values);
+    }
+
+    return Math.max(...buckets[0].values);
 }
+
+
+
 
 

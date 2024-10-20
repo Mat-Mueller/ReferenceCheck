@@ -1,4 +1,4 @@
-
+import {full_name_to_abbreviation} from './Abbreviations.js'
 
 export function BestMatch(span, referenceFrames) {
     let Myauthors = span.getAttribute("authors")
@@ -14,7 +14,7 @@ export function BestMatch(span, referenceFrames) {
 
 }
 
-export function MakeRefName(cleanedText) {
+export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
     let lastNames 
     console.log(cleanedText)
     if (cleanedText) {
@@ -25,6 +25,9 @@ export function MakeRefName(cleanedText) {
         if (matchResult) {
             const authorsPart = matchResult[0]; // Safely access the matched part
             console.log(authorsPart)
+            if (authorsPart.replace(" (", "") in full_name_to_abbreviation) {
+              ReferenceFrameParagraph.setAttribute('Abbr', full_name_to_abbreviation[authorsPart.replace(" (", "")])
+            }
             // Step 3: Split the remaining string by commas or ampersands and extract the last names
             lastNames = authorsPart
                 .replace(" (hrsg.)", "")

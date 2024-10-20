@@ -731,7 +731,7 @@ export function secondFrame(referenceCount) {
         //assign author names to ReferenceFrameParagraph
         const cleanedText = mergedText.replace(/(?:,\s?| )([A-Z]\.)+/g, '').toLowerCase();
         // Step 2: Extract the part before the (year)
-        let lastNames = MakeRefName(cleanedText);
+        let lastNames = MakeRefName(cleanedText, ReferenceFrameParagraph);
 
         
         ReferenceFrameParagraph.className = "ReferenceFrameParagraph"
@@ -756,12 +756,14 @@ export function secondFrame(referenceCount) {
             ReferenceFrameParagraph.setAttribute('Abbr', match[1]); // Outputs: "example text"
             //console.log(match[1])
         } else {
+            if (!ReferenceFrameParagraph.hasAttribute("abbr")) {
             let abbr = lastNames
             
             if (abbr.length === 1) {
                 ReferenceFrameParagraph.setAttribute('Abbr',  abbr[0].split(" ").map(author => author[0].trim()).join(""))
             } else {
             ReferenceFrameParagraph.setAttribute('Abbr', "");
+            }
         }
         }
         ReferenceFrameParagraph.className = 'Reference-frame';

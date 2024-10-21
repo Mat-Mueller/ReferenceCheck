@@ -718,7 +718,7 @@ export function secondFrame(referenceCount) {
 
     for (let j = 0; j < referenceCount; j++) {
         const divs = document.querySelectorAll(`[MyId="${j}"]`);
-        const mergedText = getMergedTextByMyId(j);
+        let mergedText = getMergedTextByMyId(j);
 
         var MyYear = mergedText.match(/\b\d{4}[a-zA-Z]?\b/)
         if (MyYear) {
@@ -729,6 +729,8 @@ export function secondFrame(referenceCount) {
         const ReferenceFrameParagraph = document.createElement('div');
 
         //assign author names to ReferenceFrameParagraph
+        mergedText = mergedText.replace(/[\u2010-\u2015-][a-zA-Z]\./g, "");        
+
         const cleanedText = mergedText.replace(/(?:,\s?| )([A-Z]\.)+/g, '').toLowerCase();
         // Step 2: Extract the part before the (year)
         let lastNames = MakeRefName(cleanedText, ReferenceFrameParagraph);

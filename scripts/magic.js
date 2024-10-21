@@ -35,6 +35,7 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
                 .replace(" (", "")
                 .replace(", ,", ",")
                 .replace(".", "")
+                //.replace("-", "")
                 .split(/,|&| and /) //
                 .map(author => author.trim());
     

@@ -276,7 +276,7 @@ function cleanCitations() {
 
 
 function identifyAndWrapCitations() {
-    const citationPattern = /(?:18[0-9]{2}|19[0-9]{2}|20[01][0-9]|2100)/;  // Regex to match a four-digit year (representing the year in a citation)
+    const citationPattern = /\d{4}/;  // Regex to match a four-digit year (representing the year in a citation)
     const pagePattern = /p\.\s*\d+/i;
     let awaitingCitation = false;  // Flag to treat the next div as if it starts with an implicit "("
 

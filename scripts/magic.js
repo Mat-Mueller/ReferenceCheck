@@ -34,7 +34,6 @@ export function BestMatch(span, referenceFrames) {
 
 export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
     let lastNames 
-    console.log(cleanedText)
     if (cleanedText) {
         // Attempt to match the authors part using a regular expression
         const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
@@ -42,7 +41,6 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
         // Check if the match was successful
         if (matchResult) {
             const authorsPart = matchResult[0]; // Safely access the matched part
-            console.log(authorsPart.replace(" (", ""))
             if (authorsPart.replace(" (", "") in full_name_to_abbreviation) {
               ReferenceFrameParagraph.setAttribute('Abbr', full_name_to_abbreviation[authorsPart.replace(" (", "")])
             }

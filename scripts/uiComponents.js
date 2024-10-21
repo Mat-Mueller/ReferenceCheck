@@ -1163,7 +1163,7 @@ export function DragDrop() {
                     draggableSpans.forEach((dragged) => {
                         console.log(dragged.getAttribute("cleanedCit").trim(),draggedElement.innerHTML.trim())
                         // Check if the 'title' of the 'span' matches the 'innerHTML' of the InTexts element
-                        if (decodeHTMLEntities(dragged.getAttribute("cleanedCit").trim()) === decodeHTMLEntities(draggedElement.innerHTML.trim())) {
+                        if (decodeHTMLEntities(dragged.getAttribute("cleanedCit").trim()) === decodeHTMLEntities(draggedElement.getAttribute("cleanedCit").trim())) {
                             draggedElementToUse = dragged; // Use the matching span as the new draggedElement
                             console.log(draggedElementToUse)
                             return; // Exit the loop after finding the first match
@@ -1239,7 +1239,7 @@ export function DragDrop() {
             
                 inTextElements.forEach(inText => {
                     // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
-                    if (decodeHTMLEntities(inText.innerHTML.trim()) === decodeHTMLEntities(draggedElement.getAttribute('cleanedCit').trim())) {
+                    if (decodeHTMLEntities(inText.getAttribute('cleanedCit').trim()) === decodeHTMLEntities(draggedElement.getAttribute('cleanedCit').trim())) {
                         // Remove the matching element
                         inText.remove();
                     }
@@ -1257,7 +1257,7 @@ export function DragDrop() {
             
         inTextElements.forEach(inText => {
             // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
-            if (decodeHTMLEntities(inText.innerHTML.trim()) === decodeHTMLEntities(draggedElement.getAttribute('cleanedCit').trim())) {
+            if (decodeHTMLEntities(inText.getAttribute('cleanedCit').trim()) === decodeHTMLEntities(draggedElement.getAttribute('cleanedCit').trim())) {
                 // Remove the matching element
                 inText.remove();
             }
@@ -1348,11 +1348,17 @@ citationElements.forEach(function (element) {
         problematicSpans.forEach((span, index) => {
             const cleanedCit = span.getAttribute('cleanedCit'); // Get the cleaned citation text
 
+            function capitalizeFirstLetter(string) {
+                if (string === "al" || string === "al." || string === "et" || string === "and") {return string} else
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
             if (cleanedCit) { // Only add if cleanedCit is available
                 const InTextCitFrameParagraph = document.createElement('div');
                 InTextCitFrameParagraph.className = 'InTexts';
-                InTextCitFrameParagraph.innerHTML = cleanedCit; // Display the cleaned citation text
+                InTextCitFrameParagraph.innerHTML = cleanedCit.split(";").map(stri => capitalizeFirstLetter(stri)).join(" "); // Display the cleaned citation text
                 InTextCitFrameParagraph.setAttribute("cleanedCit", cleanedCit)
+
                 InTextCitFrameParagraph.ParentSpan = span; 
                 InTextCitFrameParagraph.id = `InTexts-${index + 1}`
                 InTextCitFrameParagraph.title = span.title  

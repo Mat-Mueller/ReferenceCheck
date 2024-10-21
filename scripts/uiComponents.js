@@ -877,7 +877,6 @@ export function MatchGuessing() {
     const referenceFrames = document.querySelectorAll('.Reference-frame');
 
     problematicSpans.forEach(span => {
-        console.log(span)
         console.log(BestMatch(span, referenceFrames))
     })
 
@@ -1161,11 +1160,11 @@ export function DragDrop() {
                     
                     
                     draggableSpans.forEach((dragged) => {
-                        console.log(dragged.getAttribute("cleanedCit").trim(),draggedElement.innerHTML.trim())
+                        //console.log(dragged.getAttribute("cleanedCit").trim(),draggedElement.innerHTML.trim())
                         // Check if the 'title' of the 'span' matches the 'innerHTML' of the InTexts element
                         if (decodeHTMLEntities(dragged.getAttribute("cleanedCit").trim()) === decodeHTMLEntities(draggedElement.getAttribute("cleanedCit").trim())) {
                             draggedElementToUse = dragged; // Use the matching span as the new draggedElement
-                            console.log(draggedElementToUse)
+                            //console.log(draggedElementToUse)
                             return; // Exit the loop after finding the first match
                         }
                     });

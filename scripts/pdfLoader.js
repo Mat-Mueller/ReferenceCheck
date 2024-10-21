@@ -183,7 +183,7 @@ async function renderAllPages(pdfDocument) {
             line.fontSize = mostFrequentFontSize;
         
             // Apply the most frequent font size to the entire line (optional, if rendering the line)
-            // lineElement.style.fontSize = `${line.fontSize}px`; // Apply to rendered element if needed
+            lineElement.style.fontSize = `${line.fontSize}px`; // Apply to rendered element if needed
         });
         
 

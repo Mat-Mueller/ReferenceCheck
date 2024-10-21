@@ -12,7 +12,7 @@ export function BestMatch(span, referenceFrames) {
       //let Refsyear = Ref.getAttribute("year")
           // if the authors are identical but the years are not
     console.log(Myauthors, Refsauth)
-    if (arraysAreIdentical(Refsauth, Myauthors)) {
+    if (arraysAreIdentical(Myauthors, Refsauth )) {
       span.setAttribute('found', 'year')
       span.MatchedWith = Ref
       span.addEventListener('click', () => {

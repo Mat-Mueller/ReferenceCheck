@@ -868,16 +868,16 @@ export function secondFrame(referenceCount) {
 
 
 
-    MatchGuessing()    // should move somewhere else                                        ///////////////////////////////////////////////////////////////////
+        // should move somewhere else                                        ///////////////////////////////////////////////////////////////////
 }
 
-function MatchGuessing() {
+export function MatchGuessing() {
     // find problematic spans
-    const problematicSpans = document.querySelectorAll('span:not([found])');
+    const problematicSpans = document.querySelectorAll('span.citation:not([found])');
     const referenceFrames = document.querySelectorAll('.Reference-frame');
 
     problematicSpans.forEach(span => {
-
+        console.log(span)
         console.log(BestMatch(span, referenceFrames))
     })
 
@@ -980,6 +980,9 @@ citationElements.forEach(function (element) {
         element.setAttribute('title', 'No reference found!');
     } else if (element.getAttribute('Found') === 'ambig') {
         element.setAttribute('title', 'Found more than one matching reference!')
+    }
+    else if (element.getAttribute('Found') === 'year') {
+        element.setAttribute('title', 'Check puplication year!')
     }
     
 });
@@ -1293,6 +1296,9 @@ export function DragDrop() {
 export function thirdFrame() {
     ///// Set Span Titles
 const citationElements = document.querySelectorAll('span.citation');
+
+
+
 citationElements.forEach(function (element) {
     if (element.getAttribute('Found') === 'true') {
         element.setAttribute('title', 'Succesfully matched with reference');
@@ -1302,9 +1308,12 @@ citationElements.forEach(function (element) {
         element.setAttribute('title', 'Found more than one matching reference!')
     } else if (element.getAttribute('Found') === 'byAbbr') {
         element.setAttribute('title', 'Reference matched by abbreviation. Please check!')
+    } else if (element.getAttribute('Found') === 'year') {
+        element.setAttribute('title', 'Check puplication year!')
     }
     
 });
+
 
     const scholarContainer = document.getElementById('scholar-container');
     const OuterFrame = document.createElement('div');
@@ -1349,8 +1358,14 @@ citationElements.forEach(function (element) {
                 InTextCitFrameParagraph.title = span.title  
                 // Ensure the width of the div fits its content
                 if (span.getAttribute("found")) {
+                    if (span.getAttribute("found") === "byAbbr") {
+                    span.style.backgroundColor = "yellow"
+                    InTextCitFrameParagraph.style.backgroundColor = "yellow"
+                    } else {
                     span.style.backgroundColor = "orange"
                     InTextCitFrameParagraph.style.backgroundColor = "orange"
+
+                    }
                 } else {
                     span.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
                     InTextCitFrameParagraph.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');

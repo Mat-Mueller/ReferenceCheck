@@ -1,4 +1,4 @@
-import { displaySoftwareDescription, createMenue, referenceSectionGUI, referenceSeparationGUI, DragDrop, secondFrame, thirdFrame, clearRightContainer, MoveToFirstSpan  } from './uiComponents.js';
+import { displaySoftwareDescription, createMenue, referenceSectionGUI, referenceSeparationGUI, MatchGuessing, DragDrop, secondFrame, thirdFrame, clearRightContainer, MoveToFirstSpan  } from './uiComponents.js';
 import { readRenderPDF } from './pdfLoader.js';
 import { findReferenceSection, userDecisionReferenceSection } from './findReferenceList.js';
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
@@ -63,7 +63,7 @@ export async function analysis() {
     document.getElementById("settings").style.display = "none"
     //firstFrame(referenceCount);
     secondFrame(referenceCount);
-
+    MatchGuessing()
     thirdFrame();
     //UpdateFrames();
     DragDrop()

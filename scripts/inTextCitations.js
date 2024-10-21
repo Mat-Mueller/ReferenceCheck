@@ -361,10 +361,10 @@ function assignnames() {
     let citationSpans = document.querySelectorAll('span.citation');
     citationSpans.forEach((span) => {
             let cleanedText = span.getAttribute('cleanedCit');
-            //console.log(cleanedText)
+            console.log(cleanedText)
             let authorsCit = cleanedText
                 .replace(",", "")
-                .replace(/[’'´`ʼ′‛‘]s/g, '')
+                .replace(/[’'´`ʼ′‛‘’]s;/g, ';')
                 .replace("&", "").replace(";and", "")
                 .replace(";und", "")
                 .split(';').filter(name => name !== "")//.replace(",", "");

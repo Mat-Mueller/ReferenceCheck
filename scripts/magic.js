@@ -11,7 +11,7 @@ export function BestMatch(span, referenceFrames) {
       .filter(author => author !== "");    // Filter out empty strings
       //let Refsyear = Ref.getAttribute("year")
           // if the authors are identical but the years are not
-    console.log(Myauthors, Refsauth)
+    
     if (arraysAreIdentical(Myauthors, Refsauth )) {
       span.setAttribute('found', 'year')
       span.MatchedWith = Ref

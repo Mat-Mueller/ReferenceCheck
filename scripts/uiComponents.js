@@ -679,7 +679,13 @@ export function secondFrame(referenceCount) {
             searchRef(event);      // Call the search function and pass the event
         }
         })
-        referenceHeadline.appendChild(searchInput)
+    
+
+    const Searchhits = document.createElement('div')
+    Searchhits.id = "SearchhitsRef"
+    referenceHeadline.appendChild(Searchhits)
+    referenceHeadline.appendChild(searchInput)
+
     // Create a container div to hold the buttons side by side
     const buttonContainer = document.createElement('div');
     buttonContainer.style.display = 'inline-block'; // Ensure buttons are on the same line
@@ -882,55 +888,55 @@ export function MatchGuessing() {
 
 }
 
-let currentMatchIndex = -1; // To keep track of the current match
+
+let currentMatchIndex = -1; // Initialize outside of the function to track the current match
 
 function searchRef() {
     // Get the search term from the input field
     const searchTerm = event.target.value.toLowerCase();
-    
+
     // Find the element by its content or ID
     const referenceFrames = Array.from(document.querySelectorAll('.Reference-frame'));
-    
+
     // Filter the elements that match the search term
     const matchingElements = referenceFrames.filter((element) =>
         element.textContent.toLowerCase().includes(searchTerm) || element.id.toLowerCase() === searchTerm
     );
-    
-    if (matchingElements.length === 0) {
+
+    const totalMatches = matchingElements.length; // Store total matches
+
+    if (totalMatches === 0) {
         console.log('No matches found.');
+        document.getElementById('SearchhitsRef').textContent = 'No matches found.';
         return; // No matches, exit function
     }
-    
-    // Increment index and loop around if necessary
-    currentMatchIndex = (currentMatchIndex + 1) % matchingElements.length;
-    
-    // Scroll to the next match
-    const element = matchingElements[currentMatchIndex];    
+
+    // Update the current match index, cycling through the matches
+    currentMatchIndex = (currentMatchIndex + 1) % totalMatches;
+
+    // Scroll to the current match
+    const element = matchingElements[currentMatchIndex];
     const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
-    // Calculate the position of the target element relative to the parent
     const offsetTop = element.offsetTop - parentElement.offsetTop;
 
-    // Scroll the parent element to the calculated top position
     parentElement.scrollTo({
         top: offsetTop,
         behavior: 'smooth' // Smooth scrolling
     });
-    //element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    /*
-    document.getElementById('scholar-container').scrollTo({
-        //top: 0,
-        behavior: 'smooth'
-    });
-    */
-    const ElementColor = element.style.backgroundColor;
 
-    // Optional: highlight the element to visually indicate the match
+    // Save the current background color to restore it later
+    const originalColor = element.style.backgroundColor;
+
+    // Highlight the current element to visually indicate the match
     element.style.backgroundColor = 'yellow';
-    
-    // Remove highlight after some time (optional)
     setTimeout(() => {
-        element.style.backgroundColor = ElementColor;
+        element.style.backgroundColor = originalColor;
     }, 200);
+
+    // Display the current match index and total matches in the div with id 'SearchhitsRef'
+    const searchHitsRef = document.getElementById('SearchhitsRef');
+    searchHitsRef.textContent = `${currentMatchIndex + 1}/${totalMatches}`;
+    searchHitsRef.style.fontSize = '12px'; // Adjust the font size as needed
 }
 
 export function searchSpanRef() {

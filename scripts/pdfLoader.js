@@ -153,9 +153,9 @@ async function renderAllPages(pdfDocument) {
         
             // Store snippet font size for frequency tracking
             if (!line.fontSizeFrequency[fontSize]) {
-                line.fontSizeFrequency[fontSize] = 1;
+                line.fontSizeFrequency[fontSize] = line.text.length;
             } else {
-                line.fontSizeFrequency[fontSize]++;
+                line.fontSizeFrequency[fontSize] = line.fontSizeFrequency[fontSize] + line.text.length
             }
         
             // Store each snippet along with its font size (for future reference, if needed)
@@ -174,7 +174,7 @@ async function renderAllPages(pdfDocument) {
         
             // Determine the most frequent font size for the line
             for (const size in line.fontSizeFrequency) {
-                if (line.fontSizeFrequency[size] >= maxFrequency) {
+                if (line.fontSizeFrequency[size] > maxFrequency) {
                     maxFrequency = line.fontSizeFrequency[size];
                     mostFrequentFontSize = parseFloat(size);
                 }
@@ -277,7 +277,9 @@ function detectFootnotesForAllTextLayers() {
 
             } else  {
                 // If we've already found footnotes and the font size is not smaller, stop the loop
+                if (!/^\d+$/.test(line.textContent.trim())) {
                 break;
+                }
             }
         }
     });

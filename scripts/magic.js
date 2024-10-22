@@ -37,7 +37,7 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
     if (cleanedText) {
         // Attempt to match the authors part using a regular expression
         const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
-        const authorsPart = matchResult[0]
+        let authorsPart = matchResult[0]
         authorsPart = authorsPart.replace(/\([^)]*$/, "");
         // Check if the match was successful
         if (matchResult) {

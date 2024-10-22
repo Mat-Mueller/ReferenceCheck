@@ -680,11 +680,11 @@ export function secondFrame(referenceCount) {
         }
         })
     
-
+        referenceHeadline.appendChild(searchInput)
     const Searchhits = document.createElement('div')
     Searchhits.id = "SearchhitsRef"
     referenceHeadline.appendChild(Searchhits)
-    referenceHeadline.appendChild(searchInput)
+   
 
     // Create a container div to hold the buttons side by side
     const buttonContainer = document.createElement('div');

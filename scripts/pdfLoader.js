@@ -128,7 +128,6 @@ async function renderAllPages(pdfDocument) {
             const currentX = textItem.transform[4]; // X coordinate
             const lineText = textItem.str;
             const fontSize = textItem.transform[0]; // Extract font size
-            console.log(lineText, fontSize)
             const fontName = textItem.fontName; // Extract font name (for bold, italic, etc.)
         
             // Find the line with a similar Y coordinate

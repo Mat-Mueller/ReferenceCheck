@@ -37,10 +37,11 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
     if (cleanedText) {
         // Attempt to match the authors part using a regular expression
         const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
-        
+        const authorsPart = matchResult[0]
+        authorsPart = authorsPart.replace(/\([^)]*$/, "");
         // Check if the match was successful
         if (matchResult) {
-            const authorsPart = matchResult[0]; // Safely access the matched part
+             // Safely access the matched part
             if (authorsPart.replace(" (", "") in full_name_to_abbreviation) {
               ReferenceFrameParagraph.setAttribute('Abbr', full_name_to_abbreviation[authorsPart.replace(" (", "")])
             }

@@ -1092,7 +1092,7 @@ function onDragStartHandler() {
 
     dropZones.forEach(dropZone => {
         // Apply the border highlight (corrected syntax)
-        dropZone.style.border = '4px solid red';  // Example: highlight with red border
+        dropZone.style.border = '4px solid yellow';  // Example: highlight with red border
 
         // Remove the highlight after 1 second (1000 milliseconds)
         setTimeout(() => {

@@ -1354,7 +1354,7 @@ citationElements.forEach(function (element) {
             const cleanedCit = span.getAttribute('cleanedCit'); // Get the cleaned citation text
 
             function capitalizeFirstLetter(string) {
-                if (string === "al" || string === "al." || string === "et" || string === "and") {return string} else
+                if (string === "al" || string === "al." || string === "et" || string === "and" || string === "und") {return string} else
                 return string.charAt(0).toUpperCase() + string.slice(1);
             }
 

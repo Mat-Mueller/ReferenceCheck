@@ -380,7 +380,7 @@ margin-left : 3px;
     justify-content: center;
     align-items: center; 
     gap: 10px;
-    top: 50px;        /* Distance from the top */
+    top: 60px;        /* Distance from the top */
     right: 51%;       /* Distance from the right side of the viewport */
 }
 #SearchCounter{

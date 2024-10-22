@@ -745,6 +745,7 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.className = "ReferenceFrameParagraph"
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
         ReferenceFrameParagraph.setAttribute('year', MyYear)
+        ReferenceFrameParagraph.setAttribute('tooltip', `Detected authors and year: <br> ${lastNames} (${MyYear})`)
         ReferenceFrameParagraph.id = j;
                 // check if there is an abbreviation
         const matchResult = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
@@ -989,14 +990,17 @@ function UpdateFramesAndMatches() {
 const citationElements = document.querySelectorAll('span.citation');
 citationElements.forEach(function (element) {
     if (element.getAttribute('Found') === 'true') {
-        element.setAttribute('title', 'Succesfully matched with reference');
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Successfully matched with reference!`);
     } else if (!element.getAttribute('Found')) {
-        element.setAttribute('title', 'No reference found!');
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> No reference found!`);
     } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('title', 'Found more than one matching reference!')
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Found more than one matching reference!`)
     }
     else if (element.getAttribute('Found') === 'year') {
-        element.setAttribute('title', 'Check puplication year!')
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Check puplication year!`)
+    }
+    else if (element.getAttribute('Found') === 'byAbbr') {
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Matched through abbreviation!`)
     }
     
 });
@@ -1315,16 +1319,16 @@ const citationElements = document.querySelectorAll('span.citation');
 
 citationElements.forEach(function (element) {
     if (element.getAttribute('Found') === 'true') {
-        element.setAttribute('title', 'Succesfully matched with reference');
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Successfully matched with reference!`);
     } else if (!element.getAttribute('Found')) {
-        element.setAttribute('title', 'No reference found!');
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> No reference found!`);
     } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('title', 'Found more than one matching reference!')
-    } else if (element.getAttribute('Found') === 'byAbbr') {
-        element.setAttribute('title', 'Reference matched by abbreviation. Please check!')
-    } else if (element.getAttribute('Found') === 'year') {
-        element.setAttribute('title', 'Check puplication year!')
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Found more than one matching reference!`)
     }
+    else if (element.getAttribute('Found') === 'year') {
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Check puplication year!`)
+    }
+    
     
 });
 
@@ -1375,7 +1379,7 @@ citationElements.forEach(function (element) {
 
                 InTextCitFrameParagraph.ParentSpan = span; 
                 InTextCitFrameParagraph.id = `InTexts-${index + 1}`
-                InTextCitFrameParagraph.title = span.title  
+                InTextCitFrameParagraph.setAttribute("tooltip", span.getAttribute("tooltip")) 
                 // Ensure the width of the div fits its content
                 if (span.getAttribute("found")) {
                     if (span.getAttribute("found") === "byAbbr") {
@@ -1436,6 +1440,10 @@ citationElements.forEach(function (element) {
     // Initial render showing only problematic spans
     renderSpans();
     UpdateFramesAndMatches(); // Assuming UpdateFrames() is needed elsewhere
+
+
+
+    createTooltips() ///////////////////////////////////////////////////////////////////////////////////////////////////////////MOVE
 }
 
 // Define the sorting function
@@ -1468,6 +1476,74 @@ function sorting() {
 }
 
   
+function createTooltips() {
+    const citationElements = document.querySelectorAll('span.citation, div.InTexts, div.Reference-frame');
+
+
+    citationElements.forEach(cit => {
+        // Create a custom tooltip element
+        const tooltip = document.createElement('div');
+        tooltip.classList.add('custom-tooltip');
+        tooltip.innerHTML = cit.getAttribute('tooltip'); // Use the title attribute as the tooltip text
+
+        // Hide the title attribute to prevent the default browser tooltip
+        cit.removeAttribute('title');
+
+        // Style the tooltip
+        tooltip.style.position = 'absolute';
+        tooltip.style.backgroundColor = 'black';
+        tooltip.style.color = 'white';
+        tooltip.style.padding = '5px';
+        tooltip.style.borderRadius = '4px';
+        tooltip.style.fontSize = '12px';
+        tooltip.style.pointerEvents = 'none';  // Make sure the tooltip doesn't interfere with mouse events
+        tooltip.style.opacity = '0';           // Initially hidden
+        tooltip.style.transition = 'opacity 0.3s';  // Smooth fade-in effect
+        tooltip.style.zIndex = '1000';         // Ensure it's above other elements
+
+        // Append the tooltip to the body
+        document.body.appendChild(tooltip);
+
+        // Function to show tooltip
+        const showTooltip = (event) => {
+            tooltip.style.opacity = '1';
+            const rect = cit.getBoundingClientRect();
+            tooltip.style.left = `${rect.left + window.scrollX}px`;  // Adjust for scrolling
+            tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 5}px`;  // Place above the element
+        };
+
+        // Function to hide tooltip
+        const hideTooltip = () => {
+            tooltip.style.opacity = '0';
+        };
+
+        // Event listeners for mouse enter and leave
+        //cit.addEventListener('mouseenter', showTooltip);
+        cit.addEventListener('mouseleave', hideTooltip);
+
+        // Event listener for click
+        cit.addEventListener('click', function(event) {
+            if (tooltip.style.opacity === '1') {
+                hideTooltip();
+            } else {
+                showTooltip(event);
+            }
+        });
+
+        // Optional: Update the tooltip position with the mouse movement
+        cit.addEventListener('mousemove', function(event) {
+            tooltip.style.left = `${event.pageX + 10}px`;  // Offset from the cursor
+            tooltip.style.top = `${event.pageY + 10}px`;
+        });
+
+        // Hide the tooltip when clicking elsewhere on the page
+        document.addEventListener('click', function(event) {
+            if (!cit.contains(event.target) && tooltip.style.opacity === '1') {
+                hideTooltip();
+            }
+        });
+    });
+}
 
   
 

@@ -187,11 +187,13 @@ function cleanCitations() {
     let citationSpans = precleaned();
 
     let Allnames = GetallPossibleNames()
-
+    
     // Loop through each span element
     citationSpans.forEach((span) => {
 
         let cleanedText = span.innerText.replace(/\(|\)/g, ''); // Remove parentheses
+        
+        //console.log(cleanedText)
         let precedingText;
         // Check if the cleanedText is just a number (e.g., a year like 1966) --- narrative cit
         if (/^\d+$/.test(cleanedText)) {
@@ -230,21 +232,22 @@ function cleanCitations() {
             let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').replace(",", "").split(" ");
             words = mergeNameFragments(Allnames, words)
             let lastWord = words[words.length - 2];
-            if (words.length < 5) {
+            if (words.length < 7) {
                 let precedingText = getPreviousText(span);
-                //console.log(precedingText.split(' '))
+                
                 if (precedingText) {
                     let precedingWords = precedingText.replace("(", "").split(' ');
                     precedingWords = mergeNameFragments(Allnames, precedingWords)
 
                     // Prepend words from precedingText until the words array has at least 5 words
-                    while (words.length < 5 && precedingWords.length > 0) {
+                    while (words.length < 7 && precedingWords.length > 0) {
                         words.unshift(precedingWords.pop());
                     }
                     
                     
                 }
             }
+            //console.log(words)
             words = mergeNameFragments(Allnames, words)
             words = combineHyphenatedWords(words)
             lastWord = words[words.length - 2]

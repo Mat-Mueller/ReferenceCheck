@@ -1143,12 +1143,12 @@ export function DragDrop() {
         dropZone.style.cursor = 'pointer'
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.classList.add('hover');
+            dropZone.style.border = '4px solid yellow';  // Example: highlight with red border
         });
 
         // Drag leave event (removes hover state when dragging leaves the zone)
         dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('hover');
+            dropZone.style.border = '0px solid red';
         });
 
         // Drop event (handles the actual drop)

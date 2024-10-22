@@ -128,6 +128,7 @@ async function renderAllPages(pdfDocument) {
             const currentX = textItem.transform[4]; // X coordinate
             const lineText = textItem.str;
             const fontSize = textItem.transform[0]; // Extract font size
+            console.log(lineText, fontSize)
             const fontName = textItem.fontName; // Extract font name (for bold, italic, etc.)
         
             // Find the line with a similar Y coordinate
@@ -183,7 +184,7 @@ async function renderAllPages(pdfDocument) {
             line.fontSize = mostFrequentFontSize;
         
             // Apply the most frequent font size to the entire line (optional, if rendering the line)
-            lineElement.style.fontSize = `${line.fontSize}px`; // Apply to rendered element if needed
+            //lineElement.style.fontSize = `${line.fontSize}px`; // Apply to rendered element if needed
         });
         
 
@@ -208,6 +209,7 @@ async function renderAllPages(pdfDocument) {
 
             // Apply font size and font weight (bold) if applicable
             lineElement.style.fontSize = `${line.fontSize}px`; // Set font size
+            //lineElement.style.height = `${line.fontSize}px`;  // Explicitly set the div height to match the font size
             if (line.fontName && line.fontName.toLowerCase().includes('bold')) {
                 lineElement.style.fontWeight = 'bold'; // Set bold style if the font name contains "bold"
             }

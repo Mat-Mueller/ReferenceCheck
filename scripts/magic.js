@@ -2,34 +2,98 @@ import {full_name_to_abbreviation} from './Abbreviations.js'
 
 export function BestMatch(span, referenceFrames) {
     let Myauthors = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
-    //let MyYear = span.getAttribute("year")
+    let MyYear = span.getAttribute("year")
 
     referenceFrames.forEach((Ref) => {
       let Refsauth = Ref.getAttribute('authors')
       .split(/,| and /)                     // Split by comma or 'and'
       .map(author => author.trim().toLowerCase())  // Trim and convert to lowercase
       .filter(author => author !== "");    // Filter out empty strings
-      //let Refsyear = Ref.getAttribute("year")
+      let Refsyear = Ref.getAttribute("year")
           // if the authors are identical but the years are not
     
-    if (arraysAreIdentical(Myauthors, Refsauth )) {
-      span.setAttribute('found', 'year')
-      span.MatchedWith = Ref
-      span.addEventListener('click', () => {
-        Ref.scrollIntoView({
+      if (arraysAreIdentical(Myauthors, Refsauth )) {
+        span.setAttribute('found', 'year')
+        span.MatchedWith = Ref
+        span.addEventListener('click', () => {
+          Ref.scrollIntoView({
             
             behavior: 'smooth' // Smooth scrolling
+          });
         });
-      });
-    }
+      } else {
+        if (MyYear === Refsyear) {
+            if (compareStringArrays(Myauthors, Refsauth) < 2) // check for typos {
+              {
+                  console.log(`jippi!, ${Myauthors}, ${Refsauth}`)
+                  span.setAttribute('found', 'typo')
+                  span.MatchedWith = Ref
+                  span.addEventListener('click', () => {
+                    Ref.scrollIntoView({
+                      
+                      behavior: 'smooth' // Smooth scrolling
+                    });
+                  });
+              }
 
+        }
+      }
 
     })
+}
 
+
+function damerauLevenshtein(str1, str2) {
+    const len1 = str1.length;
+    const len2 = str2.length;
     
+    // Create a matrix
+    const matrix = [];
 
+    // Initialize the matrix
+    for (let i = 0; i <= len1; i++) {
+        matrix[i] = [i];
+    }
+    for (let j = 0; j <= len2; j++) {
+        matrix[0][j] = j;
+    }
 
+    // Compute the distance
+    for (let i = 1; i <= len1; i++) {
+        for (let j = 1; j <= len2; j++) {
+            let cost = (str1[i - 1] === str2[j - 1]) ? 0 : 1;
 
+            matrix[i][j] = Math.min(
+                matrix[i - 1][j] + 1,    // Deletion
+                matrix[i][j - 1] + 1,    // Insertion
+                matrix[i - 1][j - 1] + cost  // Substitution
+            );
+
+            // Transposition
+            if (i > 1 && j > 1 && str1[i - 1] === str2[j - 2] && str1[i - 2] === str2[j - 1]) {
+                matrix[i][j] = Math.min(
+                    matrix[i][j],
+                    matrix[i - 2][j - 2] + cost // Transposition
+                );
+            }
+        }
+    }
+
+    return matrix[len1][len2];
+}
+
+function compareStringArrays(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+      return;
+  }
+
+  let totalDistance = 0;
+  for (let i = 0; i < arr1.length; i++) {
+      const distance = damerauLevenshtein(arr1[i], arr2[i]);
+      totalDistance += distance;
+  }
+
+  return totalDistance;
 }
 
 export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
@@ -43,8 +107,9 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
           // Check if the match was successful
         
              // Safely access the matched part
-            if (authorsPart.replace(" (", "") in full_name_to_abbreviation) {
-              ReferenceFrameParagraph.setAttribute('Abbr', full_name_to_abbreviation[authorsPart.replace(" (", "")])
+            console.log(authorsPart, ReferenceFrameParagraph)
+            if (ReferenceFrameParagraph && authorsPart.replace(" (", "").toLowerCase().trim() in full_name_to_abbreviation) {
+              ReferenceFrameParagraph.setAttribute('Abbr', full_name_to_abbreviation[authorsPart.replace(" (", "").toLowerCase().trim()])
             }
             // Step 3: Split the remaining string by commas or ampersands and extract the last names
             lastNames = authorsPart

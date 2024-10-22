@@ -884,7 +884,7 @@ export function MatchGuessing() {
     const referenceFrames = document.querySelectorAll('.Reference-frame');
 
     problematicSpans.forEach(span => {
-        console.log(BestMatch(span, referenceFrames))
+        BestMatch(span, referenceFrames)
     })
 
 }
@@ -1001,7 +1001,10 @@ citationElements.forEach(function (element) {
     }
     else if (element.getAttribute('Found') === 'byAbbr') {
         element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Matched through abbreviation!`)
+    }    else if (element.getAttribute('Found') === 'typo') {
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Check spelling!`)
     }
+    
     
 });
 
@@ -1328,6 +1331,12 @@ citationElements.forEach(function (element) {
     else if (element.getAttribute('Found') === 'year') {
         element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Check puplication year!`)
     }
+    else if (element.getAttribute('Found') === 'byAbbr') {
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Matched through abbreviation!`)
+    }    else if (element.getAttribute('Found') === 'typo') {
+        element.setAttribute('tooltip', `Intext citation identified: ${element.getAttribute("cleanedcit").split(";").join(" ")} <br> Check spelling!`)
+    }
+    
     
     
 });

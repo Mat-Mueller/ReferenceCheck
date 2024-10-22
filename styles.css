@@ -369,10 +369,22 @@ margin-left : 3px;
 }
 #searchSpanField {
     z-index: 1000;
+
+    width: 100px;     /* Sets the width of the element */
+}
+
+#SearchCintainer {
     position: fixed;  /* This sets the element's position to fixed */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center; 
+    gap: 10px;
     top: 50px;        /* Distance from the top */
     right: 51%;       /* Distance from the right side of the viewport */
-    width: 100px;     /* Sets the width of the element */
+}
+#SearchCounter{
+    bottom: 0px;
 }
 
 

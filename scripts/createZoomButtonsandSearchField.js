@@ -21,6 +21,10 @@ export function createZoomButtonsandSearchField() {
     document.body.appendChild(zoomInButton);
     document.body.appendChild(zoomOutButton);
 
+    const SearchCintainer = document.createElement('div')
+    SearchCintainer.id = "SearchCintainer"
+    const SearchCounter = document.createElement('div')
+    SearchCounter.id = "SearchCounter"
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.id = 'searchSpanField';
@@ -30,9 +34,14 @@ export function createZoomButtonsandSearchField() {
         if (event.key === 'Enter') {  // Check if the Enter key was pressed
             searchSpanRef(event);      // Call the search function and pass the event
         }
-        })
+      })
+    
+    SearchCintainer.appendChild(SearchCounter)
+    SearchCintainer.appendChild(searchInput)
+    
+    document.body.appendChild(SearchCintainer)
 
-        document.body.appendChild(searchInput)
+
 
   }
 

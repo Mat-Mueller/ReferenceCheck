@@ -940,9 +940,9 @@ function searchRef() {
 }
 
 export function searchSpanRef() {
-
     const searchTerm = event.target.value.toLowerCase();
-    const texts = Array.from(document.querySelectorAll('.textLine, .highlight'));    
+    const texts = Array.from(document.querySelectorAll('.textLine, .highlight'));
+    
     // Filter the elements that match the search term
     const matchingElements = texts.filter((element) =>
         element.textContent.toLowerCase().includes(searchTerm) || element.id.toLowerCase() === searchTerm
@@ -950,28 +950,37 @@ export function searchSpanRef() {
     
     if (matchingElements.length === 0) {
         console.log('No matches found.');
+        document.getElementById('SearchCounter').textContent = '0/0'; // Show 0/0 if no matches
         return; // No matches, exit function
     }
-    
+
+    // Keep track of the current match index in a global or higher-scoped variable
+    // Assuming currentMatchIndex is declared globally or in a parent scope
+    if (typeof currentMatchIndex === 'undefined') {
+        currentMatchIndex = 0; // Initialize if not defined
+    }
+
     // Increment index and loop around if necessary
     currentMatchIndex = (currentMatchIndex + 1) % matchingElements.length;
     
     // Scroll to the next match
     const element = matchingElements[currentMatchIndex];    
     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-   
 
     const ElementColor = element.style.backgroundColor;
 
     // Optional: highlight the element to visually indicate the match
     element.style.backgroundColor = 'yellow';
     
-    // Remove highlight after some time (optional)
     setTimeout(() => {
         element.style.backgroundColor = ElementColor;
     }, 200);
 
+    // Update the SearchCounter with the current index and total matches
+    document.getElementById('SearchCounter').textContent = `${currentMatchIndex + 1}/${matchingElements.length}      `;
+    document.getElementById('SearchCounter').style.fontSize = '12px'
 }
+
 
 
 function UpdateFramesAndMatches() {

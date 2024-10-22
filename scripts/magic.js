@@ -17,7 +17,7 @@ export function BestMatch(span, referenceFrames) {
       span.MatchedWith = Ref
       span.addEventListener('click', () => {
         Ref.scrollIntoView({
-            top: offsetTop,
+            
             behavior: 'smooth' // Smooth scrolling
         });
       });

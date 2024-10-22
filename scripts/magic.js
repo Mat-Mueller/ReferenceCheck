@@ -76,6 +76,8 @@ function arraysAreIdentical(arr1, arr2) {
   // If "et" and "al." are in arr1, we only compare the first author
   const hasEtAl = arr1.includes("et") && arr1.includes("al.") && arr2.length > 2;
   
+  arr1 = arr1.map(element => element.replace(/[^a-zA-Z]/g, "").normalize());
+  arr2 = arr2.map(element => element.replace(/[^a-zA-Z]/g, "").normalize());
   if (arr2.length === 0 ) {return false}
 
   if (hasEtAl) {

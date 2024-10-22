@@ -174,7 +174,7 @@ async function renderAllPages(pdfDocument) {
         
             // Determine the most frequent font size for the line
             for (const size in line.fontSizeFrequency) {
-                if (line.fontSizeFrequency[size] > maxFrequency) {
+                if (line.fontSizeFrequency[size] >= maxFrequency) {
                     maxFrequency = line.fontSizeFrequency[size];
                     mostFrequentFontSize = parseFloat(size);
                 }

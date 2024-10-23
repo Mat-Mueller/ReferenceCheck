@@ -660,15 +660,20 @@ export function secondFrame(referenceCount) {
     // Create and add headline for references
     const referenceHeadline = document.createElement('div');
     referenceHeadline.id = "referenceHeadline"
+
+    const LeftContainer = document.createElement('div')
+    LeftContainer.id = "LeftContainer"
+    referenceHeadline.appendChild(LeftContainer)
+
     const Refspinner = document.createElement('div')
     Refspinner.id = "loading-spinner" 
     Refspinner.className  = "spinner"
-    referenceHeadline.appendChild(Refspinner)
+    LeftContainer.appendChild(Refspinner)
     const referenceTitle = document.createElement('p');
     referenceTitle.id = "References"
     referenceTitle.style.margin = "0px"
-
-    referenceHeadline.appendChild(referenceTitle)
+    LeftContainer.appendChild(referenceTitle)
+    
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.id = 'searchField';
@@ -680,11 +685,17 @@ export function secondFrame(referenceCount) {
         }
         })
     
-        referenceHeadline.appendChild(searchInput)
     const Searchhits = document.createElement('div')
     Searchhits.id = "SearchhitsRef"
-    referenceHeadline.appendChild(Searchhits)
-   
+
+    const RightContainer = document.createElement('div')
+    RightContainer.id = "RightContainer"
+    
+    
+    referenceHeadline.appendChild(RightContainer)
+    RightContainer.appendChild(Searchhits)
+    RightContainer.appendChild(searchInput)
+
 
     // Create a container div to hold the buttons side by side
     const buttonContainer = document.createElement('div');

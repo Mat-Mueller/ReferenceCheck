@@ -382,7 +382,7 @@ margin-left : 3px;
     align-items: center; 
     gap: 10px;
     top: 55px;        /* Distance from the top */
-    right: 51%;       /* Distance from the right side of the viewport */
+    left: 50.5%;       /* Distance from the right side of the viewport */
 }
 #SearchCounter{
     bottom: 0px;

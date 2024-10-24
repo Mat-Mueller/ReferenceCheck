@@ -8,7 +8,7 @@ export function createZoomButtonsandSearchField() {
     zoomInButton.style.position = "fixed";
     zoomInButton.style.bottom = "20px";
     zoomInButton.style.width = "20px";
-    zoomInButton.style.left = "45px";
+    zoomInButton.style.right = "20px";
 
     const zoomOutButton = document.createElement("button");
     zoomOutButton.innerHTML = "-";
@@ -16,7 +16,7 @@ export function createZoomButtonsandSearchField() {
     zoomOutButton.style.position = "fixed";
     zoomOutButton.style.bottom = "20px";
     zoomOutButton.style.width = "20px";
-    zoomOutButton.style.left = "20px"; // Position it to the right of the Zoom In button
+    zoomOutButton.style.right = "45px"; // Position it to the right of the Zoom In button
 
     document.body.appendChild(zoomInButton);
     document.body.appendChild(zoomOutButton);

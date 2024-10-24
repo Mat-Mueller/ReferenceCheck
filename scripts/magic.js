@@ -4,6 +4,8 @@ import {DoHighlight} from './uiComponents.js'
 export function BestMatch(span, referenceFrames) {
     let Myauthors = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
     let MyYear = span.getAttribute("year")
+    let bestvalue = 10000
+    let bestRef
 
     referenceFrames.forEach((Ref) => {
       let Refsauth = Ref.getAttribute('authors')
@@ -23,26 +25,39 @@ export function BestMatch(span, referenceFrames) {
             behavior: 'smooth' // Smooth scrolling
           });
         });
-      } else {
-        if (MyYear === Refsyear) {
-            if (compareStringArrays(Myauthors, Refsauth) < 2) // check for typos {
-              {
-                  console.log(`jippi!, ${Myauthors}, ${Refsauth}`)
-                  span.setAttribute('found', 'typo')
-                  span.MatchedWith = Ref
-                  span.addEventListener('click', () => {
-                    DoHighlight(Ref)
-                    Ref.scrollIntoView({
-                      
-                      behavior: 'smooth' // Smooth scrolling
-                    });
-                  });
-              }
+        return
+      } 
+      
+      
+      
 
-        }
-      }
+
+            let difference = compareStringArrays(Myauthors, Refsauth)
+            if (difference < bestvalue) {
+              bestvalue = difference
+              bestRef = Ref
+            }
+      
+      
 
     })
+
+    console.log(bestRef, bestvalue, span)
+    
+    if (bestvalue < 2) {
+      span.setAttribute('found', 'typo')
+    }
+      span.MatchedWith = bestRef
+      span.addEventListener('click', () => {
+        DoHighlight(bestRef)
+        bestRef.scrollIntoView({          
+          behavior: 'smooth' // Smooth scrolling
+        });
+      });
+    
+
+  
+
 }
 
 
@@ -86,18 +101,36 @@ function damerauLevenshtein(str1, str2) {
 }
 
 function compareStringArrays(arr1, arr2) {
-  if (arr1.length !== arr2.length) {
-      return;
+  //console.log(arr1)
+  // Special case: if arr1 contains "et" and "al.", only compare the first elements
+  if (arr1.includes("et") && arr1.includes("al.") && arr2.length > 2) {
+    // Only compare the first element
+    return damerauLevenshtein(arr1[0], arr2[0]);
   }
 
+  // Regular case: Compare all elements up to the length of the shorter array
+  const minLength = Math.min(arr1.length, arr2.length);
   let totalDistance = 0;
-  for (let i = 0; i < arr1.length; i++) {
+
+  for (let i = 0; i < minLength; i++) {
       const distance = damerauLevenshtein(arr1[i], arr2[i]);
       totalDistance += distance;
+  }
+  
+  
+  // If arr2 is longer, add the lengths of the remaining elements in arr2
+  for (let i = minLength; i < arr2.length; i++) {
+      totalDistance += arr2[i].length; // Treat remaining elements as entirely different
+  }
+
+  // If arr1 is longer, add the lengths of the remaining elements in arr1
+  for (let i = minLength; i < arr1.length; i++) {
+      totalDistance += arr1[i].length; // Treat remaining elements as entirely different
   }
 
   return totalDistance;
 }
+
 
 export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
     let lastNames 

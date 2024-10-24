@@ -895,8 +895,9 @@ export function secondFrame(referenceCount) {
 
 export function DoHighlight(element) {
     // Store the original background color
-
-    element.style.border = '2px solid yellow'; // Set a proper border
+    let BackgroundC = element.style.backgroundColor
+    console.log(BackgroundC)
+    element.style.border = ` 5px solid ${BackgroundC}`; // Set a proper border
 
 
 
@@ -946,14 +947,7 @@ function searchRef() {
 
     // Scroll to the current match
     const element = matchingElements[currentMatchIndex];
-    //DoHighlight(element)
-    const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
-    const offsetTop = element.offsetTop - parentElement.offsetTop;
-
-    parentElement.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth' // Smooth scrolling
-    });
+    element.scrollIntoView({behavior: 'smooth', block: 'center'})
 
     // Save the current background color to restore it later
     const originalColor = element.style.backgroundColor;
@@ -1102,12 +1096,7 @@ if (TextFrameParagraph) {
             });
             */
             const element = unmatchedReferences[unmatchedClickCount % unmatchedReferences.length]  
-            const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
-            const offsetTop = element.offsetTop - parentElement.offsetTop;
-            parentElement.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth' // Smooth scrolling
-            });
+            element.scrollIntoView({behavior: 'smooth', block: 'center'})
             DoHighlight(element)
             unmatchedClickCount++; // Cycle to the next unmatched reference on each click
         }
@@ -1165,7 +1154,7 @@ export function DragDrop() {
     // Make elements draggable and add event listeners
     draggables.forEach(draggable => {
         draggable.setAttribute('draggable', 'true');
-        draggable.style.cursor = 'pointer'
+        draggable.style.cursor = 'grab'
         // Drag start event
         draggable.addEventListener('dragstart', (e) => {
             dragStartTime = new Date().getTime(); // Track drag start time
@@ -1271,12 +1260,8 @@ export function DragDrop() {
 
                 const element = dropZone
                 DoHighlight(element)
-                const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
-                const offsetTop = element.offsetTop - parentElement.offsetTop;
-                parentElement.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth' // Smooth scrolling
-                });
+                element.scrollIntoView({behavior: 'smooth', block: 'center'})
+
             
                 // 3. Append a link to the drop zone
                 let currentLinks = dropZone.querySelector('.SingleRef').myLinks;
@@ -1440,12 +1425,12 @@ citationElements.forEach(function (element) {
                 InTextCitFrameParagraph.addEventListener('click', () => {
                     span.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to the span
                     DoHighlight(span)
-                    if (span.getAttribute("found")) {
+                    //if (span.getAttribute("found")) {
                         DoHighlight(span.MatchedWith)
                         span.MatchedWith.scrollIntoView({ behavior: 'smooth', block: 'center' })
                         DoHighlight(span)
                         span.scrollIntoView({ behavior: 'smooth', block: 'center' })
-                    };
+                    //};
                 });
                 span.addEventListener('click', () => {
                     InTextCitFrameParagraph.scrollIntoView({behavior: 'smooth', block: 'center'})

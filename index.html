@@ -31,12 +31,7 @@
     </div>
 
     <div id="viewer">
-        <div class="frame" id="pdf-container" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
-            <div id="dragArea">
-                <input type="file" id="pdf-upload" accept="application/pdf">
-                Drag and drop a PDF here or use the file upload button.
-            </div>
-        </div>
+
         <div class="frame" id="scholar-container">
             <div id="description" style="background-color: white;"> </div>
             <div id="settings" display="none">
@@ -71,6 +66,15 @@
             </div>
 
         </div>
+
+        <div class="frame" id="pdf-container" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
+            <div id="dragArea">
+                <input type="file" id="pdf-upload" accept="application/pdf">
+                Drag and drop a PDF here or use the file upload button.
+            </div>
+        </div>
+
+
     </div>
     <div id="loadingScreen" class="loading-screen">
         <div id="MainLoading" >Loading...

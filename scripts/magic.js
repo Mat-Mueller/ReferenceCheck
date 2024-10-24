@@ -1,4 +1,5 @@
 import {full_name_to_abbreviation} from './Abbreviations.js'
+import {DoHighlight} from './uiComponents.js'
 
 export function BestMatch(span, referenceFrames) {
     let Myauthors = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
@@ -16,6 +17,7 @@ export function BestMatch(span, referenceFrames) {
         span.setAttribute('found', 'year')
         span.MatchedWith = Ref
         span.addEventListener('click', () => {
+          DoHighlight(Ref)
           Ref.scrollIntoView({
             
             behavior: 'smooth' // Smooth scrolling
@@ -29,6 +31,7 @@ export function BestMatch(span, referenceFrames) {
                   span.setAttribute('found', 'typo')
                   span.MatchedWith = Ref
                   span.addEventListener('click', () => {
+                    DoHighlight(Ref)
                     Ref.scrollIntoView({
                       
                       behavior: 'smooth' // Smooth scrolling
@@ -192,12 +195,12 @@ export function matching(ReferenceFrameParagraph) {
         const element = ReferenceFrameParagraph
         span.MatchedWith = element        
         span.addEventListener('click', () => {
-          const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
-          const offsetTop = element.offsetTop - parentElement.offsetTop;
-          parentElement.scrollTo({
-              top: offsetTop,
-              behavior: 'smooth' // Smooth scrolling
-          });
+          DoHighlight(element)
+          element.scrollIntoView({
+            behavior: 'smooth',  // You can use 'smooth' for a smooth scrolling animation or 'auto' for an instant scroll
+            block: 'center',     // Scroll so that the element is centered in the viewport
+        });
+
         });
       }
 
@@ -210,6 +213,7 @@ export function matching(ReferenceFrameParagraph) {
         const element = ReferenceFrameParagraph
         span.MatchedWith = element 
         span.addEventListener('click', () => {
+          DoHighlight(element)
           const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
           const offsetTop = element.offsetTop - parentElement.offsetTop;
           parentElement.scrollTo({

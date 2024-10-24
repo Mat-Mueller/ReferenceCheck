@@ -605,6 +605,7 @@ function appendResultToDiv(item, resultsDiv) {
             link.addEventListener('click', (event) => {
                 event.preventDefault(); // Prevent the default anchor behavior
                 span.scrollIntoView({ behavior: 'smooth' }); // Scroll to the matched span
+                DoHighlight(span)
             });
 
             // Append the link to the paragraph without using innerHTML
@@ -791,7 +792,8 @@ export function secondFrame(referenceCount) {
         divs.forEach ((div) => {
             div.style.cursor = 'pointer'
             div.addEventListener('click', () => {   
-                    ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });    
+                    ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    DoHighlight(ReferenceFrameParagraph)    
             });
         })
 
@@ -811,6 +813,7 @@ export function secondFrame(referenceCount) {
 
         SingleRef.addEventListener('click', () => {
             divs[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
+            DoHighlight(divs[0])
         })
 
         // Create second paragraph with inline style
@@ -889,6 +892,21 @@ export function secondFrame(referenceCount) {
         // should move somewhere else                                        ///////////////////////////////////////////////////////////////////
 }
 
+
+export function DoHighlight(element) {
+    // Store the original background color
+
+    element.style.border = '2px solid yellow'; // Set a proper border
+
+
+
+    // Revert to the original background color after 200ms
+    setTimeout(() => {
+        element.style.border = "";
+    }, 200);
+}
+
+
 export function MatchGuessing() {
     // find problematic spans
     const problematicSpans = document.querySelectorAll('span.citation:not([found])');
@@ -928,6 +946,7 @@ function searchRef() {
 
     // Scroll to the current match
     const element = matchingElements[currentMatchIndex];
+    //DoHighlight(element)
     const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
     const offsetTop = element.offsetTop - parentElement.offsetTop;
 
@@ -1089,7 +1108,7 @@ if (TextFrameParagraph) {
                 top: offsetTop,
                 behavior: 'smooth' // Smooth scrolling
             });
-
+            DoHighlight(element)
             unmatchedClickCount++; // Cycle to the next unmatched reference on each click
         }
     });
@@ -1251,6 +1270,7 @@ export function DragDrop() {
                 // 2. Add event listener to scroll to the drop zone (Reference-frame)
 
                 const element = dropZone
+                DoHighlight(element)
                 const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
                 const offsetTop = element.offsetTop - parentElement.offsetTop;
                 parentElement.scrollTo({
@@ -1419,8 +1439,19 @@ citationElements.forEach(function (element) {
                 // When the paragraph is clicked, scroll to the respective span in the document
                 InTextCitFrameParagraph.addEventListener('click', () => {
                     span.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to the span
-                    if (span.getAttribute("found")) {span.MatchedWith.scrollIntoView({ behavior: 'smooth', block: 'center' })};
+                    DoHighlight(span)
+                    if (span.getAttribute("found")) {
+                        DoHighlight(span.MatchedWith)
+                        span.MatchedWith.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        DoHighlight(span)
+                        span.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                    };
                 });
+                span.addEventListener('click', () => {
+                    InTextCitFrameParagraph.scrollIntoView({behavior: 'smooth', block: 'center'})
+                    DoHighlight(InTextCitFrameParagraph)
+
+                })
 
                 // Append the paragraph to the InTextCitFrame
                 InTextCitFrame.appendChild(InTextCitFrameParagraph);

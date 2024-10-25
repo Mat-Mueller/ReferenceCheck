@@ -208,7 +208,7 @@ function cleanCitations() {
                 words = mergeNameFragments(Allnames, words)
                 let lastWord = words[words.length - 1]; // Get the word before the span
                 // Check if the word before the last word is "and", "&", or "al."
-                const nonWordRegex = /[.,;:!"?)]$/;
+                const nonWordRegex = /[.;:!"?)]$/;
                 if (
                     words.length > 1 &&
                     (
@@ -251,7 +251,7 @@ function cleanCitations() {
             words = mergeNameFragments(Allnames, words)
             words = combineHyphenatedWords(words)
             lastWord = words[words.length - 2]
-            const nonWordRegex = /[.,;:!"?)]$/;
+            const nonWordRegex = /[.;:!"?)]$/;
             if (lastWord === "al." || lastWord === "al.,") {
                 // Get the last three words if the last word is "al.,"
                 words = words.slice(words.length - 4, words.length);

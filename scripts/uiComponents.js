@@ -895,17 +895,27 @@ export function secondFrame(referenceCount) {
 
 export function DoHighlight(element) {
     // Store the original background color
-    let BackgroundC = element.style.backgroundColor
-    console.log(BackgroundC)
-    element.style.border = ` 5px solid ${BackgroundC}`; // Set a proper border
+    const backgroundColor = element.style.backgroundColor;
 
+    // Function to apply the border
+    function applyBorder() {
+        element.style.border = `5px solid ${backgroundColor}`;
+    }
 
-
-    // Revert to the original background color after 200ms
-    setTimeout(() => {
+    // Function to remove the border
+    function removeBorder() {
         element.style.border = "";
-    }, 200);
+    }
+
+    // Apply and remove the border in a sequence for a flashing effect
+    applyBorder(); // Initial highlight
+    setTimeout(removeBorder, 200); // Remove after 200ms
+    setTimeout(applyBorder, 400);  // Re-apply after 400ms
+    setTimeout(removeBorder, 600); // Remove again after 600ms
+    setTimeout(applyBorder, 800);  // Final re-apply after 800ms
+    setTimeout(removeBorder, 1000); // Final removal after 1 second
 }
+
 
 
 export function MatchGuessing() {
@@ -1554,7 +1564,7 @@ function createTooltips() {
         };
 
         // Event listeners for mouse enter and leave
-        //cit.addEventListener('mouseenter', showTooltip);
+        cit.addEventListener('mouseover', showTooltip);
         cit.addEventListener('mouseleave', hideTooltip);
 
         // Event listener for click

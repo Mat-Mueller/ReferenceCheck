@@ -2,64 +2,75 @@ import {full_name_to_abbreviation} from './Abbreviations.js'
 import {DoHighlight} from './uiComponents.js'
 
 export function BestMatch(span, referenceFrames) {
-    let Myauthors = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
-    let MyYear = span.getAttribute("year")
-    let bestvalue = 10000
-    let bestRef
+  let Myauthors = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
+  let MyYear = span.getAttribute("year");
+  let Typobestvalue = 10000;
+  let Elementbestvalue = 0;
+  let bestRef;
+  let elementbestRef;
 
-    referenceFrames.forEach((Ref) => {
+  for (const Ref of referenceFrames) {
       let Refsauth = Ref.getAttribute('authors')
-      .split(/,| and /)                     // Split by comma or 'and'
-      .map(author => author.trim().toLowerCase())  // Trim and convert to lowercase
-      .filter(author => author !== "");    // Filter out empty strings
-      let Refsyear = Ref.getAttribute("year")
-          // if the authors are identical but the years are not
-    
-      if (arraysAreIdentical(Myauthors, Refsauth )) {
-        span.setAttribute('found', 'year')
-        span.MatchedWith = Ref
-        span.addEventListener('click', () => {
-          DoHighlight(Ref)
-          Ref.scrollIntoView({
-            
-            behavior: 'smooth' // Smooth scrolling
+          .split(/,| and /)  // Split by comma or 'and'
+          .map(author => author.trim().toLowerCase()) // Trim and convert to lowercase
+          .filter(author => author !== "");  // Filter out empty strings
+      let Refsyear = Ref.getAttribute("year");
+
+      // Check for an exact match in authors
+      if (arraysAreIdentical(Myauthors, Refsauth)) {
+          span.setAttribute('found', 'year');
+          span.MatchedWith = Ref;
+          span.addEventListener('click', () => {
+              DoHighlight(Ref);
+              Ref.scrollIntoView({ behavior: 'smooth' });
           });
-        });
-        return
-      } 
-      
-      
-      
+          return; // Exit the entire function if an exact match is found
+      }
 
+      // Check for typo-level match based on string difference
+      let difference = compareStringArrays(Myauthors, Refsauth);
+      if (difference < Typobestvalue) {
+          Typobestvalue = difference;
+          bestRef = Ref;
+      }
 
-            let difference = compareStringArrays(Myauthors, Refsauth)
-            if (difference < bestvalue) {
-              bestvalue = difference
-              bestRef = Ref
-            }
-      
-      
+      // Find the partial match with most common elements
+      if (Elementbestvalue < countElementsInArray(Myauthors, Refsauth)) {
+          Elementbestvalue = countElementsInArray(Myauthors, Refsauth);
+          elementbestRef = Ref;
+      }
+  }
 
-    })
-
-    console.log(bestRef, bestvalue, span)
-    
-    if (bestvalue < 2) {
-      span.setAttribute('found', 'typo')
-    }
-      span.MatchedWith = bestRef
+  // After the loop, decide based on Typobestvalue
+  if (Typobestvalue < 2) {
+      span.setAttribute('found', 'typo');
+      span.MatchedWith = bestRef;
       span.addEventListener('click', () => {
-        DoHighlight(bestRef)
-        bestRef.scrollIntoView({          
-          behavior: 'smooth' // Smooth scrolling
-        });
+          DoHighlight(bestRef);
+          bestRef.scrollIntoView({ behavior: 'smooth' });
       });
-    
-
-  
-
+  } else {
+      span.MatchedWith = elementbestRef;
+      span.addEventListener('click', () => {
+          DoHighlight(elementbestRef);
+          elementbestRef.scrollIntoView({ behavior: 'smooth' });
+      });
+  }
 }
 
+
+
+function countElementsInArray(array1, array2) {
+  let count = 0;
+
+  for (let element of array1) {
+      if (array2.includes(element)) {
+          count++;
+      }
+  }
+
+  return count;
+}
 
 function damerauLevenshtein(str1, str2) {
     const len1 = str1.length;

@@ -936,16 +936,20 @@ export function secondFrame(referenceCount) {
 
 export function DoHighlight(element) {
     // Store the original background color
-    const backgroundColor = element.style.backgroundColor;
+// Store the original background color and border of the element
+const backgroundColor = element.style.backgroundColor;
+const currentBorder = element.style.border;
 
-    // Function to apply the border
+// Check if the current border is not already the desired highlighted border
+if (currentBorder !== `5px solid ${backgroundColor}`) {
+    
+    // Define functions to apply and remove the border
     function applyBorder() {
         element.style.border = `5px solid ${backgroundColor}`;
     }
 
-    // Function to remove the border
     function removeBorder() {
-        element.style.border = "";
+        element.style.border = currentBorder; // Revert to original border
     }
 
     // Apply and remove the border in a sequence for a flashing effect
@@ -955,6 +959,9 @@ export function DoHighlight(element) {
     setTimeout(removeBorder, 600); // Remove again after 600ms
     setTimeout(applyBorder, 800);  // Final re-apply after 800ms
     setTimeout(removeBorder, 1000); // Final removal after 1 second
+}
+
+
 }
 
 

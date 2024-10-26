@@ -154,7 +154,6 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
           // Check if the match was successful
         
              // Safely access the matched part
-            console.log(authorsPart, ReferenceFrameParagraph)
             if (ReferenceFrameParagraph && authorsPart.replace(" (", "").toLowerCase().trim() in full_name_to_abbreviation) {
               ReferenceFrameParagraph.setAttribute('Abbr', full_name_to_abbreviation[authorsPart.replace(" (", "").toLowerCase().trim()])
             }

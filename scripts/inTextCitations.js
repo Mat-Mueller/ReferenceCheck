@@ -113,7 +113,7 @@ function GetallPossibleNames() {
         let lastNames = MakeRefName(cleanedText);
 
         
-        lastNames.forEach((name) => {AlllastNames.push(name)})
+        lastNames.forEach((name) => {AlllastNames.push(name.toLowerCase())})
     }
     //console.log(AlllastNames)
     return AlllastNames
@@ -209,16 +209,19 @@ function cleanCitations() {
                 let lastWord = words[words.length - 1]; // Get the word before the span
                 // Check if the word before the last word is "and", "&", or "al."
                 const nonWordRegex = /[.;:!"?)]$/;
+                console.log(words[words.length - 3].replace(",", ""), Allnames, words[words.length - 3].replace(",", "") in Allnames )
                 if (
                     words.length > 1 &&
                     (
-                        (words[words.length - 2].toLowerCase() === 'and' && !nonWordRegex.test(words[words.length - 3])) ||
-                        (words[words.length - 2].toLowerCase() === 'und' && !nonWordRegex.test(words[words.length - 3]))||
+                        (words[words.length - 2].toLowerCase() === 'and' && !nonWordRegex.test(words[words.length - 3]) && Allnames.includes(words[words.length - 3].replace(",", "")) ) ||
+                        (words[words.length - 2].toLowerCase() === 'und' && !nonWordRegex.test(words[words.length - 3]) &&  Allnames.includes(words[words.length - 3].replace(",", "")))||
                         words[words.length - 2].toLowerCase() === '&' ||
                         words[words.length - 1].toLowerCase().replace(",", "") === 'al.'
                     )
                 ) {
                     // Include both the second-to-last word and the last word
+
+                    console.log(words)
                     let secondLastWord = words[words.length - 2];
                     let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
                     cleanedText = `${thirdLastWord ? thirdLastWord + ';' : ''}${secondLastWord};${lastWord};${cleanedText}`;

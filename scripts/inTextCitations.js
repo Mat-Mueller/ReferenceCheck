@@ -209,7 +209,6 @@ function cleanCitations() {
                 let lastWord = words[words.length - 1]; // Get the word before the span
                 // Check if the word before the last word is "and", "&", or "al."
                 const nonWordRegex = /[.;:!"?)]$/;
-                console.log(words[words.length - 3].replace(",", ""), Allnames, words[words.length - 3].replace(",", "") in Allnames )
                 if (
                     words.length > 1 &&
                     (
@@ -221,10 +220,14 @@ function cleanCitations() {
                 ) {
                     // Include both the second-to-last word and the last word
 
-                    console.log(words)
                     let secondLastWord = words[words.length - 2];
                     let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
+                    let fourthLastWord = words.length > 3 ?  words[words.length - 4] : '';
+                    console.log(fourthLastWord,Allnames.includes(fourthLastWord) )
                     cleanedText = `${thirdLastWord ? thirdLastWord + ';' : ''}${secondLastWord};${lastWord};${cleanedText}`;
+                    if (Allnames.includes(fourthLastWord)) {
+                        cleanedText = `${fourthLastWord ? fourthLastWord + ';' : ''}${cleanedText}`;
+                    }
                 } else {
                     // If no "and" is present, just include the last word
                     cleanedText = `${lastWord};${cleanedText}`;

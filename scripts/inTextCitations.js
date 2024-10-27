@@ -222,7 +222,7 @@ function cleanCitations() {
 
                     let secondLastWord = words[words.length - 2];
                     let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
-                    let fourthLastWord = words.length > 3 ?  words[words.length - 4] : '';
+                    let fourthLastWord = words.length > 3 ?  words[words.length - 4].replace(",", "") : '';
                     console.log(fourthLastWord,Allnames.includes(fourthLastWord) )
                     cleanedText = `${thirdLastWord ? thirdLastWord + ';' : ''}${secondLastWord};${lastWord};${cleanedText}`;
                     if (Allnames.includes(fourthLastWord)) {

@@ -273,8 +273,16 @@ function detectFootnotesForAllTextLayers() {
             // If the current line has a smaller font size, mark it as a footnote
             if (fontSize < mostFrequentFontSize) {
                 line.classList.add("footnote"); // Add a "footnote" class to the line
-
-            } else  {
+            
+                // Check if the line starts with a number
+                const lineText = line.textContent.trim();
+                const match = lineText.match(/^(\d+)(\s*)(\w+)/); // Match starting number followed by a word
+            
+                if (match) {
+                    // Insert a space between the number and the first word
+                    line.textContent = `${match[1]} ${match[3]}` + lineText.slice(match[0].length);
+                }
+            }else  {
                 // If we've already found footnotes and the font size is not smaller, stop the loop
                 if (!/^\d+$/.test(line.textContent.trim())) {
                 break;

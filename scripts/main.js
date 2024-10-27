@@ -12,6 +12,7 @@ import { performCrossRefSearch } from './crossrefSearch.js';
 async function main() {
     // Display a description that helps the user understand the software
     displaySoftwareDescription();
+    //document.getElementById("DescriptionID").scrollIntoView()
     createMenue();
     // Read and render user-input PDF
     await readRenderPDF();

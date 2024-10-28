@@ -452,21 +452,18 @@ selection.removeAllRanges();  // Clears the selection
 
 export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
     // If search data is available, process it and show results
-    ReferenceFrameParagraph.removeChild(ReferenceFrameParagraph.lastChild)
+    //ReferenceFrameParagraph.removeChild(ReferenceFrameParagraph.lastChild)
     //console.log(ReferenceFrameParagraph)
 
     if (searchResults.length > 0 ) {
-        const resultsDiv = document.createElement('div'); // Create a div to contain results
-        resultsDiv.className = 'crossref-results';
-        resultsDiv.style.marginTop = '5px'; // Add margin above results
 
 
         // Show the first (best) result
         const firstResult = searchResults[0];
-        appendResultToDiv(firstResult, resultsDiv);
+        appendResultToDiv(firstResult, ReferenceFrameParagraph);
 
         // Append the resultsDiv to the ReferenceFrameParagraph
-        ReferenceFrameParagraph.appendChild(resultsDiv);
+        
 
 
 
@@ -512,10 +509,15 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
 // Helper function to append a single result to the resultsDiv
 
 
-function appendResultToDiv(item, resultsDiv) {
+function appendResultToDiv(item, ReferenceFrameParagraph) {
     if (item.title && item.URL) {
-        const resultFrame = document.createElement('div');
-        resultFrame.className = 'result-frame';
+        const resultFrame = ReferenceFrameParagraph.lastChild
+        resultFrame.innerHTML = ""
+
+        const resultsDiv = document.createElement('div'); // Create a div to contain results
+        resultsDiv.className = 'crossref-results';
+        resultsDiv.style.marginTop = '5px'; // Add margin above results
+        ReferenceFrameParagraph.appendChild(resultsDiv);
 
         // Create a single paragraph element for the result
         const resultParagraph = document.createElement('p');
@@ -523,7 +525,7 @@ function appendResultToDiv(item, resultsDiv) {
         resultParagraph.style.margin = '0px';
         resultParagraph.style.backgroundColor = "#FFFFFF";
 
-        resultParagraph.innerHTML = `
+        resultParagraph.innerHTML = `Best Crossref match: <br>` + `
         ${item.formattedAuthors}.
         (${item.yearString}).
         <strong>${item.title[0]}</strong>.
@@ -716,14 +718,15 @@ export function secondFrame(referenceCount) {
           "<a href='https://doi.org/10.1002/smj.384' target='_blank'>https://doi.org/10.1002/smj.384</a></p>" +
     
           "<p class='SingleRefDESK' style='margin-bottom: 5px;'><b>3</b> instances in the document: " +
-          "<a href='#'>1</a>, <a href='#'>2</a>, <a href='#'>3</a>. Best Crossref match:</p>" +
+          "<a href='#'>1</a>, <a href='#'>2</a>, <a href='#'>3</a>. </p>" +
     
           "<div class='buttoncontainer'><button class='Scholar-search-button' id='Scholar-button-49'>GS</button></div>" +
     
           "<div class='crossref-results' style='margin-top: 5px;'><div class='result-frame' style='margin-bottom: 10px; background-color: rgb(82, 255, 0);'>" +
             "<p style='font-size: 16px; margin: 0px; background-color: rgb(255, 255, 255);'>" +
+            "Best Crossref match: <br>" +
               "L. Fleming, O. Sorenson. (2004). <strong>Science as a map in technological search</strong>. " +
-              "Strategic Management Journal. <br> DOI: " +
+              "Strategic Management Journal. DOI: " +
               "<a href='https://doi.org/10.1002/smj.384' target='_blank'>10.1002/smj.384</a>&nbsp;&nbsp;" +
               "<a href='#' style='cursor: pointer;'>Show abstract</a></p>" +
           "</div></div>" +
@@ -732,9 +735,20 @@ export function secondFrame(referenceCount) {
     
     
 
-
+    const CrossRefbutton = document.createElement("button");
+    CrossRefbutton.textContent = "Show/Hide CrossRef Results";
     
+    // Add a click event listener to toggle display
+    CrossRefbutton.addEventListener("click", () => {
+        const resultFrames = document.querySelectorAll("div.result-frame");
+        
+        resultFrames.forEach(div => {
+            // Toggle visibility based on current display style
+            div.style.display = div.style.display === "none" ? "block" : "none";
+        });
+    });    
     referenceHeadline.appendChild(RightContainer)
+    RightContainer.appendChild(CrossRefbutton)
     RightContainer.appendChild(Searchhits)
     RightContainer.appendChild(searchInput)
     RightContainer.appendChild(Questionsmark)
@@ -863,8 +877,7 @@ export function secondFrame(referenceCount) {
         SingleRef.MatchedWith = ReferenceFrameParagraph.MatchedWith
         ShowLinks(SingleRef, ReferenceFrameParagraph)
         //SingleRef.innerHTML += ''
-        const textNode = document.createTextNode(". Best Crossref match:");
-        SingleRef.appendChild(textNode);
+
         ReferenceFrameParagraph.appendChild(SingleRef)
         // Add the CrossRef search button
         const buttoncontainer = document.createElement('div');
@@ -892,7 +905,8 @@ export function secondFrame(referenceCount) {
         resultParagraph.style.backgroundColor = "#FFFFFF";
         //resultParagraph.style.height = "20px"
 
-
+        const textNode = document.createTextNode("Best Crossref match:");
+        resultParagraph.appendChild(textNode);
         
         const Refspinner = document.createElement('div')
         Refspinner.className  = "spinner"

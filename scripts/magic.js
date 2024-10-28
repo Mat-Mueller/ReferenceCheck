@@ -5,9 +5,9 @@ export function BestMatch(span, referenceFrames) {
   let Myauthors = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
   let MyYear = span.getAttribute("year");
   let Typobestvalue = 10000;
-  let Elementbestvalue = 0;
+  let Elementbestvalue = 1;
   let bestRef;
-  let elementbestRef;
+  let elementbestRef = [];
 
   for (const Ref of referenceFrames) {
       let Refsauth = Ref.getAttribute('authors')
@@ -19,11 +19,8 @@ export function BestMatch(span, referenceFrames) {
       // Check for an exact match in authors
       if (arraysAreIdentical(Myauthors, Refsauth)) {
           span.setAttribute('found', 'year');
-          span.MatchedWith = Ref;
-          span.addEventListener('click', () => {
-              DoHighlight(Ref);
-              Ref.scrollIntoView({ behavior: 'smooth' });
-          });
+          span.MatchedWith = [Ref];
+
           return; // Exit the entire function if an exact match is found
       }
 
@@ -37,24 +34,19 @@ export function BestMatch(span, referenceFrames) {
       // Find the partial match with most common elements
       if (Elementbestvalue < countElementsInArray(Myauthors, Refsauth)) {
           Elementbestvalue = countElementsInArray(Myauthors, Refsauth);
-          elementbestRef = Ref;
+          elementbestRef = [Ref];
+      } else if (Elementbestvalue === countElementsInArray(Myauthors, Refsauth)) {
+        elementbestRef.push(Ref);
       }
   }
 
   // After the loop, decide based on Typobestvalue
   if (Typobestvalue < 2) {
       span.setAttribute('found', 'typo');
-      span.MatchedWith = bestRef;
-      span.addEventListener('click', () => {
-          DoHighlight(bestRef);
-          bestRef.scrollIntoView({ behavior: 'smooth' });
-      });
+      span.MatchedWith = [bestRef];
   } else {
       span.MatchedWith = elementbestRef;
-      span.addEventListener('click', () => {
-          DoHighlight(elementbestRef);
-          elementbestRef.scrollIntoView({ behavior: 'smooth' });
-      });
+
   }
 }
 
@@ -222,53 +214,98 @@ export function matching(ReferenceFrameParagraph) {
     citationSpans.forEach((span) => {
       let authorsCit = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
     //   console.log(authorsRef, authorsCit)
-      let SpanYear = span.getAttribute('year');
-  
-
-      
-  
+      let SpanYear = span.getAttribute('year');  
       if (arraysAreIdentical(authorsCit, authorsRef) && RefYear === SpanYear) {
-        matchedSpans.push(span);
+
         if (!span.hasAttribute('found')) {
           span.setAttribute('found', 'true');
+          span.MatchedWith = [ReferenceFrameParagraph]
         } else {
           span.setAttribute('found', 'ambig')
-
+          span.MatchedWith.push(ReferenceFrameParagraph)
         }
-        const element = ReferenceFrameParagraph
-        span.MatchedWith = element        
-        span.addEventListener('click', () => {
-          DoHighlight(element)
-          element.scrollIntoView({
-            behavior: 'smooth',  // You can use 'smooth' for a smooth scrolling animation or 'auto' for an instant scroll
-            block: 'center',     // Scroll so that the element is centered in the viewport
-        });
-
-        });
+        if (!ReferenceFrameParagraph.MatchedWith) {
+          ReferenceFrameParagraph.MatchedWith = [span]
+        } else {
+          ReferenceFrameParagraph.MatchedWith.push(span)
+         }
       }
 
       if ( ReferenceFrameParagraph.getAttribute('abbr') && ReferenceFrameParagraph.getAttribute('abbr').toLowerCase() === authorsCit[0].toLowerCase() && RefYear === SpanYear) {
         //console.log(ReferenceFrameParagraph.getAttribute('abbr').toLowerCase,  authorsCit[0].toLowerCase)
-        matchedSpans.push(span);
         if (!span.hasAttribute('found')) {
           span.setAttribute('found', 'byAbbr');
+          span.MatchedWith = [ReferenceFrameParagraph]
+        } else {
+          span.setAttribute('found', 'ambig')
+          span.MatchedWith.push(ReferenceFrameParagraph)
         }
-        const element = ReferenceFrameParagraph
-        span.MatchedWith = element 
-        span.addEventListener('click', () => {
-          DoHighlight(element)
-          const parentElement = document.getElementById('ReferenceFrame'); // Select the parent element by ID
-          const offsetTop = element.offsetTop - parentElement.offsetTop;
-          parentElement.scrollTo({
-              top: offsetTop,
-              behavior: 'smooth' // Smooth scrolling
-          });
-        });
+        if (!ReferenceFrameParagraph.MatchedWith) {
+          ReferenceFrameParagraph.MatchedWith = [span]
+        } else {
+          ReferenceFrameParagraph.MatchedWith.push(span)
+         }
+
       }
 
 
     });
 
   
-    return matchedSpans;
+    //return matchedSpans;
   }
+
+  export function CreateCrossLinksHighlight() {
+   
+
+    const AllReferences = document.querySelectorAll("span.citation, div.InTexts");
+
+    AllReferences.forEach(element => {
+      if (element.MatchedWith) {
+        MakeListeners(element);
+      }
+    });
+ /*
+    select all element of class 
+
+
+    All spans
+
+    All Intexts
+*/
+
+  }
+
+
+  function MakeListeners(element) {
+
+    console.log(element.MatchedWith)
+    if (!element.MatchedWith || element.MatchedWith.length === 0) return;
+
+    let currentIndex = 0; // Initialize the index to keep track of the current hit
+
+    element.addEventListener('click', () => {
+        // Scroll to the current matched element and highlight it
+        const matchedItem = element.MatchedWith[currentIndex];
+        matchedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        DoHighlight(matchedItem);
+
+        // Update the index to the next item, looping back to 0 if at the end
+        currentIndex = (currentIndex + 1) % element.MatchedWith.length;
+        if (element.ParentSpan) {
+          element.ParentSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          DoHighlight(element.ParentSpan);
+    
+        } else if (element.ChildIntext) {
+          element.ChildIntext.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          DoHighlight(element.ChildIntext);
+    
+        }
+    });
+
+
+
+
+}
+
+

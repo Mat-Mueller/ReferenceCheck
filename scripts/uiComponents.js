@@ -588,12 +588,12 @@ function appendResultToDiv(item, resultsDiv) {
 
 
       function ShowLinks(SingleRef, ReferenceFrameParagraph) {
-       
-        const matchedSpans = [...new Set(SingleRef.myLinks)];
-        const matchCount = matchedSpans.length;
+    if (!SingleRef.MatchedWith){SingleRef.MatchedWith = []}
+        const MatchedWith = (SingleRef.MatchedWith);
+        const matchCount = MatchedWith.length;
         SingleRef.innerHTML = `<b>${matchCount}</b> ${matchCount === 1 ? 'instance' : 'instances'} in the document:`;
         SingleRef.style.marginBottom = '5px'; // Add space as needed
-        matchedSpans.forEach((span, index) => {
+        MatchedWith.forEach((span, index) => {
             //console.log(span);
 
             // Create a link for each match
@@ -612,7 +612,7 @@ function appendResultToDiv(item, resultsDiv) {
             SingleRef.appendChild(link);
 
             // Add a comma and space after the link, except for the last one
-            if (index < matchedSpans.length - 1) {
+            if (index < MatchedWith.length - 1) {
                 SingleRef.appendChild(document.createTextNode(', ')); // Add a comma and space
             }
         });
@@ -641,6 +641,7 @@ function appendResultToDiv(item, resultsDiv) {
         }
 
       }
+    
 
 export function secondFrame(referenceCount) {
 
@@ -709,12 +710,12 @@ export function secondFrame(referenceCount) {
         + "</ul>"     +
     
         // Insert the reference HTML here
-        "<div class='Reference-frame' authors='fleming,sorenson' year='2004' tooltip='Detected authors and year: <br> fleming,sorenson (2004)' id='49' abbr='' style='cursor: pointer;'>" +
+        "<div class='Reference-frameDESK' authors='fleming,sorenson' year='2004' tooltip='Detected authors and year: <br> fleming,sorenson (2004)' id='49' abbr='' style='cursor: pointer;'>" +
           "<p style='margin: 0px 60px 15px 0px;'>Fleming, L., &amp; Sorenson, O. (2004). Science as a map in technological search. " +
           "Strategic Management Journal, 25(8-9), <br> pp.909–928. " +
           "<a href='https://doi.org/10.1002/smj.384' target='_blank'>https://doi.org/10.1002/smj.384</a></p>" +
     
-          "<p class='SingleRef' style='margin-bottom: 5px;'><b>3</b> instances in the document: " +
+          "<p class='SingleRefDESK' style='margin-bottom: 5px;'><b>3</b> instances in the document: " +
           "<a href='#'>1</a>, <a href='#'>2</a>, <a href='#'>3</a>. Best Crossref match:</p>" +
     
           "<div class='buttoncontainer'><button class='Scholar-search-button' id='Scholar-button-49'>GS</button></div>" +
@@ -839,8 +840,7 @@ export function secondFrame(referenceCount) {
         })
 
 
-        const matchedSpans = matching(ReferenceFrameParagraph)
-    
+        matching(ReferenceFrameParagraph)   ////////////////////////////////////////////////////////////////////////////////////should move
         // Create first paragraph with inline style
         var SingleRef = document.createElement('p');
         const clickableText = makeLinksClickable(mergedText);
@@ -860,7 +860,7 @@ export function secondFrame(referenceCount) {
         // Create second paragraph with inline style
         SingleRef = document.createElement('p');
         SingleRef.classList.add('SingleRef');
-        SingleRef.myLinks = matchedSpans
+        SingleRef.MatchedWith = ReferenceFrameParagraph.MatchedWith
         ShowLinks(SingleRef, ReferenceFrameParagraph)
         //SingleRef.innerHTML += ''
         const textNode = document.createTextNode(". Best Crossref match:");
@@ -1069,7 +1069,7 @@ export function searchSpanRef() {
 function UpdateFramesAndMatches() {
 
 ///// update Span Titles
-const citationElements = document.querySelectorAll('span.citation');
+const citationElements = document.querySelectorAll('span.citation[cleanedCit]');
 citationElements.forEach(function (element) {
     FormulateTooltip(element)
 });
@@ -1166,7 +1166,7 @@ if (TextFrameParagraph) {
 function onDragStartHandler() {
     // Loop through each drop zone and apply a highlight effect
     const dropZones = document.querySelectorAll('#ReferenceFrame, #Trash1');
-
+    /*
     dropZones.forEach(dropZone => {
         // Apply the border highlight (corrected syntax)
         dropZone.style.border = '4px solid yellow';  // Example: highlight with red border
@@ -1176,6 +1176,7 @@ function onDragStartHandler() {
             dropZone.style.border = '0px solid red';  // Reset the border to its original state
         }, 1000);
     });
+    */
 }
 
 
@@ -1184,7 +1185,7 @@ export function DragDrop() {
     let draggedElement = null; // Keep track of the dragged element
 
     // Select all draggable span elements with class "citation"
-    const draggables = document.querySelectorAll('span.citation, .InTexts');
+    const draggables = document.querySelectorAll('span.citation[cleanedCit], .InTexts');
     
     // Select all drop zones with class "Reference-frame"
     const dropZones = document.querySelectorAll('.Reference-frame, .Trashs');
@@ -1234,9 +1235,9 @@ export function DragDrop() {
             e.preventDefault();
             dropZone.classList.remove('hover');
 
-            
+                console.log(draggedElement)
                 let draggedElementToUse = draggedElement; // Initialize to use the original draggedElement
-                const draggableSpans = document.querySelectorAll('span.citation');
+                const draggableSpans = document.querySelectorAll('span.citation[cleanedCit]');
                 // Check if draggedElement is of class 'InTexts'
                 if (draggedElement.classList.contains('InTexts')) {
                     // Loop through all 'span.citation' elements to find the corresponding one
@@ -1306,11 +1307,14 @@ export function DragDrop() {
 
             
                 // 3. Append a link to the drop zone
-                let currentLinks = dropZone.querySelector('.SingleRef').myLinks;
+                console.log(dropZone.querySelector('.SingleRef'))
+                let currentLinks = dropZone.querySelector('.SingleRef').MatchedWith;
+                if (!currentLinks) {
+                    currentLinks = []
+                }
                 removeLinksRelatedToSpan(draggedElement);
                 currentLinks.push(draggedElement);
             
-                console.log(currentLinks);
                 ShowLinks(dropZone.querySelector('.SingleRef'));
             
                 // 4. Go through all .InTexts elements and delete the one that matches the dragged element
@@ -1351,14 +1355,14 @@ export function DragDrop() {
             const singleRef = dropZone.querySelector('.SingleRef');
     
             // Check if SingleRef exists and has the myLinks array
-            if (singleRef && singleRef.myLinks) {
+            if (singleRef && singleRef.MatchedWith) {
                 // Find the index of the span in the myLinks array
-                const index = singleRef.myLinks.indexOf(span);
+                const index = singleRef.MatchedWith.indexOf(span);
                 
                 // If span is in myLinks (index >= 0), remove it
                 if (index > -1) {
                     // Remove the span from myLinks array
-                    singleRef.myLinks.splice(index, 1);
+                    singleRef.MatchedWith.splice(index, 1);
     
                     // Update the links in the UI by calling ShowLinks
                     ShowLinks(singleRef);
@@ -1375,9 +1379,9 @@ function FormulateTooltip(element) {
     if (element.getAttribute('Found') === 'true') {
         element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Successfully matched with reference!`);
     } else if (!element.getAttribute('Found')) {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> No matching reference found! <br> If possible manually match via drag&drop`);
+        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> No matching reference found! <br> Click for suggestions and <br> if possible manually match via drag&drop`);
     } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Found more than one matching reference! <br> Verify by manually re-matching via drag&drop`)
+        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Found more than one matching reference! <br> Click for suggestions and verify by manually re-matching via drag&drop`)
     }
     else if (element.getAttribute('Found') === 'year') {
         element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Check puplication year! <br> Verify by manually re-matching via drag&drop`)
@@ -1394,7 +1398,7 @@ function FormulateTooltip(element) {
 
 export function thirdFrame() {
     ///// Set Span Titles
-const citationElements = document.querySelectorAll('span.citation');
+const citationElements = document.querySelectorAll('span.citation[cleanedCit]');
 
 
 
@@ -1448,8 +1452,9 @@ citationElements.forEach(function (element) {
                 InTextCitFrameParagraph.className = 'InTexts';
                 InTextCitFrameParagraph.innerHTML = cleanedCit.split(";").map(stri => capitalizeFirstLetter(stri)).join(" "); // Display the cleaned citation text
                 InTextCitFrameParagraph.setAttribute("cleanedCit", cleanedCit)
-
+                InTextCitFrameParagraph.MatchedWith = span.MatchedWith
                 InTextCitFrameParagraph.ParentSpan = span; 
+                span.ChildIntext = InTextCitFrameParagraph
                 InTextCitFrameParagraph.id = `InTexts-${index + 1}`
                 InTextCitFrameParagraph.setAttribute("tooltip", span.getAttribute("tooltip")) 
                 // Ensure the width of the div fits its content
@@ -1469,6 +1474,7 @@ citationElements.forEach(function (element) {
 
 
                 // When the paragraph is clicked, scroll to the respective span in the document
+                /*
                 InTextCitFrameParagraph.addEventListener('click', () => {
                     span.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to the span
                     DoHighlight(span)
@@ -1484,6 +1490,7 @@ citationElements.forEach(function (element) {
                     DoHighlight(InTextCitFrameParagraph)
 
                 })
+                */
 
                 // Append the paragraph to the InTextCitFrame
                 InTextCitFrame.appendChild(InTextCitFrameParagraph);
@@ -1508,9 +1515,9 @@ citationElements.forEach(function (element) {
         "<strong>In-Text Citation Issues Overview</strong><br>" +
         "Here you find an overview of problematic in-text citations identified in the document. Problematic in-text citations can be:" +
         "<ul>" +
-          "<li><span style='background-color: #E3574B;' class='citation'>Author Year</span> In-text citations without a matching reference in the reference list. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
-          "<li><span style='background-color: orange;' class='citation'>Author Year</span> In-text citations with a matching reference, but containing typos or incorrect years. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
-          "<li><span style='background-color: yellow;' class='citation'>Author Year</span> In-text citations matched through abbreviations.</li>" +
+          "<li><span style='background-color: #E3574B;' class='citationDESK'>Author Year</span> In-text citations without a matching reference in the reference list. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
+          "<li><span style='background-color: orange;' class='citationDESK'>Author Year</span> In-text citations with a matching reference, but containing typos or incorrect years. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
+          "<li><span style='background-color: yellow;' class='citationDESK'>Author Year</span> In-text citations matched through abbreviations.</li>" +
         "</ul>"
     );
     

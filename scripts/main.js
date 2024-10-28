@@ -4,6 +4,7 @@ import { findReferenceSection, userDecisionReferenceSection } from './findRefere
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
 import { inTextSearch } from './inTextCitations.js';
 import { performCrossRefSearch } from './crossrefSearch.js';
+import {CreateCrossLinksHighlight} from './magic.js'
 
 
 
@@ -16,8 +17,6 @@ async function main() {
     createMenue();
     // Read and render user-input PDF
     await readRenderPDF();
-
-
 }
 
 // Initialize the main event listener
@@ -69,6 +68,6 @@ export async function analysis() {
     //UpdateFrames();
     DragDrop()
     performCrossRefSearch();
-
+    CreateCrossLinksHighlight()
 
 }

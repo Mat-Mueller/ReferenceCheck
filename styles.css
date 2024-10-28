@@ -116,6 +116,17 @@ body {
     background-color: #FFFFFF;
     position: relative;
 }
+.Reference-frameDESK {
+    border: 1px solid #ccc;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    position: relative;
+}
 
 #ReferenceFrame {
     max-height: calc(100% - 50px)
@@ -203,6 +214,13 @@ body {
 
 /* Citation highlighting */
 .citation {
+    background-color: var(--secondary-color); 
+    font-weight: bold;
+    padding: 2px;
+    border-radius: 5px; 
+}
+
+.citationDESK {
     background-color: var(--secondary-color); 
     font-weight: bold;
     padding: 2px;

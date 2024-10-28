@@ -279,7 +279,19 @@ export function matching(ReferenceFrameParagraph) {
 
   function MakeListeners(element) {
 
-    if (!element.MatchedWith || element.MatchedWith.length === 0) return;
+    if (!element.MatchedWith || element.MatchedWith.length === 0) {
+      element.addEventListener('click', () => {
+      if (element.ParentSpan) {
+        element.ParentSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        DoHighlight(element.ParentSpan);
+  
+      } else if (element.ChildIntext) {
+        element.ChildIntext.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        DoHighlight(element.ChildIntext);
+      }
+      });
+
+    } else {
 
     let currentIndex = 0; // Initialize the index to keep track of the current hit
 
@@ -298,13 +310,10 @@ export function matching(ReferenceFrameParagraph) {
         } else if (element.ChildIntext) {
           element.ChildIntext.scrollIntoView({ behavior: 'smooth', block: 'center' });
           DoHighlight(element.ChildIntext);
-    
         }
     });
 
-
-
-
+  }
 }
 
 

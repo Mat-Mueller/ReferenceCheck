@@ -279,7 +279,6 @@ export function matching(ReferenceFrameParagraph) {
 
   function MakeListeners(element) {
 
-    console.log(element.MatchedWith)
     if (!element.MatchedWith || element.MatchedWith.length === 0) return;
 
     let currentIndex = 0; // Initialize the index to keep track of the current hit

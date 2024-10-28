@@ -104,7 +104,8 @@ function getPreviousText(span) {
 function GetallPossibleNames() {
     let referenceCount = Math.max(...Array.from(document.querySelectorAll('div.textLine.highlight[myid]')).map(div => parseInt(div.getAttribute('myid'), 10)));   //böse böse
     let AlllastNames = []
-    for (let j = 0; j < referenceCount; j++) {
+    for (let j = 0; j < referenceCount + 1; j++) {
+        console.log(j)
         //const divs = document.querySelectorAll(`[MyId="${j}"]`);
         const mergedText = getMergedTextByMyId(j);
         //assign author names to ReferenceFrameParagraph
@@ -187,7 +188,7 @@ function cleanCitations() {
     let citationSpans = precleaned();
 
     let Allnames = GetallPossibleNames()
-    
+    console.log(Allnames)
     // Loop through each span element
     citationSpans.forEach((span) => {
 
@@ -209,6 +210,7 @@ function cleanCitations() {
                 let lastWord = words[words.length - 1]; // Get the word before the span
                 // Check if the word before the last word is "and", "&", or "al."
                 const nonWordRegex = /[.;:!"?)]$/;
+                console.log(words[words.length - 3].replace(",", ""))
                 if (
                     words.length > 1 &&
                     (

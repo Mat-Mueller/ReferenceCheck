@@ -709,28 +709,7 @@ export function secondFrame(referenceCount) {
           "<li>Each reference includes a 'best match' section from the Crossref database to help verify the accuracy of the entry in the reference list.</li>" +
          
         "<li>A click on " + '<button class="Scholar-search-button" id="Scholar-button-51">GS</button>' + " will open a google scholar search with the detected reference.</li>"
-        + "</ul>"     +
-    
-        // Insert the reference HTML here
-        "<div class='Reference-frameDESK' authors='fleming,sorenson' year='2004' tooltip='Detected authors and year: <br> fleming,sorenson (2004)' id='49' abbr='' style='cursor: pointer;'>" +
-          "<p style='margin: 0px 60px 15px 0px;'>Fleming, L., &amp; Sorenson, O. (2004). Science as a map in technological search. " +
-          "Strategic Management Journal, 25(8-9), <br> pp.909–928. " +
-          "<a href='https://doi.org/10.1002/smj.384' target='_blank'>https://doi.org/10.1002/smj.384</a></p>" +
-    
-          "<p class='SingleRefDESK' style='margin-bottom: 5px;'><b>3</b> instances in the document: " +
-          "<a href='#'>1</a>, <a href='#'>2</a>, <a href='#'>3</a>. </p>" +
-    
-          "<div class='buttoncontainer'><button class='Scholar-search-button' id='Scholar-button-49'>GS</button></div>" +
-    
-          "<div class='crossref-results' style='margin-top: 5px;'><div class='result-frame' style='margin-bottom: 10px; background-color: rgb(82, 255, 0);'>" +
-            "<p style='font-size: 16px; margin: 0px; background-color: rgb(255, 255, 255);'>" +
-            "Best Crossref match: <br>" +
-              "L. Fleming, O. Sorenson. (2004). <strong>Science as a map in technological search</strong>. " +
-              "Strategic Management Journal. DOI: " +
-              "<a href='https://doi.org/10.1002/smj.384' target='_blank'>10.1002/smj.384</a>&nbsp;&nbsp;" +
-              "<a href='#' style='cursor: pointer;'>Show abstract</a></p>" +
-          "</div></div>" +
-        "</div>"
+        + "</ul>"
     );
     
     
@@ -1391,19 +1370,19 @@ export function DragDrop() {
 
 function FormulateTooltip(element) {
     if (element.getAttribute('Found') === 'true') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Successfully matched with reference!`);
+        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Successfully matched with reference!`);
     } else if (!element.getAttribute('Found')) {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> No matching reference found! <br> Click for suggestions and <br> if possible manually match via drag&drop`);
+        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually using drag & drop`);
     } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Found more than one matching reference! <br> Click for suggestions and verify by manually re-matching via drag&drop`)
+        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually using drag & drop if necessary`)
     }
     else if (element.getAttribute('Found') === 'year') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Check puplication year! <br> Verify by manually re-matching via drag&drop`)
+        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually using drag & drop if necessary`)
     }
     else if (element.getAttribute('Found') === 'byAbbr') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Matched through abbreviation!`)
+        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Matched by abbreviation!`)
     }    else if (element.getAttribute('Found') === 'typo') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br> Check spelling! <br> Verify by manually re-matching via drag&drop`)
+        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually using drag & drop if necessary`)
     }
     
 
@@ -1526,11 +1505,11 @@ citationElements.forEach(function (element) {
     const Questionsmark = document.createElement('div')
     Questionsmark.innerText = "?"
     Questionsmark.setAttribute("tooltip", 
-        "<strong>In-Text Citation Issues Overview</strong><br>" +
-        "Here you find an overview of problematic in-text citations identified in the document. Problematic in-text citations can be:" +
+        "<strong>In-Text Citation Issues</strong><br>" +
+        "Here you find all identified in-text citations that show problems when matched against the reference list. Problems can be:" +
         "<ul>" +
           "<li><span style='background-color: #E3574B;' class='citationDESK'>Author Year</span> In-text citations without a matching reference in the reference list. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
-          "<li><span style='background-color: orange;' class='citationDESK'>Author Year</span> In-text citations with a matching reference, but containing typos or incorrect years. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
+          "<li><span style='background-color: orange;' class='citationDESK'>Author Year</span> In-text citations with a matching reference, but containing typos or incorrect publication years. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
           "<li><span style='background-color: yellow;' class='citationDESK'>Author Year</span> In-text citations matched through abbreviations.</li>" +
         "</ul>"
     );
@@ -1542,7 +1521,7 @@ citationElements.forEach(function (element) {
     sortIcon.className = "sorting"
     sortIcon.innerHTML = "ABC" 
     sortIcon.style.cursor = "pointer";
-    sortIcon.setAttribute("tooltip", "Sort problematic intext citations, <br> alphabetically or by order of appearance");
+    sortIcon.setAttribute("tooltip", "Sort in-text citations w/o match<br>by alphabetical order");
     sortIcon.addEventListener("click", sorting);
     ThirdFrameHead.appendChild(Helperdiv)
     
@@ -1579,6 +1558,10 @@ function sorting() {
         // Sort alphabetically based on text content
         divsArray.sort((a, b) => a.textContent.localeCompare(b.textContent));
 
+        // Adapt tooltip to sorting procedure
+        sortIcon.setAttribute("tooltip", "Sort in-text citations w/o match<br>by order of appearance");
+        createTooltips();
+
         // Change sortIcon's innerHTML to "1.2.3."
         sortIcon.innerHTML = "1.2.3.";
     } else if (sortIcon.innerHTML === "1.2.3.") {
@@ -1588,6 +1571,10 @@ function sorting() {
             const idB = parseInt(b.id.split('-')[1]); // Get the numeric part of the ID
             return idA - idB; // Compare numerically
         });
+
+        // Adapt tooltip to sorting procedure
+        sortIcon.setAttribute("tooltip", "Sort in-text citations w/o match<br>by alphabetical order");
+        createTooltips();
 
         // Change sortIcon's innerHTML back to "ABC"
         sortIcon.innerHTML = "ABC";

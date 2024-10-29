@@ -33,30 +33,7 @@ export async function analysis() {
     document.getElementById("description").style.display = "none";// clearRightContainer();
     let referenceCount = (await referenceSectionGUI(refSecAuto ));
 
-    /*
-    try {
-        // Wait for promise containing user choice for reference section
-        var refSecUser = await userDecisionReferenceSection(refSecAuto);
-        console.log("Reference section found, proceeding with reference separation");
-    } catch (error) {
-        console.error("Error finding reference section:", error);
-    }
-        
 
-    // Compute number of references by method to inform user
-    const paragraphCount = subdivide(refSecUser, "byParagraph");
-    const indentCount = subdivide(refSecUser, "byIndent");
-
-    clearRightContainer();
-    referenceSeparationGUI(paragraphCount, indentCount);
-    try {
-        // Wait for promise containing number of separated references according to method chosen by user
-        var referenceCount = await userDecisionSeparation(refSecUser);
-        console.log("Reference separation done, proceeding with in-text citation search");
-    } catch (error) {
-        console.error("Error separating references:", error);
-    }
-    */
     // Search for in-text citations and set up GUI for results
     inTextSearch();
     MoveToFirstSpan()

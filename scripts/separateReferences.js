@@ -42,6 +42,7 @@ export function subdivide(startPoint, endPoint, selectedCriterion) {
             let pElements = [];
 
             while (node = walker.nextNode()) {
+                
                 if (node.nodeName === 'DIV' && node.classList.contains('textLine') && range.intersectsNode(node)) {
                     pElements.push(node);
                 }

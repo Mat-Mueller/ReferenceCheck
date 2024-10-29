@@ -149,7 +149,7 @@ export async function referenceSectionGUI(Points) {
         startPoint = Points[0]
         endPoint = Points[1]
     }
-    // get rif of citavi as it fucks with the paragraph computation ///////////////////////// not working!!!!!!!!
+    // get rif of citavi as it fucks with the paragraph computation ///////////////////////// not sure if working!
     document.querySelectorAll('.citavipicker').forEach(function(element) {
         element.style.display = "none"
     });
@@ -224,29 +224,66 @@ export async function referenceSectionGUI(Points) {
     subdivButton2.innerText = `Separate by indent`;    
     
 
+    
+    document.getElementById("checkHeader").addEventListener("change", () => {
+        const headerDivs = document.querySelectorAll('div[data-header="true"]');
+        headerDivs.forEach(function (div) {
+            div.classList.add('textLine');
+        });
+        if (startPoint && endPoint) {
+            NowSeperate();
+        } else { 
+            document.getElementById("settings-4text").innerText = "Please select reference section first";
+            Cont.disabled = true;
+        }
+    });
+
+    document.getElementById("checkFooter").addEventListener("change", () => {
+        
+        const footerDivs = document.querySelectorAll('div[data-footer="true"]');
+        footerDivs.forEach(function (div) {  
+            div.classList.add('textLine');  
+
+        });
+
+        if (startPoint && endPoint) {
+            NowSeperate();
+        } else { 
+            document.getElementById("settings-4text").innerText = "Please select reference section first";
+            Cont.disabled = true;
+        }
+    });
+    
+    
+
     if (startPoint && endPoint) {
         NowSeperate()
     } else { 
         document.getElementById("settings-4text").innerText = "Please select reference section first"
         Cont.disabled = true
     }
+
+
+
     
     function NowSeperate() {
             /// first delete all footer and headers
-            console.log(document.getElementById("checkHeader").checked)
         if (document.getElementById("checkFooter").checked){
             const footerDivs = document.querySelectorAll('div[data-footer="true"]');
             footerDivs.forEach(function (div) {  
-                div.classList.remove('textLine');  
+                div.classList.remove('textLine', 'highlight');  
+                div.removeAttribute("myID");
             });
+            console.log("now delete")
 
         }
         if (document.getElementById("checkHeader").checked ) {
             const headerDivs = document.querySelectorAll('div[data-header="true"]');
             headerDivs.forEach(function (div) {
-                div.classList.remove('textLine');
+                div.classList.remove('textLine', 'highlight');
+                div.removeAttribute("myID"); 
             });
-            console.log("removing headers")
+            
         }       
         Cont.disabled = false;
         const paragraphCount = subdivide(startPoint, endPoint, "byParagraph");
@@ -309,59 +346,6 @@ export async function referenceSectionGUI(Points) {
     }
 
 
-
-
-    /*
-    if (referenceFound) {
-        // Create a frame for the success message
-        const TextFrame = document.createElement('div');
-        TextFrame.className = 'search-string-frame';
-        TextFrame.style.marginBottom = '20px'; // Add bigger space between the message and the following content
-
-        // Create paragraph for the reference section found message
-        const TextFrameParagraph = document.createElement('p');
-        TextFrameParagraph.innerHTML = 'Reference section found and highlighted!';
-
-        // Add the paragraph to the text frame
-        TextFrame.appendChild(TextFrameParagraph);
-
-        // Create Continue/Set Manually buttons
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.marginTop = '10px'; // Add space above the buttons
-
-        const buttonStyle = 'background-color: white; color: black; width: 100px;border-radius: 5px; padding: 10px; cursor: pointer;'; // Shared style for both buttons
-
-        const continueButton = document.createElement('button');
-        continueButton.id = 'continue-button';
-        continueButton.innerText = 'Continue';
-        continueButton.style.cssText = buttonStyle + 'margin-right: 10px;'; // Add some spacing between buttons
-        buttonContainer.appendChild(continueButton);
-
-        const setManuallyButton = document.createElement('button');
-        setManuallyButton.id = 'manual-button';
-        setManuallyButton.innerText = 'Set manually';
-        setManuallyButton.style.cssText = buttonStyle; // Apply the same style
-        buttonContainer.appendChild(setManuallyButton);
-        // Append buttons to the features frame
-        TextFrame.appendChild(buttonContainer);
-        scholarContainer.appendChild(TextFrame);
-    } else {
-        // If reference section was not found, show the "not found" message and allow manual selection
-        console.log("now manual");
-
-        scholarContainer.innerHTML = '';
-        const TextFrame = document.createElement('div');
-        TextFrame.className = 'search-string-frame';
-        TextFrame.style.marginBottom = '20px'; // Add bigger space between the message and the following content
-
-        // Create paragraph for the reference section found message
-        const TextFrameParagraph = document.createElement('p');
-        TextFrameParagraph.innerHTML = 'Reference section not found!<br>Please select the start and end of the reference section manually.';
-        TextFrame.appendChild(TextFrameParagraph);
-
-        scholarContainer.appendChild(TextFrame);
-    }
-        */
 
     settings4.appendChild(Cont)
     return new Promise((resolve) => {
@@ -1466,24 +1450,7 @@ citationElements.forEach(function (element) {
                 }
 
 
-                // When the paragraph is clicked, scroll to the respective span in the document
-                /*
-                InTextCitFrameParagraph.addEventListener('click', () => {
-                    span.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to the span
-                    DoHighlight(span)
-                    //if (span.getAttribute("found")) {
-                        DoHighlight(span.MatchedWith)
-                        span.MatchedWith.scrollIntoView({ behavior: 'smooth', block: 'center' })
-                        DoHighlight(span)
-                        span.scrollIntoView({ behavior: 'smooth', block: 'center' })
-                    //};
-                });
-                span.addEventListener('click', () => {
-                    InTextCitFrameParagraph.scrollIntoView({behavior: 'smooth', block: 'center'})
-                    DoHighlight(InTextCitFrameParagraph)
 
-                })
-                */
 
                 // Append the paragraph to the InTextCitFrame
                 InTextCitFrame.appendChild(InTextCitFrameParagraph);

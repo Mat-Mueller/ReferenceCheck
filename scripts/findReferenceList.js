@@ -252,9 +252,7 @@ export function findReferenceSection(selectedValue) {
         // Add the newly created range to the selection
         selection.addRange(range);
 
-        // GlobalRange = range
 
-        // Call the Sudivide function with the selection
         return [startPoint, endPoint];
 
 

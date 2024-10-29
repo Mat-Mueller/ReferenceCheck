@@ -173,13 +173,13 @@ export async function referenceSectionGUI(Points) {
     } else {document.getElementById("checkFooter").checked = false;}
     
     if (hasHeader && hasFooter ) {
-        document.getElementById("settings-1text").innerHTML = "Found a header and a footer in the PDF."
+        document.getElementById("settings-1text").innerHTML = "We found a header and a footer in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (hasHeader && !(hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "Found a header in the PDF."
+        document.getElementById("settings-1text").innerHTML = "We found a header in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (!(hasHeader) && (hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "Found a footer in the PDF."
+        document.getElementById("settings-1text").innerHTML = "We found a footer in the PDF.Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (!(hasHeader) && !(hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "Found no footer or header in the PDF."
+        document.getElementById("settings-1text").innerHTML = "We found no footer or header in the PDF.Check/Uncheck the boxes below to manually set the header and footer sections."
     }
 
     /// Reference section Stuff

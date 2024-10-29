@@ -17,7 +17,17 @@ export function userDecisionSeparation(referenceSection) {
 
 
 export function subdivide(startPoint, endPoint, selectedCriterion) {
+    // first delet all backgroundcolors and IDs from previous runs
+    const Alldivs = document.querySelectorAll('.textLine')
+    Alldivs.forEach (function (div){
+        div.style.backgroundColor = ""
+        div.removeAttribute("myID");
+        div.classList.remove('highlight');
+    })
+
+
     const range = document.createRange();
+
     range.setStart(startPoint, 0);  // Start at the startPoint (assuming it's a DOM node)
     range.setEnd(endPoint, endPoint.length);  // End at the endPoint (assuming it's a DOM node)
 

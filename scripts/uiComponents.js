@@ -187,18 +187,18 @@ export async function referenceSectionGUI(Points) {
     const settings2 = document.getElementById("settings-2")
     const settings3 = document.getElementById("settings-3")
     if (startPoint) {
-        document.getElementById("settings-2text").innerText = "Reference section found and highlighted"
-    } else document.getElementById("settings-2text").innerText = "No reference section found. Please select start of section manually"
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> Reference section found and highlighted. For manually resetting, click button below and click above the first reference in the reference section."
+    } else document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> No reference section found. Please select start of section manually by clicking button below and clicking above the first reference in the reference section afterwards. "
     if (endPoint) {
-        document.getElementById("settings-3text").innerText = "Reference section found and highlighted"
-    } else document.getElementById("settings-3text").innerText = "No reference section found. Please select end of section manually"
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> Reference section found and highlighted. For manually resetting, click button below and click below the last reference in the reference section."
+    } else document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> No reference section found. Please select end of section manually by clicking button below and clicking below the last reference in the reference section afterwards."
 
     const SetManually1 = document.createElement('button')
     SetManually1.innerText = "Reset start manually"
     settings2.appendChild(SetManually1)
     SetManually1.addEventListener('click', async function () {
         startPoint = await setStart();
-        document.getElementById("settings-2text").innerText = "Start of reference section set."
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> Start of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
         }
@@ -208,8 +208,9 @@ export async function referenceSectionGUI(Points) {
     SetManually2.innerText = "Reset end manually"
     settings3.appendChild(SetManually2)
     SetManually2.addEventListener('click', async function () {
+        
         endPoint = await setEnd();
-        document.getElementById("settings-3text").innerText = "End of reference section set."
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> End of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
         }
@@ -230,6 +231,10 @@ export async function referenceSectionGUI(Points) {
         headerDivs.forEach(function (div) {
             div.classList.add('textLine');
         });
+        const Alldivs = document.querySelectorAll('.textLine')
+        Alldivs.forEach (function (div){
+            div.style.backgroundColor = ""
+        })
         if (startPoint && endPoint) {
             NowSeperate();
         } else { 
@@ -245,6 +250,10 @@ export async function referenceSectionGUI(Points) {
             div.classList.add('textLine');  
 
         });
+        const Alldivs = document.querySelectorAll('.textLine')
+        Alldivs.forEach (function (div){
+            div.style.backgroundColor = ""
+        })
 
         if (startPoint && endPoint) {
             NowSeperate();
@@ -323,6 +332,8 @@ export async function referenceSectionGUI(Points) {
         deactivateButton(subdivButton2)
     
         referenceCount = subdivide(startPoint, endPoint, "byParagraph")
+
+
      } else if (ratioIndent > 1.7 && ratioIndent < 4) {
         activateButton(subdivButton2)
         deactivateButton(subdivButton)

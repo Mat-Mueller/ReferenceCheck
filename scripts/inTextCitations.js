@@ -210,7 +210,6 @@ function cleanCitations() {
                 let lastWord = words[words.length - 1]; // Get the word before the span
                 // Check if the word before the last word is "and", "&", or "al."
                 const nonWordRegex = /[.;:!"?)]$/;
-                console.log(words[words.length - 3].replace(",", ""))
                 if (
                     words.length > 1 &&
                     (

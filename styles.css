@@ -558,7 +558,6 @@ margin-left : 3px;
   }
   
   #settings-1 {
-    height: 100; /* You can adjust the height if necessary */
     border-radius: 5px;
     margin: 10px;
     padding-left: 10px;
@@ -578,7 +577,7 @@ margin-left : 3px;
 
 #settings-2, #settings-3 {
     flex: 1;
-    height: 100px;
+
     display: flex; /* Flexbox to align text */
     align-items: center; /* Vertical centering */
     justify-content: center; /* Horizontal centering */
@@ -596,7 +595,6 @@ margin-left : 3px;
 }
 
 #settings-4 {
-    height: 110px;
     border-radius: 5px;
     margin: 10px;
     padding-left: 10px;

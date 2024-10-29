@@ -172,14 +172,15 @@ export async function referenceSectionGUI(Points) {
         
     } else {document.getElementById("checkFooter").checked = false;}
     
+    document.getElementById("settings-1text").innerHTML = "<b> Header and footer: </b> <br>"
     if (hasHeader && hasFooter ) {
-        document.getElementById("settings-1text").innerHTML = "We found a header and a footer in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
+        document.getElementById("settings-1text").innerHTML += "We found a header and a footer in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (hasHeader && !(hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "We found a header in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
+        document.getElementById("settings-1text").innerHTML += "We found a header in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (!(hasHeader) && (hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "We found a footer in the PDF.Check/Uncheck the boxes below to manually set the header and footer sections."
+        document.getElementById("settings-1text").innerHTML += "We found a footer in the PDF.Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (!(hasHeader) && !(hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "We found no footer or header in the PDF.Check/Uncheck the boxes below to manually set the header and footer sections."
+        document.getElementById("settings-1text").innerHTML += "We found no footer or header in the PDF.Check/Uncheck the boxes below to manually set the header and footer sections."
     }
 
     /// Reference section Stuff
@@ -187,18 +188,18 @@ export async function referenceSectionGUI(Points) {
     const settings2 = document.getElementById("settings-2")
     const settings3 = document.getElementById("settings-3")
     if (startPoint) {
-        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> Reference section found and highlighted. For manually resetting, click button below and click above the first reference in the reference section."
-    } else document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> No reference section found. Please select start of section manually by clicking button below and clicking above the first reference in the reference section afterwards. "
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below and click above the first reference in the reference section."
+    } else document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br>No reference section found. Please select start of section manually by clicking button below and clicking above the first reference in the reference section afterwards. "
     if (endPoint) {
-        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> Reference section found and highlighted. For manually resetting, click button below and click below the last reference in the reference section."
-    } else document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> No reference section found. Please select end of section manually by clicking button below and clicking below the last reference in the reference section afterwards."
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below and click below the last reference in the reference section."
+    } else document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> No reference section found. Please select end of section manually by clicking button below and clicking below the last reference in the reference section afterwards."
 
     const SetManually1 = document.createElement('button')
     SetManually1.innerText = "Reset start manually"
     settings2.appendChild(SetManually1)
     SetManually1.addEventListener('click', async function () {
         startPoint = await setStart();
-        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> Start of reference section set."
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Start of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
         }
@@ -208,9 +209,9 @@ export async function referenceSectionGUI(Points) {
     SetManually2.innerText = "Reset end manually"
     settings3.appendChild(SetManually2)
     SetManually2.addEventListener('click', async function () {
-        
+
         endPoint = await setEnd();
-        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> End of reference section set."
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> End of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
         }
@@ -238,7 +239,7 @@ export async function referenceSectionGUI(Points) {
         if (startPoint && endPoint) {
             NowSeperate();
         } else { 
-            document.getElementById("settings-4text").innerText = "Please select reference section first";
+            document.getElementById("settings-4text").innerHTML = "Please select reference section first";
             Cont.disabled = true;
         }
     });
@@ -297,12 +298,10 @@ export async function referenceSectionGUI(Points) {
         Cont.disabled = false;
         const paragraphCount = subdivide(startPoint, endPoint, "byParagraph");
         const indentCount = subdivide(startPoint, endPoint, "byIndent");
-        document.getElementById("settings-4text").innerText = `Found ${paragraphCount} references by paragraphs. Found ${indentCount} references by indent.`;
+        document.getElementById("settings-4text").innerHTML = `<b> Reference seperation: </b> <br> Found ${paragraphCount} references if seperating by paragraphs and ${indentCount} references if seperating by indents.`;
 
         referenceCount = indentCount
         const count = document.querySelectorAll('.textLine.highlight').length;
-        const Set4Text = document.createElement("div")
-        Set4Text.innerText = `found ${paragraphCount} References`;
     
        
         // decide which button to activate based on count / paragraphCount and count / indentCount
@@ -318,13 +317,16 @@ export async function referenceSectionGUI(Points) {
         // Decision rule
      if (ratioParagraph > 1.7 && ratioParagraph < 4 && ratioIndent > 1.7 && ratioIndent < 4) {
         // Both ratios are within range, pick the smaller one
+        
         if (ratioParagraph <= ratioIndent) {
             activateButton(subdivButton)
             deactivateButton(subdivButton2)
             referenceCount = subdivide(startPoint, endPoint, "byParagraph")
+            document.getElementById("settings-4text").innerHTML += " We suggest to seperate by paragraphs. Click below for manually resetting."
         } else {
             activateButton(subdivButton2)
             deactivateButton(subdivButton)
+            document.getElementById("settings-4text").innerHTML += " We suggest to seperate by intends.  Click below for manually resetting."
     
         }
      } else if (ratioParagraph > 1.7 && ratioParagraph < 4) {
@@ -332,11 +334,14 @@ export async function referenceSectionGUI(Points) {
         deactivateButton(subdivButton2)
     
         referenceCount = subdivide(startPoint, endPoint, "byParagraph")
+        document.getElementById("settings-4text").innerHTML += " We suggest to seperate by paragraphs.  Click below for manually resetting."
 
 
      } else if (ratioIndent > 1.7 && ratioIndent < 4) {
         activateButton(subdivButton2)
         deactivateButton(subdivButton)
+        document.getElementById("settings-4text").innerHTML += " We suggest to seperate by intends.  Click below for manually resetting."
+
     
      } 
     

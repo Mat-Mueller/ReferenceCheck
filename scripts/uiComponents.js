@@ -182,6 +182,29 @@ export async function referenceSectionGUI(Points) {
         document.getElementById("settings-1text").innerHTML = "Found no footer or header in the PDF."
     }
 
+
+    //reset?
+        // Code innerhalb von NowSeperate() zur Verarbeitung des Reset-Buttons
+        const resetButton = document.getElementById("reset");
+        resetButton.innerText = "Reset to Auto-recognition";
+
+        //export async function resetstart(){
+
+        resetButton.addEventListener('click', async function () {
+            // Setze startPoint und endPoint zurück
+           let startPoint = null;
+           let endPoint = null;
+
+            try {
+                // Aufruf von findReferenceSection, um die Werte neu zu setzen
+               await findReferenceSection();
+            } catch (error) {
+                console.error("Error in findReferenceSection:", error);
+            }
+        });
+
+    //}
+
     /// Reference section Stuff
 
     const settings2 = document.getElementById("settings-2")

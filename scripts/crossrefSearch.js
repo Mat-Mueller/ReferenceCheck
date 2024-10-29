@@ -61,7 +61,6 @@ export async function checkExists(textReference) {
     var searchResults = await crossrefSearch(textReference);
     searchResults = formatResults(searchResults);
     searchResults = computeMatch(textReference, searchResults);
-    //console.log(searchResults)
     return searchResults
 }
 

@@ -13,6 +13,8 @@ import {CreateCrossLinksHighlight} from './magic.js'
 async function main() {
     // Display a description that helps the user understand the software
     displaySoftwareDescription();
+    document.getElementById("scholar-container").scrollTo({ top: 0, behavior: 'smooth' });
+
     //document.getElementById("DescriptionID").scrollIntoView()
     createMenue();
     // Read and render user-input PDF

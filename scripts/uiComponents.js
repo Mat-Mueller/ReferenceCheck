@@ -1383,19 +1383,19 @@ export function DragDrop() {
 
 function FormulateTooltip(element) {
     if (element.getAttribute('Found') === 'true') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Successfully matched with reference!`);
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Successfully matched with reference!`);
     } else if (!element.getAttribute('Found')) {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually using drag & drop`);
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually using drag & drop`);
     } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually using drag & drop if necessary`)
     }
     else if (element.getAttribute('Found') === 'year') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually using drag & drop if necessary`)
     }
     else if (element.getAttribute('Found') === 'byAbbr') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Matched by abbreviation!`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Matched by abbreviation!`)
     }    else if (element.getAttribute('Found') === 'typo') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually using drag & drop if necessary`)
     }
     
 

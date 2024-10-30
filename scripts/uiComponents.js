@@ -195,8 +195,8 @@ export async function referenceSectionGUI(Points) {
         document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
     } else document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br>No reference section found. Please select start of section manually by clicking button below. "
     if (endPoint) {
-        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
-    } else document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> No reference section found. Please select end of section manually by clicking button below."
+        document.getElementById("settings-3text").innerHTML = "<b> End of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
+    } else document.getElementById("settings-3text").innerHTML = "<b> End of reference section: </b> <br> No reference section found. Please select end of section manually by clicking button below."
 
     const SetManually1 = document.getElementById('SetStartManually')  
     SetManually1.addEventListener('click', async function () {
@@ -213,10 +213,10 @@ export async function referenceSectionGUI(Points) {
     const SetManually2 = document.getElementById('SetEndManually')
     SetManually2.addEventListener('click', async function () {
         activateButton(SetManually2)
-        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> Click below the last reference in the reference section to manually reset end."
+        document.getElementById("settings-3text").innerHTML = "<b> End of reference section: </b> <br> Click below the last reference in the reference section to manually reset end."
         endPoint = await setEnd();
         deactivateButton(SetManually2)
-        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> End of reference section set."
+        document.getElementById("settings-3text").innerHTML = "<b> End of reference section: </b> <br> End of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
         }

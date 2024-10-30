@@ -303,7 +303,7 @@ export async function referenceSectionGUI(Points) {
         Cont.disabled = false;
         const paragraphCount = subdivide(startPoint, endPoint, "byParagraph");
         const indentCount = subdivide(startPoint, endPoint, "byIndent");
-        document.getElementById("settings-4text").innerHTML = `<b> Reference separation: </b> <br> Found ${paragraphCount} references if separating by paragraphs and ${indentCount} references if separating by indents.`;
+        document.getElementById("settings-4text").innerHTML = `<b> Reference separation: </b> <br> ${paragraphCount} references found by paragraph separation, ${indentCount} by indent separation.`;
 
         referenceCount = indentCount
         const count = document.querySelectorAll('.textLine.highlight').length;

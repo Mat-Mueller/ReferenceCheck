@@ -938,11 +938,14 @@ export function DoHighlight(element) {
 const backgroundColor = element.style.backgroundColor;
 const currentBorder = element.style.border;
 
+
+/*
 element.classList.add("DoHighlights")
 setTimeout(() => {
     element.classList.remove("DoHighlights");
 }, 2000); // 2000 ms = 2 seconds
-/*
+*/
+
 // Check if the current border is not already the desired highlighted border
 if (currentBorder !== `5px solid ${backgroundColor}`) {
     
@@ -964,7 +967,7 @@ if (currentBorder !== `5px solid ${backgroundColor}`) {
     setTimeout(removeBorder, 1000); // Final removal after 1 second
 }
 
-*/
+
 }
 
 

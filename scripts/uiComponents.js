@@ -61,11 +61,15 @@ export function createMenue () {
 
 
 function activateButton(button) {
-    button.style.backgroundColor = 'yellow';
+    button.style.backgroundColor = "#4a90e2"; // corrected background-color to backgroundColor
+    button.style.boxShadow = "0 5px #666"; // corrected box-shadow to boxShadow
+    button.style.transform = "translateY(2px)"; // transform is correct
 }
 
 function deactivateButton(button) {
-    button.style.backgroundColor = 'white';
+    button.style.backgroundColor = "white";
+    button.style.boxShadow = "0 7px #999";
+    button.style.transform = "translateY(-2px)";
 }
 
 
@@ -188,29 +192,30 @@ export async function referenceSectionGUI(Points) {
     const settings2 = document.getElementById("settings-2")
     const settings3 = document.getElementById("settings-3")
     if (startPoint) {
-        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below and click above the first reference in the reference section."
-    } else document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br>No reference section found. Please select start of section manually by clicking button below and clicking above the first reference in the reference section afterwards. "
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
+    } else document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br>No reference section found. Please select start of section manually by clicking button below. "
     if (endPoint) {
-        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below and click below the last reference in the reference section."
-    } else document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> No reference section found. Please select end of section manually by clicking button below and clicking below the last reference in the reference section afterwards."
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
+    } else document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> No reference section found. Please select end of section manually by clicking button below."
 
-    const SetManually1 = document.createElement('button')
-    SetManually1.innerText = "Reset start manually"
-    settings2.appendChild(SetManually1)
+    const SetManually1 = document.getElementById('SetStartManually')  
     SetManually1.addEventListener('click', async function () {
+        activateButton(SetManually1)
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Click above the first reference in the reference section to maually reset start."
         startPoint = await setStart();
+        deactivateButton(SetManually1)
         document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Start of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
         }
     })
     
-    const SetManually2 = document.createElement('button')
-    SetManually2.innerText = "Reset end manually"
-    settings3.appendChild(SetManually2)
+    const SetManually2 = document.getElementById('SetEndManually')
     SetManually2.addEventListener('click', async function () {
-
+        activateButton(SetManually2)
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> Click below the last reference in the reference section to manually reset end."
         endPoint = await setEnd();
+        deactivateButton(SetManually2)
         document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> End of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
@@ -322,11 +327,11 @@ export async function referenceSectionGUI(Points) {
             activateButton(subdivButton)
             deactivateButton(subdivButton2)
             referenceCount = subdivide(startPoint, endPoint, "byParagraph")
-            document.getElementById("settings-4text").innerHTML += " We suggest to seperate by paragraphs. Click below for manually resetting."
+            document.getElementById("settings-4text").innerHTML += " We suggest to separate by paragraphs. Click below for manually resetting."
         } else {
             activateButton(subdivButton2)
             deactivateButton(subdivButton)
-            document.getElementById("settings-4text").innerHTML += " We suggest to seperate by intends.  Click below for manually resetting."
+            document.getElementById("settings-4text").innerHTML += " We suggest to saperate by intends.  Click below for manually resetting."
     
         }
      } else if (ratioParagraph > 1.7 && ratioParagraph < 4) {
@@ -334,13 +339,13 @@ export async function referenceSectionGUI(Points) {
         deactivateButton(subdivButton2)
     
         referenceCount = subdivide(startPoint, endPoint, "byParagraph")
-        document.getElementById("settings-4text").innerHTML += " We suggest to seperate by paragraphs.  Click below for manually resetting."
+        document.getElementById("settings-4text").innerHTML += " We suggest to saperate by paragraphs.  Click below for manually resetting."
 
 
      } else if (ratioIndent > 1.7 && ratioIndent < 4) {
         activateButton(subdivButton2)
         deactivateButton(subdivButton)
-        document.getElementById("settings-4text").innerHTML += " We suggest to seperate by intends.  Click below for manually resetting."
+        document.getElementById("settings-4text").innerHTML += " We suggest to saperate by intends.  Click below for manually resetting."
 
     
      } 
@@ -933,6 +938,11 @@ export function DoHighlight(element) {
 const backgroundColor = element.style.backgroundColor;
 const currentBorder = element.style.border;
 
+element.classList.add("DoHighlights")
+setTimeout(() => {
+    element.classList.remove("DoHighlights");
+}, 2000); // 2000 ms = 2 seconds
+/*
 // Check if the current border is not already the desired highlighted border
 if (currentBorder !== `5px solid ${backgroundColor}`) {
     
@@ -954,7 +964,7 @@ if (currentBorder !== `5px solid ${backgroundColor}`) {
     setTimeout(removeBorder, 1000); // Final removal after 1 second
 }
 
-
+*/
 }
 
 

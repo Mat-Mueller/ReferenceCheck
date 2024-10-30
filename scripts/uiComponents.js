@@ -61,11 +61,15 @@ export function createMenue () {
 
 
 function activateButton(button) {
-    button.style.backgroundColor = 'yellow';
+    button.style.backgroundColor = "#4a90e2"; // corrected background-color to backgroundColor
+    button.style.boxShadow = "0 5px #666"; // corrected box-shadow to boxShadow
+    button.style.transform = "translateY(2px)"; // transform is correct
 }
 
 function deactivateButton(button) {
-    button.style.backgroundColor = 'white';
+    button.style.backgroundColor = "white";
+    button.style.boxShadow = "0 7px #999";
+    button.style.transform = "translateY(-2px)";
 }
 
 
@@ -172,14 +176,15 @@ export async function referenceSectionGUI(Points) {
         
     } else {document.getElementById("checkFooter").checked = false;}
     
+    document.getElementById("settings-1text").innerHTML = "<b> Header and footer: </b> <br>"
     if (hasHeader && hasFooter ) {
-        document.getElementById("settings-1text").innerHTML = "Found a header and a footer in the PDF."
+        document.getElementById("settings-1text").innerHTML += "We found a header and a footer in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (hasHeader && !(hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "Found a header in the PDF."
+        document.getElementById("settings-1text").innerHTML += "We found a header in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (!(hasHeader) && (hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "Found a footer in the PDF."
+        document.getElementById("settings-1text").innerHTML += "We found a footer in the PDF.Check/Uncheck the boxes below to manually set the header and footer sections."
     } else if (!(hasHeader) && !(hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML = "Found no footer or header in the PDF."
+        document.getElementById("settings-1text").innerHTML += "We found no footer or header in the PDF.Check/Uncheck the boxes below to manually set the header and footer sections."
     }
 
     /// Reference section Stuff
@@ -187,29 +192,31 @@ export async function referenceSectionGUI(Points) {
     const settings2 = document.getElementById("settings-2")
     const settings3 = document.getElementById("settings-3")
     if (startPoint) {
-        document.getElementById("settings-2text").innerText = "Reference section found and highlighted"
-    } else document.getElementById("settings-2text").innerText = "No reference section found. Please select start of section manually"
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
+    } else document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br>No reference section found. Please select start of section manually by clicking button below. "
     if (endPoint) {
-        document.getElementById("settings-3text").innerText = "Reference section found and highlighted"
-    } else document.getElementById("settings-3text").innerText = "No reference section found. Please select end of section manually"
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
+    } else document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> No reference section found. Please select end of section manually by clicking button below."
 
-    const SetManually1 = document.createElement('button')
-    SetManually1.innerText = "Reset start manually"
-    settings2.appendChild(SetManually1)
+    const SetManually1 = document.getElementById('SetStartManually')  
     SetManually1.addEventListener('click', async function () {
+        activateButton(SetManually1)
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Click above the first reference in the reference section to maually reset start."
         startPoint = await setStart();
-        document.getElementById("settings-2text").innerText = "Start of reference section set."
+        deactivateButton(SetManually1)
+        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Start of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
         }
     })
     
-    const SetManually2 = document.createElement('button')
-    SetManually2.innerText = "Reset end manually"
-    settings3.appendChild(SetManually2)
+    const SetManually2 = document.getElementById('SetEndManually')
     SetManually2.addEventListener('click', async function () {
+        activateButton(SetManually2)
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> Click below the last reference in the reference section to manually reset end."
         endPoint = await setEnd();
-        document.getElementById("settings-3text").innerText = "End of reference section set."
+        deactivateButton(SetManually2)
+        document.getElementById("settings-3text").innerHTML = "<b> Start of reference section: </b> <br> End of reference section set."
         if (startPoint && endPoint) {
             NowSeperate()
         }
@@ -230,10 +237,14 @@ export async function referenceSectionGUI(Points) {
         headerDivs.forEach(function (div) {
             div.classList.add('textLine');
         });
+        const Alldivs = document.querySelectorAll('.textLine')
+        Alldivs.forEach (function (div){
+            div.style.backgroundColor = ""
+        })
         if (startPoint && endPoint) {
             NowSeperate();
         } else { 
-            document.getElementById("settings-4text").innerText = "Please select reference section first";
+            document.getElementById("settings-4text").innerHTML = "Please select reference section first";
             Cont.disabled = true;
         }
     });
@@ -245,6 +256,10 @@ export async function referenceSectionGUI(Points) {
             div.classList.add('textLine');  
 
         });
+        const Alldivs = document.querySelectorAll('.textLine')
+        Alldivs.forEach (function (div){
+            div.style.backgroundColor = ""
+        })
 
         if (startPoint && endPoint) {
             NowSeperate();
@@ -288,12 +303,10 @@ export async function referenceSectionGUI(Points) {
         Cont.disabled = false;
         const paragraphCount = subdivide(startPoint, endPoint, "byParagraph");
         const indentCount = subdivide(startPoint, endPoint, "byIndent");
-        document.getElementById("settings-4text").innerText = `Found ${paragraphCount} references by paragraphs. Found ${indentCount} references by indent.`;
+        document.getElementById("settings-4text").innerHTML = `<b> Reference seperation: </b> <br> Found ${paragraphCount} references if seperating by paragraphs and ${indentCount} references if seperating by indents.`;
 
         referenceCount = indentCount
         const count = document.querySelectorAll('.textLine.highlight').length;
-        const Set4Text = document.createElement("div")
-        Set4Text.innerText = `found ${paragraphCount} References`;
     
        
         // decide which button to activate based on count / paragraphCount and count / indentCount
@@ -309,13 +322,16 @@ export async function referenceSectionGUI(Points) {
         // Decision rule
      if (ratioParagraph > 1.7 && ratioParagraph < 4 && ratioIndent > 1.7 && ratioIndent < 4) {
         // Both ratios are within range, pick the smaller one
+        
         if (ratioParagraph <= ratioIndent) {
             activateButton(subdivButton)
             deactivateButton(subdivButton2)
             referenceCount = subdivide(startPoint, endPoint, "byParagraph")
+            document.getElementById("settings-4text").innerHTML += " We suggest to separate by paragraphs. Click below for manually resetting."
         } else {
             activateButton(subdivButton2)
             deactivateButton(subdivButton)
+            document.getElementById("settings-4text").innerHTML += " We suggest to saperate by intends.  Click below for manually resetting."
     
         }
      } else if (ratioParagraph > 1.7 && ratioParagraph < 4) {
@@ -323,9 +339,14 @@ export async function referenceSectionGUI(Points) {
         deactivateButton(subdivButton2)
     
         referenceCount = subdivide(startPoint, endPoint, "byParagraph")
+        document.getElementById("settings-4text").innerHTML += " We suggest to saperate by paragraphs.  Click below for manually resetting."
+
+
      } else if (ratioIndent > 1.7 && ratioIndent < 4) {
         activateButton(subdivButton2)
         deactivateButton(subdivButton)
+        document.getElementById("settings-4text").innerHTML += " We suggest to saperate by intends.  Click below for manually resetting."
+
     
      } 
     
@@ -916,6 +937,14 @@ export function DoHighlight(element) {
 // Store the original background color and border of the element
 const backgroundColor = element.style.backgroundColor;
 const currentBorder = element.style.border;
+
+
+/*
+element.classList.add("DoHighlights")
+setTimeout(() => {
+    element.classList.remove("DoHighlights");
+}, 2000); // 2000 ms = 2 seconds
+*/
 
 // Check if the current border is not already the desired highlighted border
 if (currentBorder !== `5px solid ${backgroundColor}`) {

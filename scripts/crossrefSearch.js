@@ -12,7 +12,7 @@ export async function performCrossRefSearch() {
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     let activeRequests = 0;
-    showLoadingSpinner()
+    //showLoadingSpinner()
     for (let i = 0; i < References.length; i++) {
         // Wait until there are fewer than MAX_CONCURRENT_REQUESTS
         while (activeRequests >= MAX_CONCURRENT_REQUESTS) {
@@ -33,7 +33,7 @@ export async function performCrossRefSearch() {
 
         await delay(100); // Small delay between starting new requests
     }
-    hideLoadingSpinner();
+    //hideLoadingSpinner();
 }
 
 // Simulate a sleep function for delays

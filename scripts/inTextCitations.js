@@ -165,7 +165,6 @@ function precleaned() {
 }
 
 function mergeNameFragments(knownNames, guessedNames) {
-    console.log(guessedNames)
 
     guessedNames = guessedNames.map(element => element.replace(/,/g, ""));
 
@@ -178,8 +177,32 @@ function mergeNameFragments(knownNames, guessedNames) {
     const mergedNames = [];
   
     for (let i = 0; i < guessedNames.length; i++) {
-      let combinedName = guessedNames[i].toLowerCase();
+        let combinedName = guessedNames[i].toLowerCase();
       
+        let y = i
+        let found = false
+        while (y  < guessedNames.length && !found) {
+
+            if (!knownNamesSet.has(combinedName) && !found) {
+
+                if (y + 1 < guessedNames.length) {combinedName += ' ' + guessedNames[y + 1].toLowerCase()}
+
+            } else{
+
+                found = true
+                i = y
+            
+            }
+            y += 1
+
+        }
+        if (found) {
+            mergedNames.push(combinedName)
+        } else {
+            mergedNames.push(guessedNames[i].toLowerCase())
+        }
+
+      /*
       // Check if the next word forms a known name when combined with the current one ///// Thats dirty ////////////////////////////////////////////////////
       while (i + 1 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase())) {
         combinedName += ' ' + guessedNames[++i].toLowerCase();
@@ -188,11 +211,11 @@ function mergeNameFragments(knownNames, guessedNames) {
         combinedName += ' ' + guessedNames[++i].toLowerCase();  // Append the next fragment
         combinedName += ' ' + guessedNames[++i].toLowerCase(); 
           }
-  
+  */
       // Push the merged name (or single name) to the result
-      mergedNames.push(combinedName);
+      
     }
-  
+    console.log(mergedNames)
     return mergedNames;
   }
 
@@ -222,6 +245,7 @@ function cleanCitations() {
                 words = mergeNameFragments(Allnames, words)
                 let lastWord = words[words.length - 1]; // Get the word before the span
                 // Check if the word before the last word is "and", "&", or "al."
+                console.log(words)
                 const nonWordRegex = /[.;:!"?)]$/;
                 if (
                     words.length > 1 &&
@@ -247,6 +271,7 @@ function cleanCitations() {
                     cleanedText = `${lastWord};${cleanedText}`;
 
                 }
+                console.log(cleanedText)
             }
         } else {   ///////////   if its a Parenthetical citation
             let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').replace(",", "").split(" ");

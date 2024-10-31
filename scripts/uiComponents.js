@@ -659,6 +659,7 @@ export function secondFrame(referenceCount) {
     // Second frame for references (collapsible frame)
     const OuterFrame = document.getElementById('secondframe');
     OuterFrame.innerHTML = "";
+    OuterFrame.style = "display: block"
 
     const ReferenceFrame = document.createElement('div');
     ReferenceFrame.id = "ReferenceFrame"
@@ -1416,6 +1417,7 @@ citationElements.forEach(function (element) {
 
     const OuterFrame = document.getElementById('thirdframe');
     OuterFrame.innerHTML = "";
+    OuterFrame.style = "display: block"
 
     OuterFrame.style.flexShrink = '0'; // Set initial max height
     OuterFrame.style.maxHeight = '40%';

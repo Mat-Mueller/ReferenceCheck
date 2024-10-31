@@ -67,10 +67,12 @@ function waitForButtonClick(buttonId) {
             const secondframe = document.getElementById('secondframe');
             if (secondframe) {
                 secondframe.innerHTML = "";
+                secondframe.style = "display: none"
             }
             const thirdframe = document.getElementById('thirdframe');
             if (thirdframe) {
                 thirdframe.innerHTML = "";
+                thirdframe.style = "display: none"
             }
             resolve(); // Resolve the promise when clicked
         };

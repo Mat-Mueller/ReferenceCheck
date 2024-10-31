@@ -114,7 +114,7 @@ function GetallPossibleNames() {
     let referenceCount = Math.max(...Array.from(document.querySelectorAll('div.textLine.highlight[myid]')).map(div => parseInt(div.getAttribute('myid'), 10)));   //böse böse
     let AlllastNames = []
     for (let j = 0; j < referenceCount + 1; j++) {
-        console.log(j)
+
         //const divs = document.querySelectorAll(`[MyId="${j}"]`);
         const mergedText = getMergedTextByMyId(j);
         //assign author names to ReferenceFrameParagraph
@@ -165,7 +165,11 @@ function precleaned() {
 }
 
 function mergeNameFragments(knownNames, guessedNames) {
-    //console.log(guessedNames)
+    console.log(guessedNames)
+
+    guessedNames = guessedNames.map(element => element.replace(/,/g, ""));
+
+    
     const knownNamesSet = new Set(
         knownNames
             .map(name => name.toLowerCase())

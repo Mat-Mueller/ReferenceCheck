@@ -323,7 +323,7 @@ export async function referenceSectionGUI(Points) {
      if (ratioParagraph > 1.7 && ratioParagraph < 4 && ratioIndent > 1.7 && ratioIndent < 4) {
         // Both ratios are within range, pick the smaller one
         
-        if (ratioParagraph <= ratioIndent) {
+        if (ratioParagraph >= ratioIndent) {
             activateButton(subdivButton)
             deactivateButton(subdivButton2)
             referenceCount = subdivide(startPoint, endPoint, "byParagraph")
@@ -611,7 +611,7 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
             // Add an event listener to scroll to the span element when clicked
             link.addEventListener('click', (event) => {
                 event.preventDefault(); // Prevent the default anchor behavior
-                span.scrollIntoView({ behavior: 'smooth' }); // Scroll to the matched span
+                span.scrollIntoView({ behavior: 'smooth', block: 'center'  }); // Scroll to the matched span
                 DoHighlight(span)
             });
 
@@ -655,11 +655,12 @@ export function secondFrame(referenceCount) {
 
     createSeparator(referenceCount)   // @LF: that should probably moved somewhere else 
     
-    const scholarContainer = document.getElementById('scholar-container');
+
     // Second frame for references (collapsible frame)
-    const OuterFrame = document.createElement('div');
+    const OuterFrame = document.getElementById('secondframe');
     OuterFrame.innerHTML = "";
-    OuterFrame.className = "OuterFrame"
+    OuterFrame.style = "display: block"
+
     const ReferenceFrame = document.createElement('div');
     ReferenceFrame.id = "ReferenceFrame"
     ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
@@ -674,10 +675,10 @@ export function secondFrame(referenceCount) {
     LeftContainer.id = "LeftContainer"
     referenceHeadline.appendChild(LeftContainer)
 
-    const Refspinner = document.createElement('div')
-    Refspinner.id = "loading-spinner" 
-    Refspinner.className  = "spinner"
-    LeftContainer.appendChild(Refspinner)
+    //const Refspinner = document.createElement('div')
+    //Refspinner.id = "loading-spinner" 
+    //Refspinner.className  = "spinner"
+    //LeftContainer.appendChild(Refspinner)
     const referenceTitle = document.createElement('p');
     referenceTitle.id = "References"
     referenceTitle.style.margin = "0px"
@@ -720,17 +721,23 @@ export function secondFrame(referenceCount) {
     
 
     const CrossRefbutton = document.createElement("button");
-    CrossRefbutton.textContent = "Show/Hide CrossRef Results";
+    CrossRefbutton.textContent = "Hide CrossRef Results"; // Initial text
     
     // Add a click event listener to toggle display
     CrossRefbutton.addEventListener("click", () => {
         const resultFrames = document.querySelectorAll("div.result-frame");
-        
+    
+        // Check if at least one result frame is currently displayed
+        const anyVisible = Array.from(resultFrames).some(div => div.style.display !== "none");
+    
         resultFrames.forEach(div => {
             // Toggle visibility based on current display style
-            div.style.display = div.style.display === "none" ? "block" : "none";
+            div.style.display = anyVisible ? "none" : "block";
         });
-    });    
+    
+        // Update button text based on new visibility state
+        CrossRefbutton.textContent = anyVisible ? "Show CrossRef Results" : "Hide CrossRef Results";
+    }); 
     referenceHeadline.appendChild(RightContainer)
     RightContainer.appendChild(CrossRefbutton)
     RightContainer.appendChild(Searchhits)
@@ -923,7 +930,6 @@ export function secondFrame(referenceCount) {
     }
     // Append the ReferenceFrame to the scholar container
     OuterFrame.appendChild(ReferenceFrame);
-    scholarContainer.appendChild(OuterFrame);
 
 
 
@@ -1054,7 +1060,7 @@ export function searchSpanRef() {
     
     // Scroll to the next match
     const element = matchingElements[currentMatchIndex];    
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const ElementColor = element.style.backgroundColor;
 
@@ -1114,7 +1120,7 @@ if (TextFrameParagraph) {
 
     // Create the clickable 'countWithoutMatch' element
     const countWithoutMatchElement = document.createElement('span');
-    countWithoutMatchElement.innerHTML = `Found ${countWithoutMatch} references without match`;
+    countWithoutMatchElement.innerHTML = `Found ${countWithoutMatch}/${referenceFrames.length} references without match:`;
     countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
     countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
 
@@ -1124,7 +1130,7 @@ if (TextFrameParagraph) {
     // Append the elements inside the bold wrapper
     
     boldWrapper.appendChild(countWithoutMatchElement);
-    boldWrapper.appendChild(withoutMatchText);
+    //boldWrapper.appendChild(withoutMatchText);
 
 
     // Append the bold wrapper to the TextFrameParagraph
@@ -1415,10 +1421,10 @@ citationElements.forEach(function (element) {
 });
 
 
-    const scholarContainer = document.getElementById('scholar-container');
-    const OuterFrame = document.createElement('div');
-    OuterFrame.className = "OuterFrame2"
-    scholarContainer.appendChild(OuterFrame)
+    const OuterFrame = document.getElementById('thirdframe');
+    OuterFrame.innerHTML = "";
+    OuterFrame.style = "display: block"
+
     OuterFrame.style.flexShrink = '0'; // Set initial max height
     OuterFrame.style.maxHeight = '40%';
     // Create the third frame for in-text citations (collapsible frame)

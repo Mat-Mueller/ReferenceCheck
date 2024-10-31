@@ -10,6 +10,15 @@ export function inTextSearch() {
     assignnames()
 }
 
+export function removeOldSpans() {
+document.querySelectorAll('.textLine').forEach(div => {
+    // For each div with class 'textLine', iterate through each span child and replace it with its text content
+    div.querySelectorAll('span').forEach(span => {
+        span.replaceWith(span.textContent);
+    });
+});
+}
+
 
 function combineHyphenatedWords(words) {  // helper function to merge text between divs if there is a "-"
     let result = []; // To store the final result
@@ -105,7 +114,7 @@ function GetallPossibleNames() {
     let referenceCount = Math.max(...Array.from(document.querySelectorAll('div.textLine.highlight[myid]')).map(div => parseInt(div.getAttribute('myid'), 10)));   //böse böse
     let AlllastNames = []
     for (let j = 0; j < referenceCount + 1; j++) {
-        console.log(j)
+
         //const divs = document.querySelectorAll(`[MyId="${j}"]`);
         const mergedText = getMergedTextByMyId(j);
         //assign author names to ReferenceFrameParagraph
@@ -156,7 +165,11 @@ function precleaned() {
 }
 
 function mergeNameFragments(knownNames, guessedNames) {
-    //console.log(guessedNames)
+    console.log(guessedNames)
+
+    guessedNames = guessedNames.map(element => element.replace(/,/g, ""));
+
+    
     const knownNamesSet = new Set(
         knownNames
             .map(name => name.toLowerCase())
@@ -286,7 +299,8 @@ function cleanCitations() {
 
 
 function identifyAndWrapCitations() {
-    const citationPattern = /\d{4}/;  // Regex to match a four-digit year (representing the year in a citation)
+    const citationPattern = /(?:18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|2100)/;
+  // Regex to match a four-digit year (representing the year in a citation)
     const pagePattern = /p\.\s*\d+/i;
     let awaitingCitation = false;  // Flag to treat the next div as if it starts with an implicit "("
 

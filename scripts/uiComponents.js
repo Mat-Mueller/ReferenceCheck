@@ -303,7 +303,7 @@ export async function referenceSectionGUI(Points) {
         Cont.disabled = false;
         const paragraphCount = subdivide(startPoint, endPoint, "byParagraph");
         const indentCount = subdivide(startPoint, endPoint, "byIndent");
-        document.getElementById("settings-4text").innerHTML = `<b> Reference seperation: </b> <br> Found ${paragraphCount} references if seperating by paragraphs and ${indentCount} references if seperating by indents.`;
+        document.getElementById("settings-4text").innerHTML = `<b> Reference separation: </b> <br> Found ${paragraphCount} references if separating by paragraphs and ${indentCount} references if separating by indents.`;
 
         referenceCount = indentCount
         const count = document.querySelectorAll('.textLine.highlight').length;
@@ -327,11 +327,11 @@ export async function referenceSectionGUI(Points) {
             activateButton(subdivButton)
             deactivateButton(subdivButton2)
             referenceCount = subdivide(startPoint, endPoint, "byParagraph")
-            document.getElementById("settings-4text").innerHTML += " We suggest to separate by paragraphs. Click below for manually resetting."
+            document.getElementById("settings-4text").innerHTML += " We suggest to separate by paragraphs. Click below to change the reference separation algorithm."
         } else {
             activateButton(subdivButton2)
             deactivateButton(subdivButton)
-            document.getElementById("settings-4text").innerHTML += " We suggest to saperate by intends.  Click below for manually resetting."
+            document.getElementById("settings-4text").innerHTML += " We suggest to separate by intends.  Click below to change the reference separation algorithm."
     
         }
      } else if (ratioParagraph > 1.7 && ratioParagraph < 4) {
@@ -339,13 +339,13 @@ export async function referenceSectionGUI(Points) {
         deactivateButton(subdivButton2)
     
         referenceCount = subdivide(startPoint, endPoint, "byParagraph")
-        document.getElementById("settings-4text").innerHTML += " We suggest to saperate by paragraphs.  Click below for manually resetting."
+        document.getElementById("settings-4text").innerHTML += " We suggest to separate by paragraphs.  Click below to change the reference separation algorithm."
 
 
      } else if (ratioIndent > 1.7 && ratioIndent < 4) {
         activateButton(subdivButton2)
         deactivateButton(subdivButton)
-        document.getElementById("settings-4text").innerHTML += " We suggest to saperate by intends.  Click below for manually resetting."
+        document.getElementById("settings-4text").innerHTML += " We suggest to separate by intends.  Click below to change the reference separation algorithm."
 
     
      } 
@@ -506,7 +506,7 @@ export async function searchResultGUI(searchResults, ReferenceFrameParagraph) {
 
     } else {
         const noResultsMsg = document.createElement('p');
-        noResultsMsg.textContent = 'No CrossRef results found.';
+        noResultsMsg.textContent = 'No Crossref results found.';
         ReferenceFrameParagraph.appendChild(noResultsMsg);
     }
 }
@@ -1159,7 +1159,7 @@ if (TextFrameParagraph) {
         
         const ThirdFrameTitle = document.getElementById("ThirdFrameTitle")
 
-        ThirdFrameTitle.innerHTML = `Found ${totalCitations - matchedCitations} intext citations without match (${totalCitations} total)`;
+        ThirdFrameTitle.innerHTML = `Found ${totalCitations - matchedCitations} in-text citations without match (${totalCitations} total)`;
 
         }
     
@@ -1382,19 +1382,19 @@ export function DragDrop() {
 
 function FormulateTooltip(element) {
     if (element.getAttribute('Found') === 'true') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Successfully matched with reference!`);
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Successfully matched with reference!`);
     } else if (!element.getAttribute('Found')) {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually using drag & drop`);
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually using drag & drop`);
     } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually using drag & drop if necessary`)
     }
     else if (element.getAttribute('Found') === 'year') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually using drag & drop if necessary`)
     }
     else if (element.getAttribute('Found') === 'byAbbr') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Matched by abbreviation!`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Matched by abbreviation!`)
     }    else if (element.getAttribute('Found') === 'typo') {
-        element.setAttribute('tooltip', `Identified intext citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually using drag & drop if necessary`)
     }
     
 
@@ -1502,8 +1502,8 @@ citationElements.forEach(function (element) {
         "<strong>In-Text Citation Issues</strong><br>" +
         "Here you find all identified in-text citations that show problems when matched against the reference list. Problems can be:" +
         "<ul>" +
-          "<li><span style='background-color: #E3574B;' class='citationDESK'>Author Year</span> In-text citations without a matching reference in the reference list. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
-          "<li><span style='background-color: orange;' class='citationDESK'>Author Year</span> In-text citations with a matching reference, but containing typos or incorrect publication years. <br> You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
+          "<li><span style='background-color: #E3574B;' class='citationDESK'>Author Year</span> In-text citations without a matching reference in the reference list. You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
+          "<li><span style='background-color: orange;' class='citationDESK'>Author Year</span> In-text citations with a matching reference, but containing typos or incorrect publication years. You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
           "<li><span style='background-color: yellow;' class='citationDESK'>Author Year</span> In-text citations matched through abbreviations.</li>" +
         "</ul>"
     );
@@ -1523,7 +1523,7 @@ citationElements.forEach(function (element) {
     const trash = document.createElement('div');
     trash.id = "Trash1";
     trash.className = "Trashs"
-    trash.setAttribute("tooltip", "Drag faulty intext citations here")    
+    trash.setAttribute("tooltip", "Drag erroneous in-text citations here")    
     Helperdiv.appendChild(trash)
     Helperdiv.appendChild(Questionsmark)
 

@@ -153,6 +153,7 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
             lastNames = authorsPart
                 .replace(" (hrsg.)", "")
                 .replace(" (eds.)", "")
+                .replace(" (ed.)", "")
                 .replace(" (eds.).", "")
                 .replace(" (", "")
                 .replace(", ,", ",")

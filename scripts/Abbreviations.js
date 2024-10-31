@@ -5,6 +5,7 @@ export const full_name_to_abbreviation = {
         "organisation for economic cooperation and development": "oecd",
         "organization for economic cooperation and development": "oecd",
         "organisation for economic co-operation and development": "oecd",
+        "bundesministerium für wirtschaft und energie": "bmwi",
         "world intellectual property organization": "wipo",
         "united nations": "un",
         "international monetary fund": "imf",

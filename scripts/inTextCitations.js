@@ -10,6 +10,15 @@ export function inTextSearch() {
     assignnames()
 }
 
+export function removeOldSpans() {
+document.querySelectorAll('.textLine').forEach(div => {
+    // For each div with class 'textLine', iterate through each span child and replace it with its text content
+    div.querySelectorAll('span').forEach(span => {
+        span.replaceWith(span.textContent);
+    });
+});
+}
+
 
 function combineHyphenatedWords(words) {  // helper function to merge text between divs if there is a "-"
     let result = []; // To store the final result
@@ -286,7 +295,8 @@ function cleanCitations() {
 
 
 function identifyAndWrapCitations() {
-    const citationPattern = /\d{4}/;  // Regex to match a four-digit year (representing the year in a citation)
+    const citationPattern = /(?:18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|2100)/;
+  // Regex to match a four-digit year (representing the year in a citation)
     const pagePattern = /p\.\s*\d+/i;
     let awaitingCitation = false;  // Flag to treat the next div as if it starts with an implicit "("
 

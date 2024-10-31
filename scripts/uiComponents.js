@@ -323,7 +323,7 @@ export async function referenceSectionGUI(Points) {
      if (ratioParagraph > 1.7 && ratioParagraph < 4 && ratioIndent > 1.7 && ratioIndent < 4) {
         // Both ratios are within range, pick the smaller one
         
-        if (ratioParagraph <= ratioIndent) {
+        if (ratioParagraph >= ratioIndent) {
             activateButton(subdivButton)
             deactivateButton(subdivButton2)
             referenceCount = subdivide(startPoint, endPoint, "byParagraph")
@@ -655,11 +655,11 @@ export function secondFrame(referenceCount) {
 
     createSeparator(referenceCount)   // @LF: that should probably moved somewhere else 
     
-    const scholarContainer = document.getElementById('scholar-container');
+
     // Second frame for references (collapsible frame)
-    const OuterFrame = document.createElement('div');
+    const OuterFrame = document.getElementById('secondframe');
     OuterFrame.innerHTML = "";
-    OuterFrame.className = "OuterFrame"
+
     const ReferenceFrame = document.createElement('div');
     ReferenceFrame.id = "ReferenceFrame"
     ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
@@ -923,7 +923,6 @@ export function secondFrame(referenceCount) {
     }
     // Append the ReferenceFrame to the scholar container
     OuterFrame.appendChild(ReferenceFrame);
-    scholarContainer.appendChild(OuterFrame);
 
 
 
@@ -1415,10 +1414,9 @@ citationElements.forEach(function (element) {
 });
 
 
-    const scholarContainer = document.getElementById('scholar-container');
-    const OuterFrame = document.createElement('div');
-    OuterFrame.className = "OuterFrame2"
-    scholarContainer.appendChild(OuterFrame)
+    const OuterFrame = document.getElementById('thirdframe');
+    OuterFrame.innerHTML = "";
+
     OuterFrame.style.flexShrink = '0'; // Set initial max height
     OuterFrame.style.maxHeight = '40%';
     // Create the third frame for in-text citations (collapsible frame)

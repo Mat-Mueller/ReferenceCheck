@@ -679,4 +679,20 @@ a[href="javascript:"] {
 }
 
 
+#Goback {
+    width: 25px;
+    height: 25px;
+    background-image: url('arrow.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+    cursor: pointer;
+}
+
+
+#Goback:hover {
+    color: #e0e0e0ba; /* Slightly darker gray on hover */
+}
+
 

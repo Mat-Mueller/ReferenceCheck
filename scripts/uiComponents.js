@@ -1099,6 +1099,7 @@ citationElements.forEach(function (element) {
     referenceFrames.forEach(reference => {
         // Get the computed border color of the reference frame
         const referenceBorderColor = getComputedStyle(reference).getPropertyValue('border-color').trim();
+
         // If the border color matches the accent color, increment the counter
         if (referenceBorderColor === accentColor) {
             countWithoutMatch++;
@@ -1238,7 +1239,7 @@ export function DragDrop() {
 
         // Drag leave event (removes hover state when dragging leaves the zone)
         dropZone.addEventListener('dragleave', () => {
-            dropZone.style.border = '0px solid red';
+            dropZone.style.border = '';
         });
 
         // Drop event (handles the actual drop)
@@ -1246,7 +1247,7 @@ export function DragDrop() {
 
             e.preventDefault();
             dropZone.classList.remove('hover');
-
+            dropZone.style.border = '';
                 console.log(draggedElement)
                 let draggedElementToUse = draggedElement; // Initialize to use the original draggedElement
                 const draggableSpans = document.querySelectorAll('span.citation[cleanedCit]');
@@ -1310,9 +1311,7 @@ export function DragDrop() {
 
                 draggedElement.setAttribute('found', 'true');
 
-            
-                // 2. Add event listener to scroll to the drop zone (Reference-frame)
-
+        
                 const element = dropZone
                 DoHighlight(element)
                 element.scrollIntoView({behavior: 'smooth', block: 'center'})

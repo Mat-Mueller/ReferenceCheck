@@ -110,10 +110,10 @@ async function renderAllPages(pdfDocument) {
         const viewport = page.getViewport({ scale: 2 });
         const textLayerDiv = document.createElement('div');
         textLayerDiv.className = 'textLayer';
-        textLayerDiv.style.height = `${viewport.height}px`;
-        textLayerDiv.style.width = `${viewport.width}px`;
+        textLayerDiv.style.height = `${viewport.height / 1}px`;
+        textLayerDiv.style.width = `${viewport.width / 2}px`;
         textLayerDiv.style.position = 'relative';
-        textLayerDiv.style.marginBottom = '5px'; // Space between pages
+        textLayerDiv.style.marginBottom = '0px'; // Space between pages
         textLayerDiv.style.overflow = 'hidden'; // Hide overflow content
 
         pdfContainer.appendChild(dummy);
@@ -125,6 +125,7 @@ async function renderAllPages(pdfDocument) {
 
         textContent.items.forEach(function (textItem) {
             const currentY = textItem.transform[5]; // Y coordinate
+            console.log(currentY)
             const currentX = textItem.transform[4]; // X coordinate
             const lineText = textItem.str;
             const fontSize = textItem.transform[0]; // Extract font size
@@ -202,7 +203,7 @@ async function renderAllPages(pdfDocument) {
             lineElement.style.position = 'absolute';
             lineElement.style.whiteSpace = 'pre'; // Preserve whitespace
             lineElement.style.left = `${line.x}px`; // Set X position based on the first text item
-            lineElement.style.top = `${(viewport.height - line.y * 1.5)}px`; // Set Y position (inverted)
+            lineElement.style.top = `${(viewport.height - line.y * 2)}px`; // Set Y position (inverted)
             lineElement.style.margin = '0'; // Ensure no margin is added
             lineElement.style.padding = '0'; // Ensure no padding is added
 

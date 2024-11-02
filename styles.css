@@ -414,10 +414,11 @@ margin-left : 3px;
 
     margin-left: auto;
     width: 100px;     /* Sets the width of the element */
+    border-radius: 5px;
 }
 #searchSpanField {
     z-index: 1000;
-
+    border-radius: 5px;
     width: 100px;     /* Sets the width of the element */
 }
 

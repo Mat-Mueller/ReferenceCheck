@@ -62,13 +62,13 @@ export function createMenue () {
 
 function activateButton(button) {
     button.style.backgroundColor = "#4a90e2"; // corrected background-color to backgroundColor
-    button.style.boxShadow = "0 5px #666"; // corrected box-shadow to boxShadow
+    button.style.boxShadow = "0 5px 10px #666"; // corrected box-shadow to boxShadow
     button.style.transform = "translateY(2px)"; // transform is correct
 }
 
 function deactivateButton(button) {
     button.style.backgroundColor = "white";
-    button.style.boxShadow = "0 7px #999";
+    button.style.boxShadow = "0 7px 10px #999";
     button.style.transform = "translateY(-2px)";
 }
 

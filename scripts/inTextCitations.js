@@ -10,6 +10,8 @@ export function inTextSearch() {
     assignnames()
 }
 
+//CCE34B
+
 export function removeOldSpans() {
 document.querySelectorAll('.textLine').forEach(div => {
     // For each div with class 'textLine', iterate through each span child and replace it with its text content

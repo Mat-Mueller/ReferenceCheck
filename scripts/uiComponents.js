@@ -610,7 +610,7 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
 
             // Add an event listener to scroll to the span element when clicked
             link.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent the default anchor behavior
+                //event.preventDefault(); // Prevent the default anchor behavior
                 span.scrollIntoView({ behavior: 'smooth', block: 'center'  }); // Scroll to the matched span
                 DoHighlight(span)
             });
@@ -941,9 +941,14 @@ export function secondFrame(referenceCount) {
 export function DoHighlight(element) {
     // Store the original background color
 // Store the original background color and border of the element
-const backgroundColor = element.style.backgroundColor;
+let backgroundColor = element.style.backgroundColor;
 const currentBorder = element.style.border;
+if (!backgroundColor && element.classList.contains("citation")){
+    backgroundColor = "#CCE34B"
 
+}
+console.log(backgroundColor)
+console.log(element)
 
 /*
 element.classList.add("DoHighlights")
@@ -1390,17 +1395,17 @@ function FormulateTooltip(element) {
     if (element.getAttribute('Found') === 'true') {
         element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Successfully matched with reference!`);
     } else if (!element.getAttribute('Found')) {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually using drag & drop`);
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually by dragging this element onto the respective reference.`);
     } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually by dragging this element onto the respective reference.`)
     }
     else if (element.getAttribute('Found') === 'year') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually by dragging this element onto the respective reference.`)
     }
     else if (element.getAttribute('Found') === 'byAbbr') {
         element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Matched by abbreviation!`)
     }    else if (element.getAttribute('Found') === 'typo') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually by dragging this element onto the respective reference.`)
     }
     
 

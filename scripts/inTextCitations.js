@@ -124,10 +124,20 @@ function GetallPossibleNames() {
         // Step 2: Extract the part before the (year)
         let lastNames = MakeRefName(cleanedText);
 
-        
+        let authorsPart
+        const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
+        console.log(cleanedText)
+        if (matchResult) {
+          authorsPart = matchResult[0]
+          authorsPart = authorsPart.replace(/\([^)]*$-./, "");
+          // Check if the match was successful
+          authorsPart = authorsPart.replace(" (", "").toLowerCase().trim()
+        }
+        console.log(authorsPart)
+        if (authorsPart) {AlllastNames.push(authorsPart.replace("-", "").replace(".", "").toLowerCase())}
         lastNames.forEach((name) => {AlllastNames.push(name.toLowerCase())})
     }
-    //console.log(AlllastNames)
+    console.log(AlllastNames)
     return AlllastNames
 }
 
@@ -217,7 +227,6 @@ function mergeNameFragments(knownNames, guessedNames) {
       // Push the merged name (or single name) to the result
       
     }
-    console.log(mergedNames)
     return mergedNames;
   }
 
@@ -247,7 +256,6 @@ function cleanCitations() {
                 words = mergeNameFragments(Allnames, words)
                 let lastWord = words[words.length - 1]; // Get the word before the span
                 // Check if the word before the last word is "and", "&", or "al."
-                console.log(words)
                 const nonWordRegex = /[.;:!"?)]$/;
                 if (
                     words.length > 1 &&
@@ -263,7 +271,6 @@ function cleanCitations() {
                     let secondLastWord = words[words.length - 2];
                     let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
                     let fourthLastWord = words.length > 3 ?  words[words.length - 4].replace(",", "") : '';
-                    console.log(fourthLastWord,Allnames.includes(fourthLastWord) )
                     cleanedText = `${thirdLastWord ? thirdLastWord + ';' : ''}${secondLastWord};${lastWord};${cleanedText}`;
                     if (Allnames.includes(fourthLastWord)) {
                         cleanedText = `${fourthLastWord ? fourthLastWord + ';' : ''}${cleanedText}`;
@@ -273,7 +280,6 @@ function cleanCitations() {
                     cleanedText = `${lastWord};${cleanedText}`;
 
                 }
-                console.log(cleanedText)
             }
         } else {   ///////////   if its a Parenthetical citation
             let words = cleanedText.replace(/(\d{4}[a-zA-Z]?).*/, '$1').replace(",", "").split(" ");

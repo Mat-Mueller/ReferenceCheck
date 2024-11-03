@@ -125,7 +125,6 @@ async function renderAllPages(pdfDocument) {
 
         textContent.items.forEach(function (textItem) {
             const currentY = textItem.transform[5]; // Y coordinate
-            console.log(currentY)
             const currentX = textItem.transform[4]; // X coordinate
             const lineText = textItem.str;
             const fontSize = textItem.transform[0]; // Extract font size

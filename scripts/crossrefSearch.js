@@ -5,7 +5,6 @@ import { searchResultGUI, hideLoadingSpinner, showLoadingSpinner } from './uiCom
 // Function to perform the CrossRef search for all buttons
 export async function performCrossRefSearch() {
     const References = document.querySelectorAll('.Reference-frame');
-    console.log(References)
     console.log("starting CR search")
     // Create a concurrency limiter
     const MAX_CONCURRENT_REQUESTS = 3;

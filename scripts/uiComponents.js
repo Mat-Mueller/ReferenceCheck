@@ -815,6 +815,7 @@ export function secondFrame(referenceCount) {
         } else {
             result = ""; // Or handle it accordingly if no match is found
         }
+        ReferenceFrameParagraph.setAttribute('cleanedText', result.replace(" (", ""))
 
 
         /// asigning abbreviations for references
@@ -947,8 +948,7 @@ if (!backgroundColor && element.classList.contains("citation")){
     backgroundColor = "#CCE34B"
 
 }
-console.log(backgroundColor)
-console.log(element)
+
 
 /*
 element.classList.add("DoHighlights")

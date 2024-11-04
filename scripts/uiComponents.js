@@ -62,13 +62,13 @@ export function createMenue () {
 
 function activateButton(button) {
     button.style.backgroundColor = "#4a90e2"; // corrected background-color to backgroundColor
-    button.style.boxShadow = "0 5px #666"; // corrected box-shadow to boxShadow
+    button.style.boxShadow = "0 5px 10px #666"; // corrected box-shadow to boxShadow
     button.style.transform = "translateY(2px)"; // transform is correct
 }
 
 function deactivateButton(button) {
     button.style.backgroundColor = "white";
-    button.style.boxShadow = "0 7px #999";
+    button.style.boxShadow = "0 7px 10px #999";
     button.style.transform = "translateY(-2px)";
 }
 
@@ -610,7 +610,7 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
 
             // Add an event listener to scroll to the span element when clicked
             link.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent the default anchor behavior
+                //event.preventDefault(); // Prevent the default anchor behavior
                 span.scrollIntoView({ behavior: 'smooth', block: 'center'  }); // Scroll to the matched span
                 DoHighlight(span)
             });
@@ -815,6 +815,7 @@ export function secondFrame(referenceCount) {
         } else {
             result = ""; // Or handle it accordingly if no match is found
         }
+        ReferenceFrameParagraph.setAttribute('cleanedText', result.replace(" (", ""))
 
 
         /// asigning abbreviations for references
@@ -941,8 +942,12 @@ export function secondFrame(referenceCount) {
 export function DoHighlight(element) {
     // Store the original background color
 // Store the original background color and border of the element
-const backgroundColor = element.style.backgroundColor;
+let backgroundColor = element.style.backgroundColor;
 const currentBorder = element.style.border;
+if (!backgroundColor && element.classList.contains("citation")){
+    backgroundColor = "#CCE34B"
+
+}
 
 
 /*
@@ -1099,6 +1104,7 @@ citationElements.forEach(function (element) {
     referenceFrames.forEach(reference => {
         // Get the computed border color of the reference frame
         const referenceBorderColor = getComputedStyle(reference).getPropertyValue('border-color').trim();
+
         // If the border color matches the accent color, increment the counter
         if (referenceBorderColor === accentColor) {
             countWithoutMatch++;
@@ -1238,7 +1244,7 @@ export function DragDrop() {
 
         // Drag leave event (removes hover state when dragging leaves the zone)
         dropZone.addEventListener('dragleave', () => {
-            dropZone.style.border = '0px solid red';
+            dropZone.style.border = '';
         });
 
         // Drop event (handles the actual drop)
@@ -1246,7 +1252,7 @@ export function DragDrop() {
 
             e.preventDefault();
             dropZone.classList.remove('hover');
-
+            dropZone.style.border = '';
                 console.log(draggedElement)
                 let draggedElementToUse = draggedElement; // Initialize to use the original draggedElement
                 const draggableSpans = document.querySelectorAll('span.citation[cleanedCit]');
@@ -1310,9 +1316,7 @@ export function DragDrop() {
 
                 draggedElement.setAttribute('found', 'true');
 
-            
-                // 2. Add event listener to scroll to the drop zone (Reference-frame)
-
+        
                 const element = dropZone
                 DoHighlight(element)
                 element.scrollIntoView({behavior: 'smooth', block: 'center'})
@@ -1391,17 +1395,17 @@ function FormulateTooltip(element) {
     if (element.getAttribute('Found') === 'true') {
         element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Successfully matched with reference!`);
     } else if (!element.getAttribute('Found')) {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually using drag & drop`);
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually by dragging this element onto the respective reference.`);
     } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually by dragging this element onto the respective reference.`)
     }
     else if (element.getAttribute('Found') === 'year') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually by dragging this element onto the respective reference.`)
     }
     else if (element.getAttribute('Found') === 'byAbbr') {
         element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Matched by abbreviation!`)
     }    else if (element.getAttribute('Found') === 'typo') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually using drag & drop if necessary`)
+        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually by dragging this element onto the respective reference.`)
     }
     
 
@@ -1423,10 +1427,11 @@ citationElements.forEach(function (element) {
 
     const OuterFrame = document.getElementById('thirdframe');
     OuterFrame.innerHTML = "";
-    OuterFrame.style = "display: block"
+    OuterFrame.style = "display: block; resize: vertical;";
 
     OuterFrame.style.flexShrink = '0'; // Set initial max height
     OuterFrame.style.maxHeight = '40%';
+    OuterFrame.style.minHeight = '40px';
     // Create the third frame for in-text citations (collapsible frame)
     const helper = document.createElement('div')
     const InTextCitFrame = document.createElement('div');

@@ -144,9 +144,9 @@ export function MakeRefName(cleanedText, ReferenceFrameParagraph) {
           let authorsPart = matchResult[0]
           authorsPart = authorsPart.replace(/\([^)]*$/, "");
           // Check if the match was successful
-        
+          authorsPart = authorsPart.replace(" (", "").toLowerCase().trim()
              // Safely access the matched part
-            if (ReferenceFrameParagraph && authorsPart.replace(" (", "").toLowerCase().trim() in full_name_to_abbreviation) {
+            if (ReferenceFrameParagraph && authorsPart in full_name_to_abbreviation) {
               ReferenceFrameParagraph.setAttribute('Abbr', full_name_to_abbreviation[authorsPart.replace(" (", "").toLowerCase().trim()])
             }
             // Step 3: Split the remaining string by commas or ampersands and extract the last names

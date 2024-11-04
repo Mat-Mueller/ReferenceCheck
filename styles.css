@@ -3,7 +3,7 @@
 
 :root {
     --primary-color: #4a90e2;
-    --secondary-color: #CCE34B;
+    --secondary-color: #5b9d73;
     --accent-color: #E3574B;
     --Referencelist1-color: #d3d3d3;
     --Referencelist2-color: #a9a9a9;
@@ -261,7 +261,7 @@ body {
     background-color: White;
     border: 2px solid grey;
     border-radius: 5px;
-    box-shadow: 0 7px #999;
+    box-shadow: 0 7px 10px #999;
   }
   
   .button:hover {
@@ -269,7 +269,7 @@ body {
   
   .button:active {
     background-color: #4a90e2;
-    box-shadow: 0 5px #666;
+    box-shadow: 0 5px 10px #666;
     transform: translateY(4px);
   }
 
@@ -414,10 +414,11 @@ margin-left : 3px;
 
     margin-left: auto;
     width: 100px;     /* Sets the width of the element */
+    border-radius: 5px;
 }
 #searchSpanField {
     z-index: 1000;
-
+    border-radius: 5px;
     width: 100px;     /* Sets the width of the element */
 }
 

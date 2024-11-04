@@ -10,6 +10,8 @@ export function inTextSearch() {
     assignnames()
 }
 
+//CCE34B
+
 export function removeOldSpans() {
 document.querySelectorAll('.textLine').forEach(div => {
     // For each div with class 'textLine', iterate through each span child and replace it with its text content
@@ -122,10 +124,20 @@ function GetallPossibleNames() {
         // Step 2: Extract the part before the (year)
         let lastNames = MakeRefName(cleanedText);
 
-        
+        let authorsPart
+        const matchResult = cleanedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
+        console.log(cleanedText)
+        if (matchResult) {
+          authorsPart = matchResult[0]
+          authorsPart = authorsPart.replace(/\([^)]*$-./, "");
+          // Check if the match was successful
+          authorsPart = authorsPart.replace(" (", "").toLowerCase().trim()
+        }
+        console.log(authorsPart)
+        if (authorsPart) {AlllastNames.push(authorsPart.replace("-", "").replace(".", "").replace(",", "").toLowerCase())}
         lastNames.forEach((name) => {AlllastNames.push(name.toLowerCase())})
     }
-    //console.log(AlllastNames)
+    console.log(AlllastNames)
     return AlllastNames
 }
 
@@ -165,7 +177,6 @@ function precleaned() {
 }
 
 function mergeNameFragments(knownNames, guessedNames) {
-    console.log(guessedNames)
 
     guessedNames = guessedNames.map(element => element.replace(/,/g, ""));
 
@@ -176,23 +187,31 @@ function mergeNameFragments(knownNames, guessedNames) {
             .filter(name => name !== 'et al.') // Exclude "et al." from the set
     );    
     const mergedNames = [];
-  
+    //console.log(guessedNames)
     for (let i = 0; i < guessedNames.length; i++) {
-      let combinedName = guessedNames[i].toLowerCase();
+        let combinedName = guessedNames[i].toLowerCase();     
+        let y = i
+        let found = false
+        while (y  < guessedNames.length && !found) {
+
+            if (!knownNamesSet.has(combinedName) && !found) {
+                if (y + 1 < guessedNames.length) {combinedName += ' ' + guessedNames[y + 1].toLowerCase()}
+            } else{
+                found = true
+                i = y           
+            }
+            y += 1
+
+        }
+        if (found) {
+            mergedNames.push(combinedName)
+        } else {
+            mergedNames.push(guessedNames[i].toLowerCase())
+        }
+
+
       
-      // Check if the next word forms a known name when combined with the current one ///// Thats dirty ////////////////////////////////////////////////////
-      while (i + 1 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase())) {
-        combinedName += ' ' + guessedNames[++i].toLowerCase();
-      }
-      while (i + 2 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase() + ' ' + guessedNames[i + 2].toLowerCase())) {
-        combinedName += ' ' + guessedNames[++i].toLowerCase();  // Append the next fragment
-        combinedName += ' ' + guessedNames[++i].toLowerCase(); 
-          }
-  
-      // Push the merged name (or single name) to the result
-      mergedNames.push(combinedName);
     }
-  
     return mergedNames;
   }
 
@@ -237,7 +256,6 @@ function cleanCitations() {
                     let secondLastWord = words[words.length - 2];
                     let thirdLastWord = words.length > 2 ? words[words.length - 3] : '';
                     let fourthLastWord = words.length > 3 ?  words[words.length - 4].replace(",", "") : '';
-                    console.log(fourthLastWord,Allnames.includes(fourthLastWord) )
                     cleanedText = `${thirdLastWord ? thirdLastWord + ';' : ''}${secondLastWord};${lastWord};${cleanedText}`;
                     if (Allnames.includes(fourthLastWord)) {
                         cleanedText = `${fourthLastWord ? fourthLastWord + ';' : ''}${cleanedText}`;

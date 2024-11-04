@@ -1427,10 +1427,11 @@ citationElements.forEach(function (element) {
 
     const OuterFrame = document.getElementById('thirdframe');
     OuterFrame.innerHTML = "";
-    OuterFrame.style = "display: block"
+    OuterFrame.style = "display: block; resize: vertical;";
 
     OuterFrame.style.flexShrink = '0'; // Set initial max height
     OuterFrame.style.maxHeight = '40%';
+    OuterFrame.style.minHeight = '40px';
     // Create the third frame for in-text citations (collapsible frame)
     const helper = document.createElement('div')
     const InTextCitFrame = document.createElement('div');

@@ -134,7 +134,7 @@ function GetallPossibleNames() {
           authorsPart = authorsPart.replace(" (", "").toLowerCase().trim()
         }
         console.log(authorsPart)
-        if (authorsPart) {AlllastNames.push(authorsPart.replace("-", "").replace(".", "").toLowerCase())}
+        if (authorsPart) {AlllastNames.push(authorsPart.replace("-", "").replace(".", "").replace(",", "").toLowerCase())}
         lastNames.forEach((name) => {AlllastNames.push(name.toLowerCase())})
     }
     console.log(AlllastNames)
@@ -187,23 +187,18 @@ function mergeNameFragments(knownNames, guessedNames) {
             .filter(name => name !== 'et al.') // Exclude "et al." from the set
     );    
     const mergedNames = [];
-  
+    //console.log(guessedNames)
     for (let i = 0; i < guessedNames.length; i++) {
-        let combinedName = guessedNames[i].toLowerCase();
-      
+        let combinedName = guessedNames[i].toLowerCase();     
         let y = i
         let found = false
         while (y  < guessedNames.length && !found) {
 
             if (!knownNamesSet.has(combinedName) && !found) {
-
                 if (y + 1 < guessedNames.length) {combinedName += ' ' + guessedNames[y + 1].toLowerCase()}
-
             } else{
-
                 found = true
-                i = y
-            
+                i = y           
             }
             y += 1
 
@@ -214,17 +209,7 @@ function mergeNameFragments(knownNames, guessedNames) {
             mergedNames.push(guessedNames[i].toLowerCase())
         }
 
-      /*
-      // Check if the next word forms a known name when combined with the current one ///// Thats dirty ////////////////////////////////////////////////////
-      while (i + 1 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase())) {
-        combinedName += ' ' + guessedNames[++i].toLowerCase();
-      }
-      while (i + 2 < guessedNames.length && knownNamesSet.has(combinedName + ' ' + guessedNames[i + 1].toLowerCase() + ' ' + guessedNames[i + 2].toLowerCase())) {
-        combinedName += ' ' + guessedNames[++i].toLowerCase();  // Append the next fragment
-        combinedName += ' ' + guessedNames[++i].toLowerCase(); 
-          }
-  */
-      // Push the merged name (or single name) to the result
+
       
     }
     return mergedNames;

@@ -506,13 +506,13 @@ margin-left : 3px;
 }
 
 .menu a:hover {
-    background-color: white;
     border-radius: 5px;
 }
 
 /* Show the menu when active */
 .menu.active {
     display: block;
+    z-index: 9999;
 }
 
 .reload-icon {

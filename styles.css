@@ -554,26 +554,56 @@ margin-left : 3px;
     justify-content: center;
     align-items: center;
     text-align: center;
+    
   }
 
   #MainLoading {
     position: fixed;
     top: 50%;
     left: 50%;
-    height: 30%;
-    width: 30%;
+    height: 40%;
+    width: 40%;
     background-color: white;
     font-size: 2.5em; /* Bigger text */
     display: flex; /* Use Flexbox for centering */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     transform: translate(-50%, -50%);
-    border: 50px solid white; /* Large border */
-    box-shadow: 0 0 30px white(0, 0, 0, 0.5); /* Fading border effect */
+    /*border: 50px solid white; /* Large border */
+    /*box-shadow: 0 0 30px white(0, 0, 0, 0.5); /* Fading border effect */
     text-align: center; /* Ensure multi-line text is centered */
+    border: 2px solid grey;
+    border-radius: 5px;
+    box-shadow: 0 7px 10px #999;
+}
+#UserSelectLoading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    width: 30%;
+    background-color: white;
+    font-size: 2.5em; /* Bigger text */
+    display: flex; /* Use Flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    transform: translate(-50%, -50%);
+    /*border: 50px solid white; /* Large border */
+    /*box-shadow: 0 0 30px white(0, 0, 0, 0.5); /* Fading border effect */
+    text-align: center; /* Ensure multi-line text is centered */
+    border: 2px solid grey;
+    border-radius: 5px;
+    box-shadow: 0 7px 10px #999;
 }
 
-
+#userSelectText {
+    text-align: center; /* Center text inside this div */
+    margin-bottom: 20px;
+  }
 
   #settings {
     display: none;

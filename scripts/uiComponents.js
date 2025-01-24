@@ -243,6 +243,7 @@ export async function referenceSectionGUI(Points) {
         })
         if (startPoint && endPoint) {
             NowSeperate();
+
         } else { 
             document.getElementById("settings-4text").innerHTML = "Please select reference section first";
             Cont.disabled = true;
@@ -263,6 +264,7 @@ export async function referenceSectionGUI(Points) {
 
         if (startPoint && endPoint) {
             NowSeperate();
+            
         } else { 
             document.getElementById("settings-4text").innerText = "Please select reference section first";
             Cont.disabled = true;
@@ -273,6 +275,10 @@ export async function referenceSectionGUI(Points) {
 
     if (startPoint && endPoint) {
         NowSeperate()
+        // Get the element by its ID
+        const element = document.getElementById("userSelectText");
+        element.textContent = "Reference identification successful.";
+        document.getElementById("UserSelectContinue").disabled = false
     } else { 
         document.getElementById("settings-4text").innerText = "Please select reference section first"
         Cont.disabled = true

@@ -300,8 +300,19 @@ function LoadingPage() {
 }
 
 function UNLoadingPage() {
-    console.log("Loading Screen")
-    document.getElementById("loadingScreen").style.display = "none"
+    console.log("UnLoading Screen")
+    document.getElementById("MainLoading").style.display = "none"
+    document.getElementById("UserSelectLoading").style.display = "flex"
+    // Add click event listener to the continue button
+    document.getElementById("UserSelectExit").addEventListener("click", function() {
+        document.getElementById("UserSelectContinue").style.display = "none"
+        document.getElementById("loadingScreen").style.display = "none"
+    }); 
+    document.getElementById("UserSelectContinue").addEventListener("click", function() {
+        document.getElementById("continue-button").click(); // Simulate a button click
+        document.getElementById("UserSelectContinue").style.display = "none"
+        document.getElementById("loadingScreen").style.display = "none"
+    });
 }
 
 

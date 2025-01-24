@@ -94,7 +94,14 @@
         </div>
       </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs" type="module"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs" type="module"></script> -->
+    <script type="module">
+        import * as pdfjsLib from './pdf.js/pdf.mjs'; // Correct relative path to the module
+    
+        // Set the worker script location
+        pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.js/pdf.worker.mjs'; // Correct relative path to the worker
+    </script>
+
     <script type="module" src="scripts/main.js"></script>
 
     

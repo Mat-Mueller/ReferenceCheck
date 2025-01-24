@@ -1,11 +1,12 @@
 // Called from main.js, reads in and renders pdf
 
-import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs';
+//import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs';
+//import * as pdfjsLib from './pdf.js/pdf.mjs'; // Correct relative path to the module
 import { checkFooter, checkHeader } from './headerFooterDetect.js';
 import {createZoomButtonsandSearchField} from "./createZoomButtonsandSearchField.js"
 import {analysis} from "./main.js"
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.worker.min.mjs';
+//pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.worker.min.mjs';
 
 // Exported function that calls all functions necessary for reading and rendering of user-input PDFs
 export async function readRenderPDF() {

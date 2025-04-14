@@ -18,7 +18,35 @@ async function main() {
     //document.getElementById("DescriptionID").scrollIntoView()
     createMenue();
     // Read and render user-input PDF
+
+    passwordProtect();
+
     await readRenderPDF();
+
+
+    
+}
+
+function passwordProtect() {
+    const correctPassword = "Schumpeter"; // Change this to your desired password
+
+    document.getElementById("password-button").addEventListener("click", function () {
+      const input = document.getElementById("password-input").value;
+      const error = document.getElementById("password-error");
+
+      if (input === correctPassword) {
+        document.getElementById("password-overlay").style.display = "none";
+      } else {
+        error.textContent = "Incorrect password. Try again.";
+      }
+    });
+
+    // Optional: Allow Enter key to submit
+    document.getElementById("password-input").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        document.getElementById("password-button").click();
+      }
+    });
 }
 
 // Initialize the main event listener

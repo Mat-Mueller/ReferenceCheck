@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Text Selection and CrossRef Search</title>
     <link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
     <div id="controls" class="controls">
@@ -104,6 +105,12 @@
 
     <script type="module" src="scripts/main.js"></script>
 
+    <div id="password-overlay">
+        <h2>This page is protected</h2>
+        <input type="password" id="password-input" placeholder="Enter password">
+        <button id="password-button">Unlock</button>
+        <div id="password-error"></div>
+    </div>
     
 </body>
 

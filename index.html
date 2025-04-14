@@ -25,8 +25,9 @@
     
 
         <ul class="menu" id="menu">
-            <li><a href="https://github.com/Mat-Mueller/ReferenceCheck" target="_blank">V0.8</a></li>
-            <li><a href="mailto:m_mueller@uni-hohenheim.de?subject=PDF%20Citation%20Analyzer">Contact</a></li>
+            <!-- <li><a href="https://github.com/Mat-Mueller/ReferenceCheck" target="_blank">V0.8</a></li>  -->
+            <li><a href="#" id="open-privacy-modal">Privacy Policy</a></li>
+            <li><a href="mailto:support@citalyze.de?subject=PDF%20Citation%20Analyzer">Contact</a></li>
         </ul>
     </div>
     </div>
@@ -111,7 +112,23 @@
         <button id="password-button">Unlock</button>
         <div id="password-error"></div>
     </div>
-    
+
+    <div id="cookie-container">
+        <div id="cookie-overlay"></div>
+        <div id="cookie-banner">
+          This site does not use cookies. Just letting you know!
+          <button id="cookie-btn">Got it</button>
+        </div>
+      </div>
+
+
+      <div id="privacy-modal" class="modal">
+        <div class="modal-content">
+          <span id="close-modal" class="close-btn">&times;</span>
+          <h2>Privacy Policy</h2>
+          <p>This site does not use cookies or track users. No personal data is collected...</p>
+        </div>
+      </div>
 </body>
 
 

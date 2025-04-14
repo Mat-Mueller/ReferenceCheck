@@ -755,7 +755,7 @@ a[href="javascript:"] {
     font-size: 16px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     cursor: pointer;
   }
@@ -764,4 +764,107 @@ a[href="javascript:"] {
     color: red;
     margin-top: 10px;
   }
+
+  #cookie-container {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none; /* Hidden by default, shown with JS if needed */
+  }
+  
+  #cookie-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent gray */
+  }
+  
+  #cookie-banner {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #333;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    transform: translateY(100%);
+    transition: transform 0.5s ease-out;
+  }
+  
+  #cookie-btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  #cookie-container.show #cookie-banner {
+    transform: translateY(0);
+  }
+
+
+  /* Blur background when modal is active */
+body.modal-open > *:not(#privacy-modal) {
+    filter: blur(5px);
+    pointer-events: none;
+  }
+  
+  /* Modal container (hidden by default) */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(2px);
+    background-color: rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Modal content box */
+  .modal-content {
+    position: relative; /* Needed to position the X inside */
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 80%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  /* Close button INSIDE the modal content */
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .close-btn:hover {
+    color: #000;
+  }
+  
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  
 

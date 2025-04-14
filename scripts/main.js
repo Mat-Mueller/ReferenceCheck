@@ -20,7 +20,8 @@ async function main() {
     // Read and render user-input PDF
 
     passwordProtect();
-
+    Coockie();
+    privacey()
     await readRenderPDF();
 
 
@@ -47,6 +48,58 @@ function passwordProtect() {
         document.getElementById("password-button").click();
       }
     });
+}
+
+function Coockie() {
+    document.addEventListener("DOMContentLoaded", function () {
+        const container = document.getElementById("cookie-container");
+        const button = document.getElementById("cookie-btn");
+      
+        localStorage.removeItem("cookieBannerDismissed");    ////////// only for testing, delete when live
+        if (!localStorage.getItem("cookieBannerDismissed")) {
+          container.style.display = "block";
+          // Trigger slide-in animation
+          setTimeout(() => container.classList.add("show"), 50);
+        }
+      
+        button.addEventListener("click", function () {
+          container.classList.remove("show");
+          localStorage.setItem("cookieBannerDismissed", "true");
+          setTimeout(() => {
+            container.style.display = "none";
+          }, 500); // Wait for animation to finish
+        });
+      });
+}
+
+function privacey() {
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("privacy-modal");
+        const closeBtn = document.getElementById("close-modal");
+        const body = document.body;
+      
+        // Open modal
+        document.querySelector('a[href^="mailto:"][innerText="Privacy Policy"]')?.addEventListener("click", function (e) {
+          e.preventDefault();
+          modal.style.display = "flex";
+          body.classList.add("modal-open");
+        });
+      
+        // Close modal
+        closeBtn.addEventListener("click", function () {
+          modal.style.display = "none";
+          body.classList.remove("modal-open");
+        });
+      
+        // Optional: close modal on background click
+        document.getElementById("open-privacy-modal").addEventListener("click", function (e) {
+            e.preventDefault();
+            modal.style.display = "flex";
+            body.classList.add("modal-open");
+          });
+      });
+      
+
 }
 
 // Initialize the main event listener

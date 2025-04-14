@@ -53,9 +53,19 @@ export function displaySoftwareDescription() {
 }
 
 export function createMenue () {
-    document.getElementById('menu-icon').addEventListener('click', function() {
-        const menu = document.getElementById('menu');
-        menu.classList.toggle('active'); // Toggle the 'active' class to show/hide the menu
+    document.getElementById("menu-icon").addEventListener("click", function (e) {
+        e.stopPropagation(); // prevent it from immediately closing
+        document.getElementById("menu").classList.toggle("active");
+        this.classList.toggle("active");
+      });
+    function closeMenu() {
+        document.getElementById("menu").classList.remove("active");
+        document.getElementById("menu-icon").classList.remove("active");
+    }
+      
+      // Close menu on any click outside the menu
+    document.addEventListener("click", function () {
+        closeMenu();
     });
 }
 

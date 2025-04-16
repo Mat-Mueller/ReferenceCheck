@@ -77,30 +77,35 @@ function privacey() {
         const modal = document.getElementById("privacy-modal");
         const closeBtn = document.getElementById("close-modal");
         const body = document.body;
-      
-        // Open modal
+        const modalContent = modal.querySelector(".modal-content");
+
+        // Inject the privacy text
+        modalContent.innerHTML = '<span id="close-modal" class="close-btn">&times;</span>' + window.privacyPolicyText;
+
+        // Open modal via mailto link with inner text "Privacy Policy"
         document.querySelector('a[href^="mailto:"][innerText="Privacy Policy"]')?.addEventListener("click", function (e) {
-          e.preventDefault();
-          modal.style.display = "flex";
-          body.classList.add("modal-open");
-        });
-      
-        // Close modal
-        closeBtn.addEventListener("click", function () {
-          modal.style.display = "none";
-          body.classList.remove("modal-open");
-        });
-      
-        // Optional: close modal on background click
-        document.getElementById("open-privacy-modal").addEventListener("click", function (e) {
             e.preventDefault();
             modal.style.display = "flex";
             body.classList.add("modal-open");
-          });
-      });
-      
+        });
 
+        // Also open via element with ID "open-privacy-modal"
+        document.getElementById("open-privacy-modal")?.addEventListener("click", function (e) {
+            e.preventDefault();
+            modal.style.display = "flex";
+            body.classList.add("modal-open");
+        });
+
+        // Close modal
+        modal.addEventListener("click", function (e) {
+            if (e.target === modal || e.target.id === "close-modal") {
+                modal.style.display = "none";
+                body.classList.remove("modal-open");
+            }
+        });
+    });
 }
+
 
 // Initialize the main event listener
 document.addEventListener("DOMContentLoaded", main());

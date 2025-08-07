@@ -28,6 +28,24 @@ export function MoveToFirstSpan() {
 }
 
 
+document.addEventListener("DOMContentLoaded", () => {
+    const cookieContainer = document.getElementById("cookie-container");
+    const cookieButton = document.getElementById("cookie-btn");
+
+    // Hide banner if already accepted
+    if (localStorage.getItem("cookieBannerAccepted") === "true") {
+        if (cookieContainer) cookieContainer.style.display = "none";
+    }
+
+    // Handle button click
+    if (cookieButton) {
+        cookieButton.addEventListener("click", () => {
+            localStorage.setItem("cookieBannerAccepted", "true");
+            if (cookieContainer) cookieContainer.style.display = "none";
+        });
+    }
+});
+
 export function displaySoftwareDescription() {
     const scholarContainer = document.getElementById('description');
 

@@ -59,7 +59,6 @@ dem Zugriff durch Dritte ist nicht m&ouml;glich.</p>
 dieser Website ist:</p> <p>Matthias M&uuml;ller<br />
 Dorfstra&szlig;e 6<br />
 49406 Eydelstedt</p>
-<p>Telefon: &#91;Telefonnummer der verantwortlichen Stelle&#93;<br />
 E-Mail: support@citalyze.de</p>
  <p>Verantwortliche Stelle ist die nat&uuml;rliche oder juristische Person, die allein oder gemeinsam mit anderen
 &uuml;ber die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten (z.&nbsp;B. Namen, E-Mail-
@@ -159,6 +158,5 @@ genannten Server-Log-Dateien, die Ihr Browser automatisch an uns &uuml;bermittel
 Erfassung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der Websitebetreiber hat ein
 berechtigtes Interesse an der technisch fehlerfreien Darstellung und der Optimierung seiner Website &ndash;
 hierzu m&uuml;ssen die Server-Log-Files erfasst werden.</p>
-<p>Quelle: <a href="https://www.e-recht24.de">https://www.e-recht24.de</a></p>
 </div>
 `;

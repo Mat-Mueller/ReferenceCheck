@@ -166,3 +166,33 @@ function waitForButtonClick(buttonId) {
         button.addEventListener("click", onClick);
     });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const goBack = document.getElementById("Goback");
+    if (goBack) {
+        goBack.addEventListener("click", () => {
+            history.back(); // or use: window.location.href = 'index.html';
+        });
+    }
+
+
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const cookieContainer = document.getElementById("cookie-container");
+    const cookieButton = document.getElementById("cookie-btn");
+
+    // Hide banner if already accepted
+    if (localStorage.getItem("cookieBannerAccepted") === "true") {
+        if (cookieContainer) cookieContainer.style.display = "none";
+    }
+
+    // Handle button click
+    if (cookieButton) {
+        cookieButton.addEventListener("click", () => {
+            localStorage.setItem("cookieBannerAccepted", "true");
+            if (cookieContainer) cookieContainer.style.display = "none";
+        });
+    }
+});

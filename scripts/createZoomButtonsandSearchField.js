@@ -28,7 +28,7 @@ export function createZoomButtonsandSearchField() {
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.id = 'searchSpanField';
-    searchInput.placeholder = 'Search...';
+    searchInput.placeholder = window.langDict["search_placeholder"];
     //searchInput.style.marginLeft = '50px';
     searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {  // Check if the Enter key was pressed

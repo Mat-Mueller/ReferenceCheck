@@ -28,23 +28,7 @@ export function MoveToFirstSpan() {
 }
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const cookieContainer = document.getElementById("cookie-container");
-    const cookieButton = document.getElementById("cookie-btn");
 
-    // Hide banner if already accepted
-    if (localStorage.getItem("cookieBannerAccepted") === "true") {
-        if (cookieContainer) cookieContainer.style.display = "none";
-    }
-
-    // Handle button click
-    if (cookieButton) {
-        cookieButton.addEventListener("click", () => {
-            localStorage.setItem("cookieBannerAccepted", "true");
-            if (cookieContainer) cookieContainer.style.display = "none";
-        });
-    }
-});
 
 export function displaySoftwareDescription() {
     const scholarContainer = document.getElementById('description');
@@ -204,59 +188,85 @@ export async function referenceSectionGUI(Points) {
         
     } else {document.getElementById("checkFooter").checked = false;}
     
-    document.getElementById("settings-1text").innerHTML = "<b> Header and footer: </b> <br>"
-    if (hasHeader && hasFooter ) {
-        document.getElementById("settings-1text").innerHTML += "We found a header and a footer in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
-    } else if (hasHeader && !(hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML += "We found a header in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
-    } else if (!(hasHeader) && (hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML += "We found a footer in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
-    } else if (!(hasHeader) && !(hasFooter) ) {
-        document.getElementById("settings-1text").innerHTML += "We found no footer or header in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections."
-    }
+["hf_both", "hf_header_only", "hf_footer_only", "hf_none"].forEach(id => {
+    document.getElementById(id).style.display = "none";
+});
 
+// Show the correct one
+if (hasHeader && hasFooter) {
+    document.getElementById("hf_both").style.display = "block";
+} else if (hasHeader) {
+    document.getElementById("hf_header_only").style.display = "block";
+} else if (hasFooter) {
+    document.getElementById("hf_footer_only").style.display = "block";
+} else {
+    document.getElementById("hf_none").style.display = "block";
+}
     /// Reference section Stuff
 
     const settings2 = document.getElementById("settings-2")
     const settings3 = document.getElementById("settings-3")
-    if (startPoint) {
-        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
-    } else document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br>No reference section found. Please select start of section manually by clicking button below. "
-    if (endPoint) {
-        document.getElementById("settings-3text").innerHTML = "<b> End of reference section: </b> <br> Reference section found and highlighted. For manually resetting, click button below."
-    } else document.getElementById("settings-3text").innerHTML = "<b> End of reference section: </b> <br> No reference section found. Please select end of section manually by clicking button below."
+    document.getElementById("start_ref_found").style.display = startPoint ? "inline" : "none";
+    document.getElementById("start_ref_missing").style.display = startPoint ? "none" : "inline";
 
-    const SetManually1 = document.getElementById('SetStartManually')  
+    document.getElementById("end_ref_found").style.display = endPoint ? "inline" : "none";
+    document.getElementById("end_ref_missing").style.display = endPoint ? "none" : "inline";
+
+    const SetManually1 = document.getElementById('SetStartManually');
     SetManually1.addEventListener('click', async function () {
-        activateButton(SetManually1)
-        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Click above the first reference in the reference section to maually reset start."
+        activateButton(SetManually1);
+
+        // Show the message for manual click instruction
+        document.getElementById("start_ref_initial").style.display = "inline";
+        document.getElementById("start_ref_set").style.display = "none";
+        document.getElementById("start_ref_found").style.display = "none";
+        document.getElementById("start_ref_missing").style.display = "none";
+
         startPoint = await setStart();
-        deactivateButton(SetManually1)
-        document.getElementById("settings-2text").innerHTML = "<b> Start of reference section: </b> <br> Start of reference section set."
+
+        deactivateButton(SetManually1);
+
+        // After setting the start point
+        document.getElementById("start_ref_initial").style.display = "none";
+        document.getElementById("start_ref_set").style.display = "inline";
+
         if (startPoint && endPoint) {
-            NowSeperate()
+            NowSeperate();
         }
-    })
+    });
+
     
-    const SetManually2 = document.getElementById('SetEndManually')
-    SetManually2.addEventListener('click', async function () {
-        activateButton(SetManually2)
-        document.getElementById("settings-3text").innerHTML = "<b> End of reference section: </b> <br> Click below the last reference in the reference section to manually reset end."
-        endPoint = await setEnd();
-        deactivateButton(SetManually2)
-        document.getElementById("settings-3text").innerHTML = "<b> End of reference section: </b> <br> End of reference section set."
-        if (startPoint && endPoint) {
-            NowSeperate()
-        }
-    })
+        const SetManually2 = document.getElementById('SetEndManually');
+        SetManually2.addEventListener('click', async function () {
+            activateButton(SetManually2);
+
+            // Show the instruction to click
+            document.getElementById("end_ref_initial").style.display = "inline";
+            document.getElementById("end_ref_set").style.display = "none";
+            document.getElementById("end_ref_found").style.display = "none";
+            document.getElementById("end_ref_missing").style.display = "none";
+
+            endPoint = await setEnd();
+
+            deactivateButton(SetManually2);
+
+            // After setting the end point
+            document.getElementById("end_ref_initial").style.display = "none";
+            document.getElementById("end_ref_set").style.display = "inline";
+
+            if (startPoint && endPoint) {
+                NowSeperate();
+            }
+        });
+
     const settings4 = document.getElementById("settings-4")
     const Cont =  document.getElementById("continue-button")
     
-    const subdivButton = document.getElementById("subdivButton")
-    subdivButton.innerText = `Separate by paragraph`;    
+    const subdivButton = document.getElementById("subdivButton");
+    subdivButton.innerText = window.langDict["separate_by_paragraph"];
 
-    const subdivButton2 = document.getElementById("subdivButton2")
-    subdivButton2.innerText = `Separate by indent`;    
+    const subdivButton2 = document.getElementById("subdivButton2");
+    subdivButton2.innerText = window.langDict["separate_by_indent"];  
     
 
     
@@ -273,7 +283,7 @@ export async function referenceSectionGUI(Points) {
             NowSeperate();
 
         } else { 
-            document.getElementById("settings-4text").innerHTML = "Please select reference section first";
+            document.getElementById("ref_missing").style.display = "inline"
             Cont.disabled = true;
         }
     });
@@ -294,7 +304,7 @@ export async function referenceSectionGUI(Points) {
             NowSeperate();
             
         } else { 
-            document.getElementById("settings-4text").innerText = "Please select reference section first";
+            document.getElementById("ref_missing").style.display = "inline"
             Cont.disabled = true;
         }
     });
@@ -305,10 +315,10 @@ export async function referenceSectionGUI(Points) {
         NowSeperate()
         // Get the element by its ID
         const element = document.getElementById("userSelectText");
-        element.textContent = "Reference identification successful.";
+        element.textContent = window.langDict["ref_id_success"];
         document.getElementById("UserSelectContinue").disabled = false
     } else { 
-        document.getElementById("settings-4text").innerText = "Please select reference section first"
+       document.getElementById("ref_missing").style.display = "inline"
         Cont.disabled = true
     }
 
@@ -337,7 +347,16 @@ export async function referenceSectionGUI(Points) {
         Cont.disabled = false;
         const paragraphCount = subdivide(startPoint, endPoint, "byParagraph");
         const indentCount = subdivide(startPoint, endPoint, "byIndent");
-        document.getElementById("settings-4text").innerHTML = `<b> Reference separation: </b> <br> ${paragraphCount} references found by paragraph separation, ${indentCount} by indent separation.`;
+
+
+        const title = `<b>${window.langDict["ref_sep_title"]}</b><br>`;
+        let stats = window.langDict["ref_sep_stats"]
+            .replace("{{paragraphCount}}", paragraphCount)
+            .replace("{{indentCount}}", indentCount);
+
+        document.getElementById("settings-4text").innerHTML = title + stats;
+
+
 
         referenceCount = indentCount
         const count = document.querySelectorAll('.textLine.highlight').length;
@@ -354,35 +373,30 @@ export async function referenceSectionGUI(Points) {
         console.log(ratioParagraph, ratioIndent); // Log both ratios
     
         // Decision rule
-     if (ratioParagraph > 1.7 && ratioParagraph < 4 && ratioIndent > 1.7 && ratioIndent < 4) {
-        // Both ratios are within range, pick the smaller one
-        
-        if (ratioParagraph >= ratioIndent) {
-            activateButton(subdivButton)
-            deactivateButton(subdivButton2)
-            referenceCount = subdivide(startPoint, endPoint, "byParagraph")
-            document.getElementById("settings-4text").innerHTML += " We suggest to separate by paragraphs. Click below to change the reference separation algorithm."
-        } else {
-            activateButton(subdivButton2)
-            deactivateButton(subdivButton)
-            document.getElementById("settings-4text").innerHTML += " We suggest to separate by intends.  Click below to change the reference separation algorithm."
-    
+        if (ratioParagraph > 1.7 && ratioParagraph < 4 && ratioIndent > 1.7 && ratioIndent < 4) {
+            if (ratioParagraph >= ratioIndent) {
+                activateButton(subdivButton);
+                deactivateButton(subdivButton2);
+                referenceCount = subdivide(startPoint, endPoint, "byParagraph");
+                document.getElementById("settings-4text").innerHTML += " " + window.langDict["ref_sep_suggest_paragraph"];
+            } else {
+                activateButton(subdivButton2);
+                deactivateButton(subdivButton);
+                referenceCount = subdivide(startPoint, endPoint, "byIndent");
+                document.getElementById("settings-4text").innerHTML += " " + window.langDict["ref_sep_suggest_indent"];
+            }
+        } else if (ratioParagraph > 1.7 && ratioParagraph < 4) {
+            activateButton(subdivButton);
+            deactivateButton(subdivButton2);
+            referenceCount = subdivide(startPoint, endPoint, "byParagraph");
+            document.getElementById("settings-4text").innerHTML += " " + window.langDict["ref_sep_suggest_paragraph"];
+        } else if (ratioIndent > 1.7 && ratioIndent < 4) {
+            activateButton(subdivButton2);
+            deactivateButton(subdivButton);
+            referenceCount = subdivide(startPoint, endPoint, "byIndent");
+            document.getElementById("settings-4text").innerHTML += " " + window.langDict["ref_sep_suggest_indent"];
         }
-     } else if (ratioParagraph > 1.7 && ratioParagraph < 4) {
-        activateButton(subdivButton)
-        deactivateButton(subdivButton2)
-    
-        referenceCount = subdivide(startPoint, endPoint, "byParagraph")
-        document.getElementById("settings-4text").innerHTML += " We suggest to separate by paragraphs.  Click below to change the reference separation algorithm."
 
-
-     } else if (ratioIndent > 1.7 && ratioIndent < 4) {
-        activateButton(subdivButton2)
-        deactivateButton(subdivButton)
-        document.getElementById("settings-4text").innerHTML += " We suggest to separate by intends.  Click below to change the reference separation algorithm."
-
-    
-     } 
     
      subdivButton.addEventListener('click', function() {
         activateButton(subdivButton)        
@@ -564,7 +578,7 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
         resultParagraph.style.margin = '0px';
         resultParagraph.style.backgroundColor = "#FFFFFF";
 
-        resultParagraph.innerHTML = `Best Crossref match: <br>` + `
+        resultParagraph.innerHTML = `${window.langDict["best_crossref_match"]}: <br>` + `
         ${item.formattedAuthors}.
         (${item.yearString}).
         <strong>${item.title[0]}</strong>.
@@ -587,7 +601,7 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
             showAbstractLink.href = "#"; // Make it behave like a link
             //showAbstractLink.style.color = 'blue'; // Optional: styling to look like a link
             showAbstractLink.style.cursor = 'pointer'; // Change cursor to pointer
-            showAbstractLink.innerText = "Show abstract";
+            showAbstractLink.innerText = window.langDict["show_abstract"];
 
             // Append the "Show abstract" link to the resultParagraph
             resultParagraph.appendChild(showAbstractLink);
@@ -632,7 +646,8 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
     if (!SingleRef.MatchedWith){SingleRef.MatchedWith = []}
         const MatchedWith = (SingleRef.MatchedWith);
         const matchCount = MatchedWith.length;
-        SingleRef.innerHTML = `<b>${matchCount}</b> ${matchCount === 1 ? 'instance' : 'instances'} in the document:`;
+        const key = matchCount === 1 ? "instance_single" : "instance_plural";
+SingleRef.innerHTML = `<b>${matchCount}</b> ${window.langDict[key]}`;
         SingleRef.style.marginBottom = '5px'; // Add space as needed
         MatchedWith.forEach((span, index) => {
             //console.log(span);
@@ -721,7 +736,7 @@ export function secondFrame(referenceCount) {
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.id = 'searchField';
-    searchInput.placeholder = 'Search...';
+    searchInput.placeholder = window.langDict["search_placeholder"];
     //searchInput.style.marginLeft = '50px';
     searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {  // Check if the Enter key was pressed
@@ -740,22 +755,13 @@ export function secondFrame(referenceCount) {
     Questionsmark.setAttribute("tooltip",  "")
     Questionsmark.className = "Explanations"
     
-    Questionsmark.setAttribute("tooltip", 
-        "<strong>Reference List Overview</strong><br>" +
-        "Here, users can view all detected references from the reference list. An entry may look like this: " +
-        "<ul>" +
-          "<li>Linked in-text citations are shown if a match is found. These citations are clickable and direct you to their location in the document.</li>" +
-          "<li>References with a <span style='border: 1px solid red;'>red border</span> indicate that no in-text citation match was found.</li>" +
-          "<li>Each reference includes a 'best match' section from the Crossref database to help verify the accuracy of the entry in the reference list.</li>" +
-         
-        "<li>A click on " + '<button class="Scholar-search-button" id="Scholar-button-51">GS</button>' + " will open a google scholar search with the detected reference.</li>"
-        + "</ul>"
-    );
-    
+    Questionsmark.setAttribute("tooltip", window.langDict["tooltip_reference_list"]);
+
     
 
     const CrossRefbutton = document.createElement("button");
-    CrossRefbutton.textContent = "Hide CrossRef Results"; // Initial text
+    CrossRefbutton.style.display = "none"; // completely hides it
+   CrossRefbutton.textContent = window.langDict["hide_crossref_results"];// Initial text
     
     // Add a click event listener to toggle display
     CrossRefbutton.addEventListener("click", () => {
@@ -770,7 +776,9 @@ export function secondFrame(referenceCount) {
         });
     
         // Update button text based on new visibility state
-        CrossRefbutton.textContent = anyVisible ? "Show CrossRef Results" : "Hide CrossRef Results";
+        CrossRefbutton.textContent = anyVisible
+    ? window.langDict["show_crossref_results"]
+    : window.langDict["hide_crossref_results"];
     }); 
     referenceHeadline.appendChild(RightContainer)
     RightContainer.appendChild(CrossRefbutton)
@@ -838,7 +846,10 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.className = "ReferenceFrameParagraph"
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
         ReferenceFrameParagraph.setAttribute('year', MyYear)
-        ReferenceFrameParagraph.setAttribute('tooltip', `Detected authors and year: <br> ${lastNames} (${MyYear})`)
+       ReferenceFrameParagraph.setAttribute(
+    'tooltip',
+    `${window.langDict["detected_authors_year"]} <br> ${lastNames} (${MyYear})`
+);
         ReferenceFrameParagraph.id = j;
                 // check if there is an abbreviation
         const matchResult = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/);
@@ -915,7 +926,7 @@ export function secondFrame(referenceCount) {
         //create empty results
         // Add a heading for the best match
         const bestMatchHeading = document.createElement('p');
-        bestMatchHeading.innerHTML = '<strong>Best Crossref match:</strong>';
+        bestMatchHeading.innerHTML = `<strong>${window.langDict["best_crossref_match"]}</strong>`;
         //bestMatchHeading.style.fontSize = '18px';
         bestMatchHeading.style.marginBottom = '10px';
         //ReferenceFrameParagraph.appendChild(bestMatchHeading);
@@ -931,7 +942,7 @@ export function secondFrame(referenceCount) {
         resultParagraph.style.backgroundColor = "#FFFFFF";
         //resultParagraph.style.height = "20px"
 
-        const textNode = document.createTextNode("Best Crossref match:");
+        const textNode = document.createTextNode(window.langDict["best_crossref_match"]);
         resultParagraph.appendChild(textNode);
         
         const Refspinner = document.createElement('div')
@@ -1047,7 +1058,7 @@ function searchRef() {
 
     if (totalMatches === 0) {
         console.log('No matches found.');
-        document.getElementById('SearchhitsRef').textContent = 'No matches found.';
+        document.getElementById('SearchhitsRef').textContent = window.langDict["no_matches_found"];
         return; // No matches, exit function
     }
 
@@ -1160,7 +1171,10 @@ if (TextFrameParagraph) {
 
     // Create the clickable 'countWithoutMatch' element
     const countWithoutMatchElement = document.createElement('span');
-    countWithoutMatchElement.innerHTML = `Found ${countWithoutMatch}/${referenceFrames.length} references without match:`;
+countWithoutMatchElement.innerHTML = 
+    window.langDict["refs_without_match"]
+        .replace("{count}", countWithoutMatch)
+        .replace("{total}", referenceFrames.length);
     countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
     countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
 
@@ -1206,8 +1220,9 @@ if (TextFrameParagraph) {
         
         const ThirdFrameTitle = document.getElementById("ThirdFrameTitle")
 
-        ThirdFrameTitle.innerHTML = `Found ${totalCitations - matchedCitations} in-text citations without match (${totalCitations} total)`;
-
+ThirdFrameTitle.innerHTML = window.langDict["citations_without_match"]
+    .replace("{{unmatched}}", totalCitations - matchedCitations)
+    .replace("{{total}}", totalCitations);
         }
     
 }
@@ -1426,24 +1441,32 @@ export function DragDrop() {
 
 
 function FormulateTooltip(element) {
-    if (element.getAttribute('Found') === 'true') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Successfully matched with reference!`);
-    } else if (!element.getAttribute('Found')) {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>No matching reference found! Click for suggestions and assign manually by dragging this element onto the respective reference.`);
-    } else if (element.getAttribute('Found') === 'ambig') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Found more than one matching reference! Click for suggestions and reassign manually by dragging this element onto the respective reference.`)
-    }
-    else if (element.getAttribute('Found') === 'year') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check puplication year! Reassign manually by dragging this element onto the respective reference.`)
-    }
-    else if (element.getAttribute('Found') === 'byAbbr') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Matched by abbreviation!`)
-    }    else if (element.getAttribute('Found') === 'typo') {
-        element.setAttribute('tooltip', `Identified in-text citation: <b> ${element.getAttribute("cleanedcit").split(";").join(" ")} </b> <br>Check spelling! Reassign manually by dragging this element onto the respective reference.`)
-    }
-    
+    const citation = element.getAttribute("cleanedcit").split(";").join(" ");
+    const dict = window.langDict;
+    let tooltipKey = "";
 
+    if (element.getAttribute('Found') === 'true') {
+        tooltipKey = "tooltip_found";
+    } else if (!element.getAttribute('Found')) {
+        tooltipKey = "tooltip_not_found";
+    } else if (element.getAttribute('Found') === 'ambig') {
+        tooltipKey = "tooltip_ambig";
+    } else if (element.getAttribute('Found') === 'year') {
+        tooltipKey = "tooltip_year";
+    } else if (element.getAttribute('Found') === 'byAbbr') {
+        tooltipKey = "tooltip_byAbbr";
+    } else if (element.getAttribute('Found') === 'typo') {
+        tooltipKey = "tooltip_typo";
+    }
+
+    if (tooltipKey && dict[tooltipKey]) {
+        element.setAttribute(
+            'tooltip',
+            dict[tooltipKey].replace("{{citation}}", citation)
+        );
+    }
 }
+
 
 
 export function thirdFrame() {
@@ -1545,15 +1568,7 @@ citationElements.forEach(function (element) {
     const Helperdiv = document.createElement('div');
     const Questionsmark = document.createElement('div')
     Questionsmark.innerText = "?"
-    Questionsmark.setAttribute("tooltip", 
-        "<strong>In-Text Citation Issues</strong><br>" +
-        "Here you find all identified in-text citations that show problems when matched against the reference list. Problems can be:" +
-        "<ul>" +
-          "<li><span style='background-color: #E3574B;' class='citationDESK'>Author Year</span> In-text citations without a matching reference in the reference list. You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
-          "<li><span style='background-color: orange;' class='citationDESK'>Author Year</span> In-text citations with a matching reference, but containing typos or incorrect publication years. You can manually match these by dragging and dropping the citation onto the corresponding entry in the reference list below.</li>" +
-          "<li><span style='background-color: yellow;' class='citationDESK'>Author Year</span> In-text citations matched through abbreviations.</li>" +
-        "</ul>"
-    );
+    Questionsmark.setAttribute("tooltip", window.langDict["tooltip_intext_issues"]);
     
       
     Questionsmark.className = "Explanations"
@@ -1562,7 +1577,7 @@ citationElements.forEach(function (element) {
     sortIcon.className = "sorting"
     sortIcon.innerHTML = "ABC" 
     sortIcon.style.cursor = "pointer";
-    sortIcon.setAttribute("tooltip", "Sort in-text citations w/o match<br>by alphabetical order");
+    sortIcon.setAttribute("tooltip", window.langDict["tooltip_sort_icon"]);
     sortIcon.addEventListener("click", sorting);
     ThirdFrameHead.appendChild(Helperdiv)
     
@@ -1570,7 +1585,7 @@ citationElements.forEach(function (element) {
     const trash = document.createElement('div');
     trash.id = "Trash1";
     trash.className = "Trashs"
-    trash.setAttribute("tooltip", "Drag erroneous in-text citations here")    
+    trash.setAttribute("tooltip", window.langDict["tooltip_trash"]);   
     Helperdiv.appendChild(trash)
     Helperdiv.appendChild(Questionsmark)
 
@@ -1600,7 +1615,7 @@ function sorting() {
         divsArray.sort((a, b) => a.textContent.localeCompare(b.textContent));
 
         // Adapt tooltip to sorting procedure
-        sortIcon.setAttribute("tooltip", "Sort in-text citations w/o match<br>by order of appearance");
+        sortIcon.setAttribute("tooltip", window.langDict["tooltip_sort_order"]);
         createTooltips();
 
         // Change sortIcon's innerHTML to "1.2.3."
@@ -1614,8 +1629,7 @@ function sorting() {
         });
 
         // Adapt tooltip to sorting procedure
-        sortIcon.setAttribute("tooltip", "Sort in-text citations w/o match<br>by alphabetical order");
-        createTooltips();
+        sortIcon.setAttribute("tooltip", window.langDict["tooltip_sort_alpha"]);        createTooltips();
 
         // Change sortIcon's innerHTML back to "ABC"
         sortIcon.innerHTML = "ABC";

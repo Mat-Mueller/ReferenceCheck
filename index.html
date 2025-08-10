@@ -1,138 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Überprüfen Sie automatisch APA-Zitate in PDFs mit Citalyze. Erkennen Sie fehlende Referenzen, CrossRef-Fehler und KI-generierte Zitate.">
+
     <title>PDF Text Selection and CrossRef Search</title>
     <link rel="stylesheet" href="styles.css">
-
 </head>
+
 <body>
     <div id="controls" class="controls">
-        <img src="Logo.png" alt="Icon" id="icon" style="width: 40px;">
-        Citalyze
+        <img src="Logo.png" alt="Symbol" id="icon" style="width: 40px;">
+        <span data-i18n="app_title">Citalyze</span>
         <div id="pdfFile"></div>
         <div id="rightCON">
-        <div id="Goback" style="display: none"></div>
-        <div class="reload-icon" onclick="location.reload()"></div>
-        <!-- Navbar with hamburger menu -->
-        <div class="menu-icon" id="menu-icon">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-    
+            <div id="Goback" style="display: none"></div>
+            <div class="reload-icon" onclick="location.reload()" aria-label="Seite neu laden"></div>
 
-        <ul class="menu" id="menu">
-            <!-- <li><a href="https://github.com/Mat-Mueller/ReferenceCheck" target="_blank">V0.8</a></li>  -->
-            <li><a href="#" id="open-privacy-modal">Privacy Policy</a></li>
-            <li><a href="impressum.html">Impressum</a></li> 
-            <li><a href="mailto:support@citalyze.de?subject=PDF%20Citation%20Analyzer">Contact</a></li>
-        </ul>
-    </div>
+            <div class="lang-switcher-container">
+                <div id="lang-menu-btn" class="lang-icon" aria-label="Sprachumschalter">
+                    <span role="img" aria-label="Sprachumschalter">
+                        <img class="icon_scg" src="language-svgrepo-com(2).svg" alt="" width="30" height="30">
+                    </span>
+                </div>
+                <ul id="lang-menu" class="lang-menu-dropdown">
+                    <li data-lang="en">English</li>
+                    <li data-lang="de">Deutsch</li>
+                </ul>
+            </div>
+
+            <!-- Navbar with hamburger menu -->
+            <div class="menu-icon" id="menu-icon" aria-label="Menü öffnen">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
+            <ul class="menu" id="menu">
+                <li><a href="#" id="open-privacy-modal" data-i18n="menu_privacy">Datenschutzerklärung</a></li>
+                <li><a href="Impressum.html" data-i18n="menu_impressum">Impressum</a></li>
+                <li><a href="mailto:support@citalyze.de?subject=PDF%20Citation%20Analyzer" data-i18n="menu_contact">Kontakt</a></li>
+            </ul>
+        </div>
     </div>
 
     <div id="viewer">
-
         <div class="frame" id="scholar-container">
-            <div id="description" style="background-color: white;"> </div>
+            <div id="description" style="background-color: white;"></div>
             <div id="settings" display="none">
-                <h2 style="padding-left: 10px;">Import settings</h2>                
+                <h2 style="padding-left: 10px;" data-i18n="import_settings">Importeinstellungen</h2>
                 <div id="settings-1">
-                    <p id="settings-1text"> </p>
+                    <p id="settings-1text">
+                        <b data-i18n="header_footer_title">Kopf- und Fußzeile:</b><br>
+                        <span id="hf_both" data-i18n="header_footer_both" style="display: none;">Kopf- und Fußzeile erkannt.</span>
+                        <span id="hf_header_only" data-i18n="header_footer_header_only" style="display: none;">Nur Kopfzeile erkannt.</span>
+                        <span id="hf_footer_only" data-i18n="header_footer_footer_only" style="display: none;">Nur Fußzeile erkannt.</span>
+                        <span id="hf_none" data-i18n="header_footer_none" style="display: none;">Keine Kopf- oder Fußzeile erkannt.</span>
+                    </p>
                     <div>
-                    <label>
-                        <input type="checkbox" id="checkHeader" name="checkHeader"> PDF has header
-                    </label>
-                    <label>
-                        <input type="checkbox" id="checkFooter" name="checkFooter"> PDF has footer
-                    </label>
-                </div>
+                        <label>
+                            <input type="checkbox" id="checkHeader" name="checkHeader">
+                            <span data-i18n="pdf_has_header">PDF hat eine Kopfzeile</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="checkFooter" name="checkFooter">
+                            <span data-i18n="pdf_has_footer">PDF hat eine Fußzeile</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="content">
                     <div id="settings-2">
-                        <p id="settings-2text" style="min-height: 80px; width:100%;"> </p>
-                        <button class="button" id="SetStartManually"> Set start manually</button>
+                        <p id="settings-2text" style="min-height: 80px; width:100%;">
+                            <b data-i18n="start_ref_title">Beginn des Literaturverzeichnisses:</b><br>
+                            <span id="start_ref_initial" data-i18n="start_ref_click" style="display: none;">Klicken Sie in das Dokument, um den Beginn festzulegen.</span>
+                            <span id="start_ref_set" data-i18n="start_ref_set" style="display: none;">Beginn festgelegt.</span>
+                            <span id="start_ref_found" data-i18n="start_ref_found" style="display: none;">Beginn automatisch erkannt.</span>
+                            <span id="start_ref_missing" data-i18n="start_ref_missing" style="display: none;">Beginn nicht gefunden.</span>
+                        </p>
+                        <button class="button" id="SetStartManually" data-i18n="set_start">Beginn manuell setzen</button>
                     </div>
                     <div id="settings-3">
-                        <p id="settings-3text" style="min-height: 80px; width:100%;"> </p>
-                        <button class="button" id="SetEndManually"> Set end manually</button>
+                        <p id="settings-3text" style="min-height: 80px; width:100%;">
+                            <b data-i18n="end_ref_title">Ende des Literaturverzeichnisses:</b><br>
+                            <span id="end_ref_initial" data-i18n="end_ref_click" style="display: none;">Klicken Sie in das Dokument, um das Ende festzulegen.</span>
+                            <span id="end_ref_set" data-i18n="end_ref_set" style="display: none;">Ende festgelegt.</span>
+                            <span id="end_ref_found" data-i18n="end_ref_found" style="display: none;">Ende automatisch erkannt.</span>
+                            <span id="end_ref_missing" data-i18n="end_ref_missing" style="display: none;">Ende nicht gefunden.</span>
+                        </p>
+                        <button class="button" id="SetEndManually" data-i18n="set_end">Ende manuell setzen</button>
                     </div>
                 </div>
+
                 <div id="settings-4">
-                    <p id="settings-4text"> Please select </p>
+                    <p id="settings-4text">
+                        <span id="ref_missing" data-i18n="ref_missing" style="display: none;">Bitte wählen Sie zuerst den Bereich des Literaturverzeichnisses.</span>
+                        <span id="suggest_indent" data-i18n="suggest_indent" style="display: none;">Wir empfehlen die Trennung nach Einzug. Klicken Sie unten, um den Algorithmus zur Referenztrennung zu ändern.</span>
+                        <span id="suggest_paragraph" data-i18n="suggest_paragraph" style="display: none;">Wir empfehlen die Trennung nach Absatz. Klicken Sie unten, um den Algorithmus zur Referenztrennung zu ändern.</span>
+                    </p>
+
                     <div id="subdivButtoonCont">
-                    <button class="button" id="subdivButton"></button>
-                    <button class="button" id="subdivButton2"></button>
-                </div>
-                    <button  id="continue-button">Continue</button>
+                        <button class="button" id="subdivButton"></button>
+                        <button class="button" id="subdivButton2"></button>
+                    </div>
+                    <button id="continue-button" data-i18n="continue">Weiter</button>
                 </div>
             </div>
             <div id="thirdframe" class="OuterFrame2" style="display: none"></div>
             <div id="secondframe" class="OuterFrame" style="display: none"></div>
-            
         </div>
 
         <div class="frame" id="pdf-container" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
             <div id="dragArea">
                 <input type="file" id="pdf-upload" accept="application/pdf">
-                Drag and drop a PDF here or use the file upload button.
+                <p data-i18n="drag_drop">Ziehen Sie eine PDF-Datei hierher oder verwenden Sie den Upload-Button.</p>
             </div>
         </div>
-
-
     </div>
-    <div id="loadingScreen" class="loading-screen">
-        <div id="MainLoading" >Loading...
-            <div class="spinner" style="display: block;" ></div>
-        </div>
-        <div id="UserSelectLoading" style="display: none;" >
-            <div  id="userSelectText" >Reference identification unsuccesful. Please go to the seetings tab.</div>
-            <div id="userSelectButtonCont">
-            <button  id="UserSelectExit" class="button">Settings</button>
-            <button  id="UserSelectContinue" class="button" disabled>Continue</button>
-        </div>
-            
-        </div>
-      </div>
 
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs" type="module"></script> -->
+    <div id="loadingScreen" class="loading-screen">
+        <div id="MainLoading" data-i18n="loading">
+            Laden...
+            <div class="spinner" style="display: block;"></div>
+        </div>
+        <div id="UserSelectLoading" style="display: none;">
+            <div id="userSelectText" data-i18n="reference_fail">Referenzerkennung nicht erfolgreich. Bitte öffnen Sie den Einstellungen-Tab.</div>
+            <div id="userSelectButtonCont">
+                <button id="UserSelectExit" class="button" data-i18n="settings_button">Einstellungen</button>
+                <button id="UserSelectContinue" class="button" disabled data-i18n="continue_button">Weiter</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
-        import * as pdfjsLib from './pdf.js/pdf.mjs'; // Correct relative path to the module
-    
-        // Set the worker script location
-        pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.js/pdf.worker.mjs'; // Correct relative path to the worker
+        import * as pdfjsLib from './pdf.js/pdf.mjs';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.js/pdf.worker.mjs';
     </script>
 
     <script src="scripts/Datenschutz.js"></script>
+    <script src="scripts/lang.js"></script>
 
     <script type="module" src="scripts/main.js"></script>
 
     <div id="password-overlay">
-        <h2>This page is protected</h2>
-        <input type="password" id="password-input" placeholder="Enter password">
-        <button id="password-button">Unlock</button>
+        <h2 data-i18n="page_protected">Diese Seite ist geschützt</h2>
+        <input type="password" id="password-input" placeholder="Passwort eingeben" data-i18n-placeholder="enter_password">
+        <button id="password-button" data-i18n="unlock">Entsperren</button>
         <div id="password-error"></div>
     </div>
 
     <div id="cookie-container">
         <div id="cookie-overlay"></div>
         <div id="cookie-banner">
-          This site does not use cookies. Just letting you know!
-          <button id="cookie-btn">Got it</button>
+            <span data-i18n="no_cookies">Diese Website verwendet keine Cookies. Nur zu Ihrer Information!</span>
+            <button id="cookie-btn" data-i18n="cookie_got_it">Verstanden</button>
         </div>
-      </div>
+    </div>
 
-
-      <div id="privacy-modal" class="modal">
+    <div id="privacy-modal" class="modal">
         <div class="modal-content">
-          <span id="close-modal" class="close-btn">&times;</span>
-          <h2>Privacy Policy</h2>
-          <p>This site does not use cookies...</p>
+            <span id="close-modal" class="close-btn" aria-label="Modal schließen">&times;</span>
+            <h2 data-i18n="privacy_title">Datenschutzerklärung</h2>
+            <p data-i18n="privacy_text">Diese Website verwendet keine Cookies.</p>
         </div>
-      </div>
+    </div>
 </body>
-
 
 </html>

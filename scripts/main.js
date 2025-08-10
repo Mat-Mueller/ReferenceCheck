@@ -8,7 +8,23 @@ import {CreateCrossLinksHighlight} from './magic.js'
 
 
 
+// Load saved language from localStorage OR use browser language
+const savedLang = localStorage.getItem("lang") || navigator.language.slice(0, 2) || "en";
 
+// Call the function from lang.js (attached to window)
+window.loadLanguage(savedLang);
+
+// Set the select dropdown to the saved language
+const langSelect = document.getElementById("lang-switch");
+if (langSelect) {
+    langSelect.value = savedLang;
+
+    langSelect.addEventListener("change", (e) => {
+        const selectedLang = e.target.value;
+        localStorage.setItem("lang", selectedLang); // Save choice
+        location.reload(); // Reload the page so both static and dynamic text match
+    });
+}
 
 async function main() {
     // Display a description that helps the user understand the software

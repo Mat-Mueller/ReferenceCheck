@@ -30,29 +30,6 @@ export function MoveToFirstSpan() {
 
 
 
-export function displaySoftwareDescription() {
-    const scholarContainer = document.getElementById('description');
-
-    // Function for loading external html file
-    function loadHTML(url, container) {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(htmlContent => {
-                container.innerHTML = htmlContent;
-            })
-            .catch(error => {
-                console.error('Error loading HTML:', error);
-            });
-    }
-
-    // Load software description from external html
-    loadHTML('software_description.html', scholarContainer);
-}
 
 export function createMenue () {
     document.getElementById("menu-icon").addEventListener("click", function (e) {
@@ -705,121 +682,53 @@ export function secondFrame(referenceCount) {
     createSeparator(referenceCount)   // @LF: that should probably moved somewhere else 
     
 
-    // Second frame for references (collapsible frame)
-    const OuterFrame = document.getElementById('secondframe');
-    OuterFrame.innerHTML = "";
-    OuterFrame.style = "display: block"
+        // Second frame for references (collapsible frame)
+    const OuterFrame        = document.getElementById('secondframe');
+    OuterFrame.style = "display: block"; // same as before
 
-    const ReferenceFrame = document.createElement('div');
-    ReferenceFrame.id = "ReferenceFrame"
-    ReferenceFrame.className = 'search-string-frame collapsible-frame'; // Assign collapsible class
-    ReferenceFrame.setAttribute('style', 'border: 0px solid #ccc !important; box-shadow: none !important;');
+    // Use existing DOM instead of createElement
+    const ReferenceFrame    = document.getElementById('ReferenceFrame');
+    const referenceHeadline = document.getElementById('referenceHeadline');
 
-    
-    // Create and add headline for references
-    const referenceHeadline = document.createElement('div');
-    referenceHeadline.id = "referenceHeadline"
+    const LeftContainer     = document.getElementById('LeftContainer');
+    const referenceTitle    = document.getElementById('References');
+    referenceTitle.style.margin = "0px";
 
-    const LeftContainer = document.createElement('div')
-    LeftContainer.id = "LeftContainer"
-    referenceHeadline.appendChild(LeftContainer)
+    const RightContainer    = document.getElementById('RightContainer');
+    const CrossRefbutton    = document.getElementById('CrossRefbutton');
+    const Searchhits        = document.getElementById('SearchhitsRef');
 
-    //const Refspinner = document.createElement('div')
-    //Refspinner.id = "loading-spinner" 
-    //Refspinner.className  = "spinner"
-    //LeftContainer.appendChild(Refspinner)
-    const referenceTitle = document.createElement('p');
-    referenceTitle.id = "References"
-    referenceTitle.style.margin = "0px"
-    LeftContainer.appendChild(referenceTitle)
-    
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.id = 'searchField';
+    const searchInput       = document.getElementById('searchField');
     searchInput.placeholder = window.langDict["search_placeholder"];
-    //searchInput.style.marginLeft = '50px';
     searchInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {  // Check if the Enter key was pressed
-            searchRef(event);      // Call the search function and pass the event
-        }
-        })
-    
-    const Searchhits = document.createElement('div')
-    Searchhits.id = "SearchhitsRef"
-
-    const RightContainer = document.createElement('div')
-    RightContainer.id = "RightContainer"
-    
-    const Questionsmark = document.createElement('div')
-    Questionsmark.innerText = "?"
-    Questionsmark.setAttribute("tooltip",  "")
-    Questionsmark.className = "Explanations"
-    
-    Questionsmark.setAttribute("tooltip", window.langDict["tooltip_reference_list"]);
-
-    
-
-    const CrossRefbutton = document.createElement("button");
-    CrossRefbutton.style.display = "none"; // completely hides it
-   CrossRefbutton.textContent = window.langDict["hide_crossref_results"];// Initial text
-    
-    // Add a click event listener to toggle display
-    CrossRefbutton.addEventListener("click", () => {
-        const resultFrames = document.querySelectorAll("div.result-frame");
-    
-        // Check if at least one result frame is currently displayed
-        const anyVisible = Array.from(resultFrames).some(div => div.style.display !== "none");
-    
-        resultFrames.forEach(div => {
-            // Toggle visibility based on current display style
-            div.style.display = anyVisible ? "none" : "block";
-        });
-    
-        // Update button text based on new visibility state
-        CrossRefbutton.textContent = anyVisible
-    ? window.langDict["show_crossref_results"]
-    : window.langDict["hide_crossref_results"];
-    }); 
-    referenceHeadline.appendChild(RightContainer)
-    RightContainer.appendChild(CrossRefbutton)
-    RightContainer.appendChild(Searchhits)
-    RightContainer.appendChild(searchInput)
-    RightContainer.appendChild(Questionsmark)
-
-
-    // Create a container div to hold the buttons side by side
-    const buttonContainer = document.createElement('div');
-    buttonContainer.style.display = 'inline-block'; // Ensure buttons are on the same line
-
-    // Create the toggle button for expanding/collapsing
-    const toggleButton = document.createElement('button');
-    toggleButton.textContent = '▲'; // ▼
-    toggleButton.className = 'toggle-in-text-button';
-    toggleButton.style.display = "none"; //////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    toggleButton.addEventListener('click', () => {
-        // Toggle the max-height between 100px and the full height of the content (to show/hide the reference frame)
-        if (toggleButton.textContent === '▲') {
-            toggleButton.textContent = '▼';
-        } else {
-            toggleButton.textContent = '▲'
-        }
-        if (ReferenceFrame.style.maxHeight === '600px') {
-            ReferenceFrame.style.maxHeight = ReferenceFrame.scrollHeight + 'px'; // Expand to content height
-        } else {
-            ReferenceFrame.style.maxHeight = '600px'; // Collapse back to minimum height
-        }
+    if (event.key === 'Enter') searchRef(event);
     });
 
-    // Append the toggle button to the button container
-    buttonContainer.appendChild(toggleButton);
+    const Questionsmark     = RightContainer.querySelector('.Explanations');
+    Questionsmark.innerText = "?";
+    Questionsmark.setAttribute("tooltip", "");
+    Questionsmark.className = "Explanations";
+    Questionsmark.setAttribute("tooltip", window.langDict["tooltip_reference_list"]);
 
- 
-    referenceHeadline.appendChild(buttonContainer);
-    referenceHeadline.appendChild(toggleButton);
 
-    OuterFrame.appendChild(referenceHeadline);
+
+
+
+
+    // CrossRef button: same behavior
+    CrossRefbutton.style.display = "none";
+    CrossRefbutton.textContent = window.langDict["hide_crossref_results"];
+    CrossRefbutton.addEventListener("click", () => {
+    const resultFrames = document.querySelectorAll("div.result-frame");
+    const anyVisible = Array.from(resultFrames).some(div => div.style.display !== "none");
+    resultFrames.forEach(div => { div.style.display = anyVisible ? "none" : "block"; });
+    CrossRefbutton.textContent = anyVisible
+        ? window.langDict["show_crossref_results"]
+        : window.langDict["hide_crossref_results"];
+    });
+
+
+
 
 
 

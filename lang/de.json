@@ -31,6 +31,8 @@
   "faq_a3": "Die Software erkennt Zitate und Referenzen nach dem APA-Stil. Ergebnisse für andere Zitierstile sind derzeit nicht zuverlässig. Es kann bei ähnlichen Stilen trotzdem funktionieren.",
   "faq_q4": "4. Wie genau ist die Software und was passiert bei Abweichungen?",
   "faq_a4": "Wir streben eine hohe Genauigkeit an, können jedoch keine 100%ige Präzision garantieren, da es durch die Analyse von PDF-Texten und das Erkennen von Zitaten zu Fehlern kommen kann. Bei erkannten Abweichungen hebt die Software diese hervor, damit der Nutzer sie manuell überprüfen und korrigieren kann.",
+  "faq_q5": "5. Kann Citalyze KI-generierte falsche Referenzen erkennen?",
+  "faq_a5": "Ja. Viele KI-Textgeneratoren erfinden Referenzen oder mischen reale mit falschen Quellen. Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind.",
 
   "header_footer_title": "Kopf- und Fußzeile:",
   "header_footer_both": "Es wurden sowohl eine Kopf- als auch eine Fußzeile im PDF erkannt. Sie können diese unten manuell aktivieren/deaktivieren.",

@@ -31,7 +31,8 @@
   "faq_a3": "The software detects citations and references following the APA style. The results for other reference styles are currently not reliable. Matching may work for other reference styles similar to APA.",
   "faq_q4": "4. What is the level of accuracy, and what happens if there’s a mismatch?",
   "faq_a4": "While we strive for high accuracy, we cannot guarantee 100% precision, as there is always a chance of mismatches due to limitations in analyzing PDF text and detecting citations and references. If the software detects a mismatch, it will highlight the discrepancy, allowing the user to manually verify and match in-text citations and references.",
-
+"faq_q5": "5. Can Citalyze detect AI-generated false references?",
+"faq_a5": "Yes. Many AI text generators invent references or mix real with false sources. Citalyze compares each reference against the CrossRef database and flags those that do not exist or contain incorrect details.",
   "header_footer_title": "Header and footer:",
   "header_footer_both": "We found a header and a footer in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections.",
   "header_footer_header_only": "We found a header in the PDF. Check/Uncheck the boxes below to manually set the header and footer sections.",

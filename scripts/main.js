@@ -1,4 +1,4 @@
-import { displaySoftwareDescription, createMenue, referenceSectionGUI, referenceSeparationGUI, MatchGuessing, DragDrop, secondFrame, thirdFrame, clearRightContainer, MoveToFirstSpan  } from './uiComponents.js';
+import { createMenue, referenceSectionGUI, referenceSeparationGUI, MatchGuessing, DragDrop, secondFrame, thirdFrame, clearRightContainer, MoveToFirstSpan  } from './uiComponents.js';
 import { readRenderPDF } from './pdfLoader.js';
 import { findReferenceSection, userDecisionReferenceSection } from './findReferenceList.js';
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
@@ -28,7 +28,7 @@ if (langSelect) {
 
 async function main() {
     // Display a description that helps the user understand the software
-    displaySoftwareDescription();
+    //displaySoftwareDescription();
     //document.getElementById("scholar-container").scrollTo({ top: 0, behavior: 'smooth' });
 
     //document.getElementById("DescriptionID").scrollIntoView()

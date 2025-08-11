@@ -731,7 +731,7 @@ export function secondFrame(referenceCount) {
 
 
 
-
+    document.querySelectorAll('#ReferenceFrame .Reference-frame').forEach(el => el.remove());
     for (let j = 0; j < referenceCount; j++) {
         const divs = document.querySelectorAll(`[MyId="${j}"]`);
         let mergedText = getMergedTextByMyId(j);
@@ -756,9 +756,9 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.setAttribute('authors', lastNames)
         ReferenceFrameParagraph.setAttribute('year', MyYear)
        ReferenceFrameParagraph.setAttribute(
-    'tooltip',
-    `${window.langDict["detected_authors_year"]} <br> ${lastNames} (${MyYear})`
-);
+                'tooltip',
+                `${window.langDict["detected_authors_year"]} <br> ${lastNames} (${MyYear})`
+            );
         ReferenceFrameParagraph.id = j;
                 // check if there is an abbreviation
         const matchResult = mergedText.match(/^(.*?)(?=\d{4}[a-z]?)/);

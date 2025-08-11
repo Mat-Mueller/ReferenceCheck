@@ -721,6 +721,17 @@ a[href="javascript:"] {
     cursor: pointer;
 }
 
+#Goback2 {
+    width: 25px;
+    height: 25px;
+    background-image: url('arrow.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+    cursor: pointer;
+}
+
 .lang-switcher-container {
   position: relative;
   display: inline-block;

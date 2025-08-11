@@ -133,7 +133,7 @@ export async function analysis() {
 
     while (true) {
         // Let user decide on where reference section is
-        document.getElementById("description").style.display = "none"; // Clear right container
+        document.getElementById("dragArea").style.display = "none"; // Clear right container
         removeOldSpans()
 
         let referenceCount = await referenceSectionGUI(refSecAuto);
@@ -168,7 +168,7 @@ function waitForButtonClick(buttonId) {
             console.log("Button clicked, continuing...");
             const secondframe = document.getElementById('secondframe');
             if (secondframe) {
-                secondframe.innerHTML = "";
+                //secondframe.innerHTML = "";
                 secondframe.style = "display: none"
             }
             const thirdframe = document.getElementById('thirdframe');
@@ -183,16 +183,7 @@ function waitForButtonClick(buttonId) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const goBack = document.getElementById("Goback");
-    if (goBack) {
-        goBack.addEventListener("click", () => {
-            history.back(); // or use: window.location.href = 'index.html';
-        });
-    }
 
-
-});
 
 
 document.addEventListener("DOMContentLoaded", () => {

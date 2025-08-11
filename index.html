@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Überprüfen Sie automatisch APA-Zitate in PDFs mit Citalyze. Erkennen Sie fehlende Referenzen, CrossRef-Fehler und KI-generierte Zitate.">
-
+    <link rel="icon" href="logo.png" type="image/png">
     <title>PDF Text Selection and CrossRef Search</title>
     <link rel="stylesheet" href="styles.css">
     <script type="application/ld+json">
@@ -97,6 +97,24 @@
 
     <div id="viewer">
         <div class="frame" id="scholar-container">
+
+            <div id="intro-frame" class="search-string-frame" style="padding: 15px; line-height: 1.6;">
+            <section id="intro" class="intro">
+            <h1 data-i18n="h1_title">APA-Zitate in PDFs automatisch prüfen und KI-Falschangaben erkennen</h1>
+            <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
+            <p data-i18n="intro_text">
+                Präzise Zitate sind ein wesentlicher Bestandteil jeder wissenschaftlichen Arbeit.  
+                Citalyze prüft Ihr PDF-Dokument automatisch: In-Text-Zitate werden mit dem Literaturverzeichnis 
+                abgeglichen und jede Quelle wird über die CrossRef-Datenbank verifiziert.  
+                Dadurch lassen sich fehlende oder fehlerhafte Referenzen sofort erkennen – 
+                ebenso wie erfundene Quellen, die häufig in KI-generierten Texten vorkommen.  
+                So erhöhen Sie die Zuverlässigkeit Ihrer Arbeit, sparen wertvolle Zeit und erfüllen 
+                formale Anforderungen sicher – ob bei einer Seminararbeit, Dissertation oder einem Fachartikel.
+            </p>
+            </div>
+            </section>
+            </div>
+
             <div id="dragArea">
                 <input type="file" id="pdf-upload" accept="application/pdf">
                 <p data-i18n="drag_drop">Ziehen Sie eine PDF-Datei hierher oder verwenden Sie den Upload-Button.</p>
@@ -247,9 +265,9 @@
     </div>
 
     <div id="loadingScreen" class="loading-screen">
-        <div id="MainLoading" data-i18n="loading">
-            Laden...
-            <div class="spinner" style="display: block;"></div>
+        <div id="MainLoading">
+            
+            <div class="spinner2"></div>
         </div>
         <div id="UserSelectLoading" style="display: none;">
             <div id="userSelectText" data-i18n="reference_fail">Referenzerkennung nicht erfolgreich. Bitte öffnen Sie den Einstellungen-Tab.</div>

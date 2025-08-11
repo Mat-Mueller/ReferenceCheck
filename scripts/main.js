@@ -133,7 +133,10 @@ export async function analysis() {
 
     while (true) {
         // Let user decide on where reference section is
-        document.getElementById("dragArea").style.display = "none"; // Clear right container
+        document.getElementById("dragArea").style.display = "none"; // Clear left container
+        document.getElementById("intro-frame").style.display = "none"; // Clear left container
+
+
         removeOldSpans()
 
         let referenceCount = await referenceSectionGUI(refSecAuto);

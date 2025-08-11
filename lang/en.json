@@ -3,6 +3,9 @@
   "menu_privacy": "Privacy Policy",
   "menu_impressum": "Impressum",
   "menu_contact": "Contact",
+  "h1_title": "Automatically check APA citations in PDFs and detect AI-generated false references",
+  "intro_text": "Accurate citations are essential to any scholarly work. Citalyze automatically reviews your PDF: in-text citations are matched to the reference list, and each source is verified through the CrossRef database. This makes it easy to identify missing or incorrect references, as well as fabricated sources often found in AI-generated content. Increase the reliability of your work, save valuable time, and meet formatting standards with confidence – whether for a term paper, dissertation, or journal article.",
+
   "import_settings": "Import settings",
   "pdf_has_header": "PDF has header",
   "pdf_has_footer": "PDF has footer",
@@ -78,8 +81,19 @@
   "tooltip_trash": "Drag erroneous in-text citations here",
   "tooltip_sort_order": "Sort in-text citations w/o match<br>by order of appearance",
   "tooltip_sort_alpha": "Sort in-text citations w/o match<br>by alphabetical order",
-  "ref_id_success": "Reference identification successful.",
+  "ref_id_success": "Reference section and suitable separation method successfully detected. You can now proceed directly to the analysis (Continue) or adjust the import settings.",
   "refs_without_match": "Found {count}/{total} references without match:",
-    "best_crossref_match": "Best Crossref match"
+    "best_crossref_match": "Best Crossref match",
+  "tooltip_found": "Exact match found: {{citation}}",
+  "tooltip_not_found": "No exact match for {{citation}}.",
+  "tooltip_ambig": "Ambiguous match for {{citation}}.",
+  "tooltip_year": "Year matches, details differ: {{citation}}.",
+  "tooltip_byAbbr": "Match found by abbreviation: {{citation}}.",
+  "tooltip_typo": "Possible typo detected: {{citation}}.",
+
+  "tooltip_matches": "Matched references:",
+  "tooltip_more": "+{{count}} more",
+  "tooltip_no_exact_no_similar": "No exact match found! No similar entries found!",
+  "tooltip_no_exact_with_suggestions": "No exact match found! Suggestions:"
 }
 

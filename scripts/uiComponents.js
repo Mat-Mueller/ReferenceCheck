@@ -1350,31 +1350,73 @@ export function DragDrop() {
 
 
 function FormulateTooltip(element) {
-    const citation = element.getAttribute("cleanedcit").split(";").join(" ");
-    const dict = window.langDict;
-    let tooltipKey = "";
+  const dict = window.langDict || {};
+  const citation = (element.getAttribute("cleanedcit") || "").split(";").join(" ");
 
-    if (element.getAttribute('Found') === 'true') {
-        tooltipKey = "tooltip_found";
-    } else if (!element.getAttribute('Found')) {
-        tooltipKey = "tooltip_not_found";
-    } else if (element.getAttribute('Found') === 'ambig') {
-        tooltipKey = "tooltip_ambig";
-    } else if (element.getAttribute('Found') === 'year') {
-        tooltipKey = "tooltip_year";
-    } else if (element.getAttribute('Found') === 'byAbbr') {
-        tooltipKey = "tooltip_byAbbr";
-    } else if (element.getAttribute('Found') === 'typo') {
-        tooltipKey = "tooltip_typo";
-    }
+  // tolerate both 'found' and 'Found'
+  const foundAttr = element.getAttribute("found") ?? element.getAttribute("Found");
 
-    if (tooltipKey && dict[tooltipKey]) {
-        element.setAttribute(
-            'tooltip',
-            dict[tooltipKey].replace("{{citation}}", citation)
-        );
+  // status message (uses your existing keys)
+  const statusKey =
+    foundAttr === "true" ? "tooltip_found" :
+    foundAttr === "ambig" ? "tooltip_ambig" :
+    foundAttr === "year"  ? "tooltip_year"  :
+    foundAttr === "byAbbr"? "tooltip_byAbbr":
+    foundAttr === "typo"  ? "tooltip_typo"  :
+                            "tooltip_not_found";
+
+  // base message (with {{citation}} placeholder)
+  let base = (dict[statusKey] || "{{citation}}").replace("{{citation}}", citation);
+
+  // gather matches (array or single)
+  const matches = Array.isArray(element.MatchedWith)
+    ? element.MatchedWith
+    : (element.MatchedWith ? [element.MatchedWith] : []);
+
+  // helper
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+                    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+
+  // Build a normalized list like "authors (year)" or fallback to cleanedtext
+  const items = matches.map(div => {
+    const authors = div?.getAttribute?.("authors") || "";
+    const year    = div?.getAttribute?.("year")    || "";
+    const cleaned = div?.getAttribute?.("cleanedtext") || "";
+    const s = (authors && year) ? `${authors} (${year})` : cleaned;
+    return (s || "").trim();
+  }).filter(Boolean);
+
+  const unique = [...new Set(items)];
+  const shown = unique.slice(0, 3);
+  const moreCount = Math.max(0, unique.length - shown.length);
+
+  // Branching depending on exact match vs not
+  if (foundAttr === "true") {
+    if (shown.length) {
+      base += `<br><br>${dict.tooltip_matches}<br>` +
+              shown.map(s => `• ${esc(s)}`).join("<br>");
+      if (moreCount) {
+        base += `<br>${(dict.tooltip_more || "").replace("{{count}}", moreCount)}`;
+      }
     }
+  } else {
+    if (shown.length === 0) {
+      // no exact + no similar
+      base = dict.tooltip_no_exact_no_similar;
+    } else {
+      // no exact + suggestions
+      base = dict.tooltip_no_exact_with_suggestions + "<br>" +
+             shown.map(s => `• ${esc(s)}`).join("<br>");
+      if (moreCount) {
+        base += `<br>${(dict.tooltip_more || "").replace("{{count}}", moreCount)}`;
+      }
+    }
+  }
+
+  element.setAttribute("tooltip", base);
 }
+
+
 
 
 
@@ -1563,19 +1605,8 @@ function createTooltips() {
         // Hide the title attribute to prevent the default browser tooltip
         cit.removeAttribute('title');
 
-        /*
-        // Style the tooltip
-        tooltip.style.position = 'absolute';
-        tooltip.style.backgroundColor = 'black';
-        tooltip.style.color = 'white';
-        tooltip.style.padding = '5px';
-        tooltip.style.borderRadius = '4px';
-        tooltip.style.fontSize = '12px';
-        tooltip.style.pointerEvents = 'none';  // Make sure the tooltip doesn't interfere with mouse events
-        tooltip.style.opacity = '0';           // Initially hidden
-        tooltip.style.transition = 'opacity 0.3s';  // Smooth fade-in effect
-        tooltip.style.zIndex = '1000';         // Ensure it's above other elements
-        */
+
+
 
         // Append the tooltip to the body
         document.body.appendChild(tooltip);
@@ -1607,10 +1638,10 @@ function createTooltips() {
         });
 
         // Optional: Update the tooltip position with the mouse movement
-        cit.addEventListener('mousemove', function(event) {
-            tooltip.style.left = `${event.pageX + 10}px`;  // Offset from the cursor
-            tooltip.style.top = `${event.pageY + 10}px`;
-        });
+        //cit.addEventListener('mousemove', function(event) {
+        //   tooltip.style.left = `${event.pageX + 10}px`;  // Offset from the cursor
+        //    tooltip.style.top = `${event.pageY + 10}px`;
+        //});
 
         // Hide the tooltip when clicking elsewhere on the page
         document.addEventListener('click', function(event) {

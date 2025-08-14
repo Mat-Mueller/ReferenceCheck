@@ -269,11 +269,17 @@
             
             <div class="spinner2"></div>
         </div>
-        <div id="UserSelectLoading" style="display: none;">
-            <div id="userSelectText" data-i18n="reference_fail">Referenzerkennung nicht erfolgreich. Bitte öffnen Sie den Einstellungen-Tab.</div>
+        <div id="ModalBackdrop" hidden></div>
+
+            <div id="UserSelectLoading" role="dialog" aria-modal="true" aria-labelledby="userSelectHeading" style="display:none;">
+            <div class="usl-icon" aria-hidden="true">✓</div>
+                <h2 id="userSelectHeading" data-i18n="reference_ok">Referenzabschnitt erfolgreich erkannt.</h2>
+                <p id="userSelectText" data-i18n="ref_id_success">
+                    Sie können jetzt direkt mit der Analyse fortfahren (Weiter), oder die Import-Einstellungen anpassen.
+                </p>
             <div id="userSelectButtonCont">
-                <button id="UserSelectExit" class="button" data-i18n="settings_button">Einstellungen</button>
-                <button id="UserSelectContinue" class="button" disabled data-i18n="continue_button">Weiter</button>
+                <button id="UserSelectExit" class="btn btn-ghost" data-i18n="settings_button">Einstellungen</button>
+                <button id="UserSelectContinue" class="btn btn-primary" data-i18n="continue_button">Weiter</button>
             </div>
         </div>
     </div>

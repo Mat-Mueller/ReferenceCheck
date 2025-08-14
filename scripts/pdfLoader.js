@@ -298,12 +298,13 @@ function detectFootnotesForAllTextLayers() {
 function LoadingPage() {
     console.log("Loading Screen")
     document.getElementById("loadingScreen").style.display = "flex"
+    document.getElementById("UserSelectLoading").style.display = "none"
 }
 
 function UNLoadingPage() {
     console.log("UnLoading Screen")
     document.getElementById("MainLoading").style.display = "none"
-    document.getElementById("UserSelectLoading").style.display = "flex"
+    document.getElementById("UserSelectLoading").style.display = "grid"
     // Add click event listener to the continue button
     document.getElementById("UserSelectExit").addEventListener("click", function() {
         document.getElementById("UserSelectContinue").style.display = "none"

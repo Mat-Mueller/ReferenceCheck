@@ -71,7 +71,12 @@
   "no_matches_found": "No matches found.",
   "citations_without_match": "Found {{unmatched}} in-text citations without match ({{total}} total)",
 
-  "ref_id_success": "Reference section and suitable separation method successfully detected. You can now proceed directly to the analysis (Continue) or adjust the import settings.",
+  "ref_id_success": "You can now proceed directly to the analysis (Continue) or adjust the import settings.",
+  "reference_ok": "Reference section and suitable separation method successfully detected.",
+  "ref_id_unsuccess": "PLease adjust the import settings.",
+  "reference_not_ok": "No Reference section detected.",
+
+
   "refs_without_match": "Found {count}/{total} references without match:",
     "best_crossref_match": "Best Crossref match",
 

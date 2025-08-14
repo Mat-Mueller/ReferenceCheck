@@ -73,8 +73,10 @@
   "no_matches_found": "Keine Treffer gefunden.",
   "citations_without_match": "{{unmatched}} In-Text-Zitate ohne Übereinstimmung gefunden ({{total}} gesamt)" ,
 
-  "ref_id_success": "Referenzabschnitt erfolgreich erkannt. Sie können jetzt direkt mit der Analyse fortfahren (Weiter), oder die Import-Einstellungen anpassen.",
-
+  "ref_id_success": "Sie können jetzt direkt mit der Analyse fortfahren (Weiter), oder die Import-Einstellungen anpassen.",
+  "reference_ok": "Referenzabschnitt erfolgreich erkannt.",
+  "ref_id_unsuccess": "Bitte passen Sie die Import-Einstellungen an.",
+  "reference_not_ok": "Referenzabschnitt nicht erkannt.",
   "refs_without_match": "{count}/{total} Referenzen ohne Übereinstimmung gefunden:",
     "best_crossref_match": "Bester Crossref-Treffer",
     "tooltip_matches": "Gefundene Referenzen:",

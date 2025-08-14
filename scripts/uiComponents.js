@@ -294,9 +294,13 @@ if (hasHeader && hasFooter) {
         const element = document.getElementById("userSelectText");
         element.textContent = window.langDict["ref_id_success"];
         document.getElementById("UserSelectContinue").disabled = false
+        document.getElementById("userSelectHeading").textContent = window.langDict["reference_ok"]
     } else { 
        document.getElementById("ref_missing").style.display = "inline"
         Cont.disabled = true
+        document.getElementById("userSelectHeading").textContent = window.langDict["reference_not_ok"]
+        document.getElementById("userSelectText").textContent = window.langDict["ref_id_unsuccess"];
+        document.getElementById("suc_icon").textContent = "⚠";
     }
 
 
@@ -892,50 +896,46 @@ export function secondFrame(referenceCount) {
         // should move somewhere else                                        ///////////////////////////////////////////////////////////////////
 }
 
-
 export function DoHighlight(element) {
-    // Store the original background color
-// Store the original background color and border of the element
-let backgroundColor = element.style.backgroundColor;
-const currentBorder = element.style.border;
-if (!backgroundColor && element.classList.contains("citation")){
-    backgroundColor = "#CCE34B"
+  if (!element) return;
 
+  let col = getComputedStyle(element).backgroundColor;
+  if (!col || col === "rgba(0, 0, 0, 0)") {
+    col = getComputedStyle(element).borderColor;
+  }
+
+  const flashCol = getContrastingFlashColor(col);
+  element.style.setProperty('--flash-color', flashCol);
+
+  const prevPos = getComputedStyle(element).position;
+  if (prevPos === 'static') element.style.position = 'relative';
+
+  element.classList.add('flash-inward');
+
+  element.addEventListener('animationend', () => {
+    element.classList.remove('flash-inward');
+    element.style.removeProperty('--flash-color');
+    if (prevPos === 'static') element.style.position = '';
+  }, { once: true });
 }
 
 
-/*
-element.classList.add("DoHighlights")
-setTimeout(() => {
-    element.classList.remove("DoHighlights");
-}, 2000); // 2000 ms = 2 seconds
-*/
+function getContrastingFlashColor(baseColor) {
+  // Parse rgb(...) or rgba(...)
+  const rgb = baseColor.match(/\d+/g).map(Number);
+  if (rgb.length < 3) return 'rgba(255,0,0,0.8)'; // fallback red
 
-// Check if the current border is not already the desired highlighted border
-if (currentBorder !== `5px solid ${backgroundColor}`) {
-    
-    // Define functions to apply and remove the border
-    function applyBorder() {
-        element.style.border = `5px solid ${backgroundColor}`;
-    }
+  // Calculate luminance
+  const lum = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
 
-    function removeBorder() {
-        element.style.border = currentBorder; // Revert to original border
-    }
-
-    // Apply and remove the border in a sequence for a flashing effect
-    applyBorder(); // Initial highlight
-    setTimeout(removeBorder, 200); // Remove after 200ms
-    setTimeout(applyBorder, 400);  // Re-apply after 400ms
-    setTimeout(removeBorder, 600); // Remove again after 600ms
-    setTimeout(applyBorder, 800);  // Final re-apply after 800ms
-    setTimeout(removeBorder, 1000); // Final removal after 1 second
+  if (lum > 0.6) {
+    // light color → choose a darker, more saturated version
+    return `rgba(${rgb[0] * 0.5}, ${rgb[1] * 0.5}, ${rgb[2] * 0.5}, 0.9)`;
+  } else {
+    // dark color → choose a lighter/whiter version
+    return `rgba(${Math.min(255, rgb[0] + 150)}, ${Math.min(255, rgb[1] + 150)}, ${Math.min(255, rgb[2] + 150)}, 0.9)`;
+  }
 }
-
-
-}
-
-
 
 export function MatchGuessing() {
     // find problematic spans
@@ -982,10 +982,7 @@ function searchRef() {
     const originalColor = element.style.backgroundColor;
 
     // Highlight the current element to visually indicate the match
-    element.style.backgroundColor = 'yellow';
-    setTimeout(() => {
-        element.style.backgroundColor = originalColor;
-    }, 200);
+    DoHighlight(element)
 
     // Display the current match index and total matches in the div with id 'SearchhitsRef'
     const searchHitsRef = document.getElementById('SearchhitsRef');
@@ -1199,7 +1196,7 @@ export function DragDrop() {
         dropZone.style.cursor = 'pointer'
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.style.border = '4px solid yellow';  // Example: highlight with red border
+            //dropZone.style.border = '4px solid yellow';  // Example: highlight with red border
         });
 
         // Drag leave event (removes hover state when dragging leaves the zone)

@@ -28,14 +28,14 @@
   "faq_title": "Häufig gestellte Fragen (FAQ)",
   "faq_q1": "1. Was ist diese Software und was macht sie?",
   "faq_a1": "Diese Software prüft die Zitiergenauigkeit in PDFs und stellt sicher, dass Zitate im Text mit dem Literaturverzeichnis übereinstimmen. Sie überprüft jede Referenz über CrossRef und ermöglicht die Suche in Google Scholar zur Genauigkeitskontrolle.",
-  "faq_q2": "2. Wie benutze ich die Software?",
-  "faq_a2": "Laden Sie Ihr PDF hoch, und die Software führt Sie durch die Zitationseinstellungen. Nach der Analyse sehen Sie eine Übersicht über alle nicht übereinstimmenden Zitate und Referenzen in Ihrem Dokument.",
-  "faq_q3": "3. Welcher Zitierstil wird unterstützt?",
-  "faq_a3": "Die Software erkennt Zitate und Referenzen nach dem APA-Stil. Ergebnisse für andere Zitierstile sind derzeit nicht zuverlässig. Es kann bei ähnlichen Stilen trotzdem funktionieren.",
-  "faq_q4": "4. Wie genau ist die Software und was passiert bei Abweichungen?",
-  "faq_a4": "Wir streben eine hohe Genauigkeit an, können jedoch keine 100%ige Präzision garantieren, da es durch die Analyse von PDF-Texten und das Erkennen von Zitaten zu Fehlern kommen kann. Bei erkannten Abweichungen hebt die Software diese hervor, damit der Nutzer sie manuell überprüfen und korrigieren kann.",
-  "faq_q5": "5. Kann Citalyze KI-generierte falsche Referenzen erkennen?",
-  "faq_a5": "Ja. Viele KI-Textgeneratoren erfinden Referenzen oder mischen reale mit falschen Quellen. Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind.",
+  "faq_q3": "3. Wie benutze ich die Software?",
+  "faq_a3": "Laden Sie Ihr PDF hoch, und die Software führt Sie durch die Zitationseinstellungen. Nach der Analyse sehen Sie eine Übersicht über alle nicht übereinstimmenden Zitate und Referenzen in Ihrem Dokument.",
+  "faq_q4": "4. Welcher Zitierstil wird unterstützt?",
+  "faq_a4": "Die Software erkennt Zitate und Referenzen nach dem APA-Stil. Ergebnisse für andere Zitierstile sind derzeit nicht zuverlässig. Es kann bei ähnlichen Stilen trotzdem funktionieren.",
+  "faq_q5": "5. Wie genau ist die Software und was passiert bei Abweichungen?",
+  "faq_a5": "Wir streben eine hohe Genauigkeit an, können jedoch keine 100%ige Präzision garantieren, da es durch die Analyse von PDF-Texten und das Erkennen von Zitaten zu Fehlern kommen kann. Bei erkannten Abweichungen hebt die Software diese hervor, damit der Nutzer sie manuell überprüfen und korrigieren kann.",
+  "faq_q2": "2. Kann Citalyze KI-generierte falsche Referenzen erkennen?",
+  "faq_a2": "Ja. Viele KI-Textgeneratoren erfinden Referenzen oder mischen reale mit falschen Quellen. Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind.",
 
   "header_footer_title": "Kopf- und Fußzeile:",
   "header_footer_both": "Es wurden sowohl eine Kopf- als auch eine Fußzeile im PDF erkannt. Sie können diese unten manuell aktivieren/deaktivieren.",
@@ -72,21 +72,67 @@
   "best_crossref_match": "Bester Crossref-Treffer:",
   "no_matches_found": "Keine Treffer gefunden.",
   "citations_without_match": "{{unmatched}} In-Text-Zitate ohne Übereinstimmung gefunden ({{total}} gesamt)" ,
-  "tooltip_found": "Erkannte In-Text-Zitation: <b>{{citation}}</b> <br>Erfolgreich mit Referenz abgeglichen!",
-  "tooltip_not_found": "Erkannte In-Text-Zitation: <b>{{citation}}</b> <br>Keine passende Referenz gefunden! Klicken Sie für Vorschläge und ordnen Sie manuell zu, indem Sie dieses Element auf die jeweilige Referenz ziehen.",
-  "tooltip_ambig": "Erkannte In-Text-Zitation: <b>{{citation}}</b> <br>Mehr als eine passende Referenz gefunden!",
-  "tooltip_year": "Erkannte In-Text-Zitation: <b>{{citation}}</b> <br>Überprüfen Sie das Veröffentlichungsjahr!",
-  "tooltip_byAbbr": "Erkannte In-Text-Zitation: <b>{{citation}}</b> <br>Über Abkürzung abgeglichen!",
-  "tooltip_typo": "Erkannte In-Text-Zitation: <b>{{citation}}</b> <br>Überprüfen Sie die Rechtschreibung!",
-  "tooltip_intext_issues": "<strong>Probleme mit In-Text-Zitationen</strong><br>Hier finden Sie alle erkannten In-Text-Zitationen, die Probleme beim Abgleich mit dem Literaturverzeichnis aufweisen. Mögliche Probleme sind:<ul><li><span style='background-color: #E3574B;' class='citationDESK'>Autor Jahr</span> In-Text-Zitationen ohne passende Referenz im Literaturverzeichnis. Sie können diese manuell zuordnen, indem Sie die Zitation auf den entsprechenden Eintrag im Literaturverzeichnis unten ziehen.</li><li><span style='background-color: orange;' class='citationDESK'>Autor Jahr</span> In-Text-Zitationen mit passender Referenz, die jedoch Tippfehler oder falsche Veröffentlichungsjahre enthalten. Sie können diese manuell zuordnen, indem Sie die Zitation auf den entsprechenden Eintrag im Literaturverzeichnis unten ziehen.</li><li><span style='background-color: yellow;' class='citationDESK'>Autor Jahr</span> In-Text-Zitationen, die über Abkürzungen zugeordnet wurden.</li></ul>",
-  "tooltip_sort_icon": "In-Text-Zitationen ohne Übereinstimmung<br>alphabetisch sortieren",
-  "tooltip_trash": "Ziehe fehlerhafte In-Text-Zitationen hierher",
-  "tooltip_sort_order": "Sortiere In-Text-Zitationen ohne Übereinstimmung<br>nach der Reihenfolge des Auftretens",
-  "tooltip_sort_alpha": "Sortiere In-Text-Zitationen ohne Übereinstimmung<br>alphabetisch",
+
   "ref_id_success": "Referenzabschnitt erfolgreich erkannt. Sie können jetzt direkt mit der Analyse fortfahren (Weiter), oder die Import-Einstellungen anpassen.",
 
   "refs_without_match": "{count}/{total} Referenzen ohne Übereinstimmung gefunden:",
     "best_crossref_match": "Bester Crossref-Treffer",
     "tooltip_matches": "Gefundene Referenzen:",
-"tooltip_more": "+{{count}} weitere Treffer"
+
+    
+
+
+
+
+      "tooltip_found_label": "Gefunden",
+  "tooltip_ambig_label": "Mehrdeutig",
+  "tooltip_year_label": "Jahr abweichend",
+  "tooltip_btn_assign_anyway": "Trotzdem zuordnen",
+  "tooltip_byAbbr_label": "Abkürzungs-Treffer",
+  "tooltip_typo_label": "Möglicher Tippfehler",
+  "tooltip_not_found_label": "Nicht gefunden",
+  "tooltip_not_found_sugg_label": "Nicht gefunden – Vorschläge",
+  "tooltip_invalid_label": "Ungültige Zitation",
+
+  "tooltip_found": "Erkannte In-Text-Zitation: {{citation}}",
+  "tooltip_ambig": "Mehrdeutig: {{citation}}",
+  "tooltip_year": "Autor stimmt, Jahr weicht ab: {{citation}}",
+  "tooltip_byAbbr": "Über Abkürzung erkannt: {{citation}}",
+  "tooltip_typo": "Nahe Übereinstimmung: {{citation}}",
+  "tooltip_not_found": "Nicht gefunden: {{citation}}",
+  "tooltip_not_found_with_suggestions": "Keine eindeutige Übereinstimmung für: {{citation}}",
+  "tooltip_invalid": "Ungültige Zitation",
+
+  "tooltip_matches": "Gefundene Referenzen:",
+  "tooltip_suggestions_header": "Vorschläge (niedrige Übereinstimmung)",
+  "tooltip_more": "+{{count}} weitere Treffer",
+
+  "tooltip_hint_select": "Bitte die richtige Referenz auswählen.",
+  "tooltip_hint_year_mismatch": "Das Jahr im In-Text-Zitat stimmt nicht mit den gefundenen Referenzen überein.",
+  "tooltip_hint_typo": "Bitte bestätigen Sie die Zuordnung. Kleinere Abweichungen im Text wurden erkannt.",
+  "tooltip_hint_check_spelling": "Prüfen Sie Schreibweise, Autorenreihenfolge und Jahr.",
+
+  "tooltip_tag_top": "Höchste Übereinstimmung",
+  "tooltip_tag_abbr": "Abkürzung erkannt",
+  "tooltip_tag_typo": "Tippfehler-Vermutung",
+
+  "tooltip_btn_select": "Auswählen",
+  "tooltip_btn_none": "Keiner davon",
+  "tooltip_action_remove": "Kein Zitat",
+  "tooltip_action_search_again": "Erneut suchen",
+  "tooltip_action_link_manual": "Manuell zuordnen…",
+  "tooltip_action_create_ref": "Neue Referenz anlegen…",
+  "tooltip_suggestion": "Vorschlag: {{suggestion}}",
+
+
+
+
+
+"tooltip_intext_issues": "<strong>Probleme mit In-Text-Zitationen</strong><br>Hier finden Sie alle erkannten In-Text-Zitationen, die Probleme beim Abgleich mit dem Literaturverzeichnis aufweisen. Mögliche Probleme sind:<ul><li><span style='background-color: #E3574B;' class='citationDESK'>Autor Jahr</span> In-Text-Zitationen ohne passende Referenz im Literaturverzeichnis. Sie können diese manuell zuordnen, indem Sie die Zitation auf den entsprechenden Eintrag im Literaturverzeichnis unten ziehen.</li><li><span style='background-color: orange;' class='citationDESK'>Autor Jahr</span> In-Text-Zitationen mit passender Referenz, die jedoch Tippfehler oder falsche Veröffentlichungsjahre enthalten. Sie können diese manuell zuordnen, indem Sie die Zitation auf den entsprechenden Eintrag im Literaturverzeichnis unten ziehen.</li><li><span style='background-color: yellow;' class='citationDESK'>Autor Jahr</span> In-Text-Zitationen, die über Abkürzungen zugeordnet wurden.</li></ul>",
+  "tooltip_sort_icon": "In-Text-Zitationen ohne Übereinstimmung<br>alphabetisch sortieren",
+  "tooltip_trash": "Ziehe fehlerhafte In-Text-Zitationen hierher",
+  "tooltip_sort_order": "Sortiere In-Text-Zitationen ohne Übereinstimmung<br>nach der Reihenfolge des Auftretens",
+  "tooltip_sort_alpha": "Sortiere In-Text-Zitationen ohne Übereinstimmung<br>alphabetisch"
+
+
 }

@@ -225,7 +225,7 @@ function cleanCitations() {
     citationSpans.forEach((span) => {
 
         let cleanedText = span.innerText.replace(/\(|\)/g, ''); // Remove parentheses
-        
+        console.log(cleanedText)
         //console.log(cleanedText)
         let precedingText;
         // Check if the cleanedText is just a number (e.g., a year like 1966) --- narrative cit
@@ -242,6 +242,7 @@ function cleanCitations() {
                 let lastWord = words[words.length - 1]; // Get the word before the span
                 // Check if the word before the last word is "and", "&", or "al."
                 const nonWordRegex = /[.;:!"?)]$/;
+                console.log(words)
                 if (
                     words.length > 1 &&
                     (
@@ -285,8 +286,9 @@ function cleanCitations() {
                     
                 }
             }
-            //console.log(words)
+
             words = mergeNameFragments(Allnames, words)
+
             words = combineHyphenatedWords(words)
             lastWord = words[words.length - 2]
             const nonWordRegex = /[.;:!"?)]$/;

@@ -8,7 +8,7 @@ export function BestMatch(span, referenceFrames) {
   let Elementbestvalue = 1;
   let bestRef;
   let elementbestRef = [];
-
+  let YearMatch = [];
   for (const Ref of referenceFrames) {
       let Refsauth = Ref.getAttribute('authors')
           .split(/,| and /)  // Split by comma or 'and'
@@ -18,10 +18,7 @@ export function BestMatch(span, referenceFrames) {
 
       // Check for an exact match in authors
       if (arraysAreIdentical(Myauthors, Refsauth)) {
-          span.setAttribute('found', 'year');
-          span.MatchedWith = [Ref];
-
-          return; // Exit the entire function if an exact match is found
+          YearMatch.push(Ref); // Exit the entire function if an exact match is found
       }
 
       // Check for typo-level match based on string difference
@@ -41,12 +38,15 @@ export function BestMatch(span, referenceFrames) {
   }
 
   // After the loop, decide based on Typobestvalue
-  if (Typobestvalue < 2) {
+  if (Typobestvalue < 2 && YearMatch.length === 0) {
       span.setAttribute('found', 'typo');
       span.MatchedWith = [bestRef];
-  } else {
-      span.MatchedWith = elementbestRef;
+  } else if (YearMatch.length > 0){
+    span.setAttribute('found', 'year');
+      span.MatchedWith = YearMatch;
 
+  } else {
+    span.MatchedWith = elementbestRef
   }
 }
 

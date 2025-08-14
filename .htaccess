@@ -1,0 +1,18 @@
+# Enable rewrites
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# 1) If the request is an existing file or directory, serve it
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 2) Always allow sitemap/robots explicitly (in case they don't exist yet)
+RewriteRule ^(sitemap\.xml|robots\.txt)$ - [L]
+
+# 3) Fallback: send everything else to index.html (SPA routing)
+RewriteRule . /index.html [L]
+</IfModule>
+
+# (Optional) make sure XML is served with the right type
+AddType application/xml .xml

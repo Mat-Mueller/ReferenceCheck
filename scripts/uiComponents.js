@@ -653,8 +653,8 @@ SingleRef.innerHTML = `<b>${matchCount}</b> ${window.langDict[key]}`;
         if (matchCount === 0) {
             if (ReferenceFrameParagraph){
                 
-                ReferenceFrameParagraph.style.border = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
-
+                ReferenceFrameParagraph.style.background = `  radial-gradient(circle at center, white 70%,${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
+                ReferenceFrameParagraph.setAttribute("data-match-status", "no-match");
             } else {
                 SingleRef.parentElement.style.border = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
 
@@ -1039,11 +1039,13 @@ export function searchSpanRef() {
 
 function UpdateFramesAndMatches() {
 
-///// update Span Titles
-const citationElements = document.querySelectorAll('span.citation[cleanedCit]');
-citationElements.forEach(function (element) {
-    FormulateTooltip(element)
-});
+
+    console.log("updating frames and matches")
+    ///// update Span Titles
+    const citationElements = document.querySelectorAll('span.citation[cleanedCit]');
+    citationElements.forEach(function (element) {
+        FormulateTooltip(element)
+    });
 
     // Get the accent color from the CSS variable
     const accentColor = "rgb(227, 87, 75)" 
@@ -1060,7 +1062,7 @@ citationElements.forEach(function (element) {
         const referenceBorderColor = getComputedStyle(reference).getPropertyValue('border-color').trim();
 
         // If the border color matches the accent color, increment the counter
-        if (referenceBorderColor === accentColor) {
+        if (reference.getAttribute("data-match-status") === "no-match") {  
             countWithoutMatch++;
             unmatchedReferences.push(reference); // Store unmatched references
         }
@@ -1070,55 +1072,55 @@ citationElements.forEach(function (element) {
     const TextFrameParagraph = document.getElementById('References');
     
 // Append the text to the existing paragraph
-if (TextFrameParagraph) {
+    if (TextFrameParagraph) {
     // Clear previous content
-    TextFrameParagraph.innerHTML = '';
+        TextFrameParagraph.innerHTML = '';
 
-    // Create a wrapper for all the bold text
-    const boldWrapper = document.createElement('b');
-
-
-    // Create the clickable 'countWithoutMatch' element
-    const countWithoutMatchElement = document.createElement('span');
-countWithoutMatchElement.innerHTML = 
-    window.langDict["refs_without_match"]
-        .replace("{count}", countWithoutMatch)
-        .replace("{total}", referenceFrames.length);
-    countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
-    countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
-
-    // Create the text around the clickable number
-    const withoutMatchText = document.createTextNode(` (${referenceFrames.length} total)`);
-
-    // Append the elements inside the bold wrapper
-    
-    boldWrapper.appendChild(countWithoutMatchElement);
-    //boldWrapper.appendChild(withoutMatchText);
+        // Create a wrapper for all the bold text
+        const boldWrapper = document.createElement('b');
 
 
-    // Append the bold wrapper to the TextFrameParagraph
-    TextFrameParagraph.appendChild(boldWrapper);
+        // Create the clickable 'countWithoutMatch' element
+        const countWithoutMatchElement = document.createElement('span');
+        countWithoutMatchElement.innerHTML = 
+            window.langDict["refs_without_match"]
+                .replace("{count}", countWithoutMatch)
+                .replace("{total}", referenceFrames.length);
+        countWithoutMatchElement.style.cursor = 'pointer'; // Make it clickable
+        countWithoutMatchElement.style.textDecoration = 'underline'; // Underline the clickable number
 
-    // Initialize a counter to track clicks
-    let unmatchedClickCount = 0;
+        // Create the text around the clickable number
+        const withoutMatchText = document.createTextNode(` (${referenceFrames.length} total)`);
 
-    // Add click event listener to the 'countWithoutMatchElement'
-    countWithoutMatchElement.addEventListener('click', () => {
-        // Scroll through unmatched references
-        if (unmatchedReferences.length > 0) {
-            /*
-            unmatchedReferences[unmatchedClickCount % unmatchedReferences.length].scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-            */
-            const element = unmatchedReferences[unmatchedClickCount % unmatchedReferences.length]  
-            element.scrollIntoView({behavior: 'smooth', block: 'center'})
-            DoHighlight(element)
-            unmatchedClickCount++; // Cycle to the next unmatched reference on each click
-        }
-    });
-}
+        // Append the elements inside the bold wrapper
+        
+        boldWrapper.appendChild(countWithoutMatchElement);
+        //boldWrapper.appendChild(withoutMatchText);
+
+
+        // Append the bold wrapper to the TextFrameParagraph
+        TextFrameParagraph.appendChild(boldWrapper);
+
+        // Initialize a counter to track clicks
+        let unmatchedClickCount = 0;
+
+        // Add click event listener to the 'countWithoutMatchElement'
+        countWithoutMatchElement.addEventListener('click', () => {
+            // Scroll through unmatched references
+            if (unmatchedReferences.length > 0) {
+                /*
+                unmatchedReferences[unmatchedClickCount % unmatchedReferences.length].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                */
+                const element = unmatchedReferences[unmatchedClickCount % unmatchedReferences.length]  
+                element.scrollIntoView({behavior: 'smooth', block: 'center'})
+                DoHighlight(element)
+                unmatchedClickCount++; // Cycle to the next unmatched reference on each click
+            }
+        });
+    }
 
 
     const ThirdFrameHead = document.getElementById('ThirdFrameHead');
@@ -1129,10 +1131,10 @@ countWithoutMatchElement.innerHTML =
         
         const ThirdFrameTitle = document.getElementById("ThirdFrameTitle")
 
-ThirdFrameTitle.innerHTML = window.langDict["citations_without_match"]
-    .replace("{{unmatched}}", totalCitations - matchedCitations)
-    .replace("{{total}}", totalCitations);
-        }
+        ThirdFrameTitle.innerHTML = window.langDict["citations_without_match"]
+            .replace("{{unmatched}}", totalCitations - matchedCitations)
+            .replace("{{total}}", totalCitations);
+    }
     
 }
 
@@ -1267,9 +1269,13 @@ export function DragDrop() {
     }
     
     function MatchDragged(draggedElement, dropZone) {
+
+        console.log("calling matcheddragged")
+        console.log(dropZone)
                 // 1. Set the background color to secondary color
                 draggedElement.style.backgroundColor = secondaryColor;
-                
+                dropZone.style.background = "white"
+                dropZone.setAttribute("data-match-status", "");
                 // Mark the draggedElement as found
 
                 draggedElement.setAttribute('found', 'true');
@@ -1303,6 +1309,7 @@ export function DragDrop() {
                 });        
 
     }
+    window.MatchDragged = MatchDragged;
 
     function DeleteDragged(draggedElement, dropZone) {
         
@@ -1319,8 +1326,11 @@ export function DragDrop() {
                 inText.remove();
             }
         }); 
+        UpdateFramesAndMatches()
 
     }
+
+    window.DeleteDragged = DeleteDragged;
 
     // Helper function to remove links related to a specific span in all drop zones
     function removeLinksRelatedToSpan(span) {
@@ -1348,73 +1358,6 @@ export function DragDrop() {
 }
 
 
-
-function FormulateTooltip(element) {
-  const dict = window.langDict || {};
-  const citation = (element.getAttribute("cleanedcit") || "").split(";").join(" ");
-
-  // tolerate both 'found' and 'Found'
-  const foundAttr = element.getAttribute("found") ?? element.getAttribute("Found");
-
-  // status message (uses your existing keys)
-  const statusKey =
-    foundAttr === "true" ? "tooltip_found" :
-    foundAttr === "ambig" ? "tooltip_ambig" :
-    foundAttr === "year"  ? "tooltip_year"  :
-    foundAttr === "byAbbr"? "tooltip_byAbbr":
-    foundAttr === "typo"  ? "tooltip_typo"  :
-                            "tooltip_not_found";
-
-  // base message (with {{citation}} placeholder)
-  let base = (dict[statusKey] || "{{citation}}").replace("{{citation}}", citation);
-
-  // gather matches (array or single)
-  const matches = Array.isArray(element.MatchedWith)
-    ? element.MatchedWith
-    : (element.MatchedWith ? [element.MatchedWith] : []);
-
-  // helper
-  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-                    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
-
-  // Build a normalized list like "authors (year)" or fallback to cleanedtext
-  const items = matches.map(div => {
-    const authors = div?.getAttribute?.("authors") || "";
-    const year    = div?.getAttribute?.("year")    || "";
-    const cleaned = div?.getAttribute?.("cleanedtext") || "";
-    const s = (authors && year) ? `${authors} (${year})` : cleaned;
-    return (s || "").trim();
-  }).filter(Boolean);
-
-  const unique = [...new Set(items)];
-  const shown = unique.slice(0, 3);
-  const moreCount = Math.max(0, unique.length - shown.length);
-
-  // Branching depending on exact match vs not
-  if (foundAttr === "true") {
-    if (shown.length) {
-      base += `<br><br>${dict.tooltip_matches}<br>` +
-              shown.map(s => `• ${esc(s)}`).join("<br>");
-      if (moreCount) {
-        base += `<br>${(dict.tooltip_more || "").replace("{{count}}", moreCount)}`;
-      }
-    }
-  } else {
-    if (shown.length === 0) {
-      // no exact + no similar
-      base = dict.tooltip_no_exact_no_similar;
-    } else {
-      // no exact + suggestions
-      base = dict.tooltip_no_exact_with_suggestions + "<br>" +
-             shown.map(s => `• ${esc(s)}`).join("<br>");
-      if (moreCount) {
-        base += `<br>${(dict.tooltip_more || "").replace("{{count}}", moreCount)}`;
-      }
-    }
-  }
-
-  element.setAttribute("tooltip", base);
-}
 
 
 
@@ -1592,65 +1535,7 @@ function sorting() {
 }
 
   
-function createTooltips() {
-    const citationElements = document.querySelectorAll('span.citation, div.InTexts, div.Reference-frame, div.Trashs, div.sorting, div.Explanations');
 
-
-    citationElements.forEach(cit => {
-        // Create a custom tooltip element
-        const tooltip = document.createElement('div');
-        tooltip.classList.add('custom-tooltip');
-        tooltip.innerHTML = cit.getAttribute('tooltip'); // Use the title attribute as the tooltip text
-
-        // Hide the title attribute to prevent the default browser tooltip
-        cit.removeAttribute('title');
-
-
-
-
-        // Append the tooltip to the body
-        document.body.appendChild(tooltip);
-
-        // Function to show tooltip
-        const showTooltip = (event) => {
-            tooltip.style.opacity = '1';
-            const rect = cit.getBoundingClientRect();
-            tooltip.style.left = `${rect.left + window.scrollX}px`;  // Adjust for scrolling
-            tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 5}px`;  // Place above the element
-        };
-
-        // Function to hide tooltip
-        const hideTooltip = () => {
-            tooltip.style.opacity = '0';
-        };
-
-        // Event listeners for mouse enter and leave
-        cit.addEventListener('mouseover', showTooltip);
-        cit.addEventListener('mouseleave', hideTooltip);
-
-        // Event listener for click
-        cit.addEventListener('click', function(event) {
-            if (tooltip.style.opacity === '1') {
-                hideTooltip();
-            } else {
-                showTooltip(event);
-            }
-        });
-
-        // Optional: Update the tooltip position with the mouse movement
-        //cit.addEventListener('mousemove', function(event) {
-        //   tooltip.style.left = `${event.pageX + 10}px`;  // Offset from the cursor
-        //    tooltip.style.top = `${event.pageY + 10}px`;
-        //});
-
-        // Hide the tooltip when clicking elsewhere on the page
-        document.addEventListener('click', function(event) {
-            if (!cit.contains(event.target) && tooltip.style.opacity === '1') {
-                hideTooltip();
-            }
-        });
-    });
-}
 
   
 
@@ -1662,4 +1547,462 @@ export function showLoadingSpinner() {
  export function hideLoadingSpinner() {
     document.getElementById('loading-spinner').style.display = 'none';
   }
+
+/* FormulateTooltip v2 — HTML, icons, selectable lists, i18n-first */
+function FormulateTooltip(element, {
+  outAttr = "tooltip",          // where to store the HTML (was "tooltip" in your code)
+  maxItems = 5,                 // how many matches/suggestions to show initially
+  suggestions = null,           // optional: array of low-confidence suggestions (strings)
+  suggestionText = null         // optional: typo correction preview string
+} = {}) {
+  const dict = (window.langDict || {});
+
+  // --- helpers -------------------------------------------------------------
+  const decodeHtml = s => { const t = document.createElement('textarea'); t.innerHTML = s || ""; return t.value; };
+  const esc = s => String(s ?? "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+
+  const get = (el, name) => el?.getAttribute?.(name);
+  
+
+  
+const normCit = decodeHtml(get(element, "cleanedcit") || "")
+   .split(";").join(" ")
+   .replace(/\s+/g, " ")
+   .trim();
+
+  // tolerant Found/found
+  const foundAttr = get(element, "found") ?? get(element, "Found");
+
+  // prefer cleanedtext; else authors (year)
+const refToString = (n) => {
+  if (!n || !n.getAttribute) return "";
+  const cleaned = decodeHtml(n.getAttribute("cleanedtext") || "").trim();
+  const year    = decodeHtml(n.getAttribute("year") || "").trim();
+  return year ? `${cleaned} (${year})` : cleaned;
+};
+
+  // gather matches from your element.MatchedWith
+  const raw = Array.isArray(element.MatchedWith)
+    ? element.MatchedWith
+    : (element.MatchedWith ? [element.MatchedWith] : []);
+  const matches = [...new Set(raw.map(refToString).filter(Boolean))];
+
+  // status mapping (explicit beats heuristic)
+  let status =
+    foundAttr === "true"  ? "found"  :
+    foundAttr === "ambig" ? "ambig"  :
+    foundAttr === "year"  ? "year"   :
+    foundAttr === "byAbbr"? "byAbbr" :
+    foundAttr === "typo"  ? "typo"   :
+    (!normCit ? "invalid" :
+      (matches.length === 0 ? "not_found" : "not_found_with_suggestions"));
+
+  // --- i18n (text only; HTML comes from code) ------------------------------
+  const t = (k, d) => {
+    const v = dict[k];
+    return (v && v !== "undefined") ? v : d;
+  };
+  
+  
+
+  const label = {
+    found:  t("tooltip_found_label", "Gefunden"),
+    ambig:  t("tooltip_ambig_label", "Mehrdeutig"),
+    year:   t("tooltip_year_label", "Jahres-Treffer"),
+    byAbbr: t("tooltip_byAbbr_label", "Abkürzungs-Treffer"),
+    typo:   t("tooltip_typo_label", "Möglicher Tippfehler"),
+    not_found: t("tooltip_not_found_label", "Nicht gefunden"),
+    not_found_with_suggestions: t("tooltip_not_found_sugg_label", "Nicht gefunden – Vorschläge"),
+    invalid: t("tooltip_invalid_label", "Ungültige Zitation")
+  }[status];
+
+  const mainLine = ({
+    found:  t("tooltip_found", "Erkannte In-Text-Zitation: {{citation}}"),
+    ambig:  t("tooltip_ambig", "Mehrdeutig: {{citation}}"),
+    year:   t("tooltip_found", "Erkannte In-Text-Zitation: {{citation}}"),
+    byAbbr: t("tooltip_byAbbr", "Über Abkürzung erkannt: {{citation}}"),
+    typo:   t("tooltip_typo", "Nahe Übereinstimmung: {{citation}}"),
+    not_found: t("tooltip_not_found", "Nicht gefunden: {{citation}}"),
+    not_found_with_suggestions: t("tooltip_not_found_with_suggestions", "Keine eindeutige Übereinstimmung für: {{citation}}"),
+    invalid: t("tooltip_invalid", "Ungültige Zitation")
+  }[status] || "").replace("{{citation}}", (normCit));
+
+  const H_MATCHES = t("tooltip_matches", "Gefundene Referenzen:");
+  const H_SUGGS   = t("tooltip_suggestions_header", "Vorschläge (niedrige Übereinstimmung)");
+  const MORE_FMT  = t("tooltip_more", "+{{count}} weitere Treffer");
+  const HINT = {
+    ambig: t("tooltip_hint_select", "Bitte die richtige Referenz auswählen."),
+    year:  t("tooltip_hint_year_mismatch", "Das Jahr im In-Text-Zitat stimmt nicht mit den gefundenen Referenzen überein."),
+    typo:  t("tooltip_hint_typo", "Bitte bestätigen Sie die Zuordnung. Kleinere Abweichungen im Text wurden erkannt."),
+    not_found: t("tooltip_hint_check_spelling", "Prüfen Sie Schreibweise, Autorenreihenfolge und Jahr.")
+  }[status];
+
+  // --- header with icons ---------------------------------------------------
+const elId = element.id || `cit-${Math.random().toString(36).slice(2)}`;
+element.id = elId; // ensure the element has an id
+
+const headerHTML = `
+  <div class="tt-status">
+    <span class="tt-pill tt-pill--${esc(status)}">${esc(label)}</span>
+    <div class="tt-actions">
+      <button class="tt-iconbtn"
+        onclick="window.DeleteDragged && window.DeleteDragged(document.getElementById('${elId}'), null); const tip=this.closest('.custom-tooltip'); if(tip){ tip.style.opacity='0'; tip.style.visibility='hidden'; }"
+        aria-label="${esc(t('tooltip_action_remove','Kein Zitat'))}"
+        title="${esc(t('tooltip_action_remove','Kein Zitat'))}">🗑</button>
+    </div>
+  </div>
+`;
+
+  // --- main line (+ optional suggestion line for typo) ---------------------
+  const suggestionLine = (status === "typo" && suggestionText)
+    ? `<div class="tt-suggestion">${esc(t("tooltip_suggestion","Vorschlag: {{suggestion}}").replace("{{suggestion}}", suggestionText))}</div>`
+    : "";
+
+  const mainHTML = `
+    <div class="tt-line">${esc(mainLine)}</div>
+    ${suggestionLine}
+    ${HINT ? `<div class="tt-hint">${esc(HINT)}</div>` : ""}
+  `;
+
+
+  
+  // --- list builder (radio-style items with tags & show more) --------------
+ const renderList = (title, arr, kind, extraTag = null, preselectIdx = null) => {
+        if (!arr || !arr.length) return "";
+    const shown = arr.slice(0, maxItems);
+    const moreN = Math.max(0, arr.length - shown.length);
+   const items = shown.map((txt, i) => {
+    const selected = preselectIdx === i;
+const refEl = raw[i]; 
+  return `
+    <li class="tt-item${selected ? " is-selected" : ""}"
+         data-kind="${kind}"
+         data-idx="${i}"
+         data-ref-id="${refEl?.id || ''}"
+         role="radio"
+         aria-checked="${selected ? "true" : "false"}"
+         tabindex="0">
+      <span class="tt-choice" aria-hidden="true"></span>
+      <span class="tt-text">${esc(txt)}</span>
+      <span class="tt-tags">
+        ${i === 0 ? `<span class="tt-chip">${esc(t("tooltip_tag_top","Höchste Übereinstimmung"))}</span>` : ""}
+        ${extraTag ? `<span class="tt-chip">${esc(extraTag)}</span>` : ""}
+      </span>
+    </li>
+  `;
+}).join("");
+
+    const more = moreN
+      ? `<button class="tt-btn tt-btn--inline" data-action="show-more" data-kind="${kind}">${esc(MORE_FMT.replace("{{count}}", String(moreN)))}</button>`
+      : "";
+
+    return `
+      <div class="tt-block">
+        <div class="tt-header">${esc(title)}</div>
+        <ul class="tt-list" role="radiogroup">${items}</ul>
+        ${more}
+      </div>
+    `;
+  };
+
+  let listsHTML = "";
+  if (status === "found" && matches.length === 1) {
+    listsHTML = renderList(H_MATCHES, matches.slice(0,1), "matches");
+  } else if (status === "ambig" || status === "year" || status === "byAbbr" || status === "typo") {
+    const extra = status === "byAbbr" ? t("tooltip_tag_abbr","Abkürzung erkannt") :
+                  null;
+     const preselect = (status === "year" && matches.length === 1) ? 0 : null;
+   listsHTML = renderList(H_MATCHES, matches, "matches", extra, preselect);
+  } else if (status === "not_found_with_suggestions") {
+    listsHTML = renderList(H_MATCHES, matches, "suggestions");
+  }
+
+  // --- footer actions ------------------------------------------------------
+  const selectable = (status === "ambig" || status === "year" || status === "byAbbr" || status === "typo" || status === "not_found_with_suggestions");
+  let footerHTML = "";
+  if (selectable) {
+        const hasPreselect = (status === "year" && matches && matches.length === 1);
+
+    footerHTML = `
+      <div class="tt-footer">
+        <button class="tt-btn tt-btn--primary" data-action="confirm"${hasPreselect ? "" : " disabled"}>${esc(t("tooltip_btn_select","Auswählen"))}</button>      </div>
+    `;
+  } else if (status === "not_found") {
+    // footerHTML = `
+    //   <div class="tt-footer tt-footer--grid">
+    //     <button class="tt-btn" data-action="search-again">${esc(t("tooltip_action_search_again","Erneut suchen"))}</button>
+    //     <button class="tt-btn" data-action="link-manual">${esc(t("tooltip_action_link_manual","Manuell zuordnen…"))}</button>
+    //     <button class="tt-btn" data-action="create-ref">${esc(t("tooltip_action_create_ref","Neue Referenz anlegen…"))}</button>
+    //   </div>
+    // `;
+  }
+
+  const html = `
+    <div class="tt" role="tooltip" data-status="${esc(status)}">
+      ${headerHTML}
+      ${mainHTML}
+      ${listsHTML}
+      ${footerHTML}
+    </div>
+  `.trim();
+
+  element.setAttribute(outAttr, html);
+  return { html, status };
+}
+
+/* Optional: delegated interactions (radios, buttons). Call once. */
+function WireTooltipInteractions(root = document, handlers = {}) {
+  const h = {
+    onRemove: handlers.onRemove || (()=>{}),
+    onConfirm: handlers.onConfirm || (()=>{}),
+    onNone: handlers.onNone || (()=>{}),
+    onShowMore: handlers.onShowMore || (()=>{}),
+    onSearchAgain: handlers.onSearchAgain || (()=>{}),
+    onLinkManual: handlers.onLinkManual || (()=>{}),
+    onCreateRef: handlers.onCreateRef || (()=>{}),
+    onItemFocus: handlers.onItemFocus || (()=>{})
+  };
+
+  root.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (btn) {
+      const action = btn.getAttribute("data-action");
+      const tip = btn.closest(".tt");
+      if (action === "remove") return h.onRemove({ tooltip: tip, event: e });
+      if (action === "confirm") return h.onConfirm({ tooltip: tip, selection: getSelection(tip), event: e });
+      if (action === "none") return h.onNone({ tooltip: tip, event: e });
+      if (action === "show-more") return h.onShowMore({ tooltip: tip, kind: btn.getAttribute("data-kind"), event: e });
+      if (action === "search-again") return h.onSearchAgain({ tooltip: tip, event: e });
+      if (action === "link-manual") return h.onLinkManual({ tooltip: tip, event: e });
+      if (action === "create-ref") return h.onCreateRef({ tooltip: tip, event: e });
+    }
+
+    const item = e.target.closest(".tt-item");
+    if (item) {
+      selectItem(item);
+      const tip = item.closest(".tt");
+      enableConfirm(tip);
+      h.onItemFocus({ tooltip: tip, item, event: e });
+    }
+  });
+
+
+
+  function selectItem(item) {
+    const group = item.closest(".tt-list");
+    group.querySelectorAll(".tt-item").forEach(n => {
+      n.classList.toggle("is-selected", n === item);
+      n.setAttribute("aria-checked", n === item ? "true" : "false");
+    });
+  }
+  function enableConfirm(tip) {
+    const sel = getSelection(tip);
+    const btn = tip.querySelector('[data-action="confirm"]');
+    if (btn) btn.disabled = !sel;
+  }
+  function getSelection(tip) {
+    const sel = tip.querySelector('.tt-item.is-selected');
+    if (!sel) return null;
+    return {
+      kind: sel.getAttribute("data-kind"),
+      idx: Number(sel.getAttribute("data-idx")),
+      text: sel.querySelector(".tt-text")?.textContent || ""
+    };
+  }
+
+  return { destroy(){ root.removeEventListener("click",()=>{}); root.removeEventListener("keydown",()=>{}); } };
+}
+
+
+function createTooltips({
+  selector = 'span.citation, div.InTexts, div.Reference-frame, div.Trashs, div.sorting, div.Explanations',
+  SHOW_DELAY = 120,   // ms to wait before showing (hover-intent)
+  HIDE_DELAY = 180,   // ms to wait before hiding (grace period)
+  MOVE_TOLERANCE = 8, // px max mouse movement during SHOW_DELAY to count as intent
+  OFFSET = 8          // px gap from host
+} = {}) {
+  const hosts = document.querySelectorAll(selector);
+  const state = new WeakMap(); // host -> {tip, showTimer, hideTimer, startX, startY}
+
+  const clear = (host, which) => {
+    const s = state.get(host);
+    if (!s) return;
+    if ((!which || which==='show') && s.showTimer) { clearTimeout(s.showTimer); s.showTimer = null; }
+    if ((!which || which==='hide') && s.hideTimer) { clearTimeout(s.hideTimer); s.hideTimer = null; }
+  };
+
+  const position = (host, tip) => {
+    const r = host.getBoundingClientRect();
+    const tr = tip.getBoundingClientRect();
+    let left = r.left + window.scrollX;
+    let top  = r.top  + window.scrollY - tr.height - OFFSET;
+    // place below if not enough space above
+    if (top < window.scrollY) top = r.bottom + window.scrollY + OFFSET;
+    // clamp horizontally
+    const vw = document.documentElement.clientWidth;
+    if (left + tr.width > window.scrollX + vw - 8) left = window.scrollX + vw - tr.width - 8;
+    if (left < window.scrollX + 8) left = window.scrollX + 8;
+    tip.style.left = `${left}px`;
+    tip.style.top  = `${top}px`;
+  };
+
+  const showNow = (host) => {
+    const s = state.get(host);
+    if (!s) return;
+    const tip = s.tip;
+    // refresh content (in case attribute changed)
+    tip.innerHTML = host.getAttribute('tooltip') || '';
+    tip.style.visibility = 'visible';
+    tip.style.opacity = '1';
+    position(host, tip);
+  };
+
+  const hideNow = (host) => {
+    const s = state.get(host);
+    if (!s) return;
+    const tip = s.tip;
+    tip.style.opacity = '0';
+    tip.style.visibility = 'hidden';
+  };
+
+  hosts.forEach((host) => {
+    // create tooltip
+    const tip = document.createElement('div');
+    tip.className = 'custom-tooltip';
+    tip.setAttribute('role', 'tooltip');
+    tip.style.visibility = 'hidden';
+    tip.style.opacity = '0';
+    tip.innerHTML = host.getAttribute('tooltip') || '';
+    document.body.appendChild(tip);
+const hostId = `host-${Math.random().toString(36).slice(2)}`;
+host.setAttribute('data-host-id', hostId);
+tip.setAttribute('data-host-id', hostId);
+    state.set(host, { tip, showTimer: null, hideTimer: null, startX: 0, startY: 0 });
+
+
+    // Make radio rows selectable (click anywhere on the row incl. the circle)
+tip.addEventListener('click', (e) => {
+  const li = e.target.closest('.tt-item');
+  if (!li || !tip.contains(li)) return;
+    console.log("clicked")
+  selectItem(li);
+  enableConfirmIfSelected(tip);
+});
+
+
+
+// Helpers (keep these inside the same forEach so they see `tip`)
+function selectItem(li) {
+  const list = li.closest('.tt-list');
+  if (!list) return;
+  list.querySelectorAll('.tt-item').forEach(node => {
+    const on = node === li;
+    node.classList.toggle('is-selected', on);
+    node.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+}
+
+function enableConfirmIfSelected(tooltipRoot) {
+  const selected = tooltipRoot.querySelector('.tt-item.is-selected');
+  const btn = tooltipRoot.querySelector('[data-action="confirm"]');
+  if (btn) btn.disabled = !selected;
+}
+
+    // --- hover-intent on host ---
+    host.addEventListener('mouseenter', (e) => {
+      const s = state.get(host);
+      clear(host); // cancel any pending hides
+      s.startX = e.clientX; s.startY = e.clientY;
+
+      // track movement during intent window
+      const onMove = (me) => { s.lastDx = Math.abs(me.clientX - s.startX); s.lastDy = Math.abs(me.clientY - s.startY); };
+      host.addEventListener('mousemove', onMove);
+
+      s.showTimer = setTimeout(() => {
+        host.removeEventListener('mousemove', onMove);
+        const moved = Math.hypot(s.lastDx || 0, s.lastDy || 0);
+        if (moved <= MOVE_TOLERANCE) showNow(host);  // only show if mouse settled
+      }, SHOW_DELAY);
+    });
+
+    host.addEventListener('mouseleave', () => {
+      clear(host, 'show'); // don't show after we've left
+      const s = state.get(host);
+      s.hideTimer = setTimeout(() => hideNow(host), HIDE_DELAY);
+    });
+
+    // keep open while hovering tooltip
+    tip.addEventListener('mouseenter', () => clear(host));
+    tip.addEventListener('mouseleave', () => {
+      const s = state.get(host);
+      s.hideTimer = setTimeout(() => hideNow(host), HIDE_DELAY);
+    });
+
+    // toggle by click on host
+    host.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const visible = tip.style.visibility === 'visible' && tip.style.opacity !== '0';
+      clear(host);
+      if (visible) hideNow(host); else showNow(host);
+    });
+
+    // close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!host.contains(e.target) && !tip.contains(e.target)) {
+        const s = state.get(host);
+        s.hideTimer = setTimeout(() => hideNow(host), HIDE_DELAY);
+      }
+    });
+
+    // reposition on scroll/resize while visible
+    const rep = () => { if (tip.style.visibility === 'visible') position(host, tip); };
+    window.addEventListener('scroll', rep, true);
+    window.addEventListener('resize', rep, true);
+  });
+}
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.custom-tooltip [data-action="confirm"]');
+  if (!btn) return;
+
+  const tip = btn.closest('.custom-tooltip');
+  const selectedItem = tip.querySelector('.tt-item.is-selected');
+  if (!selectedItem) return; // nothing chosen
+
+  // Find the dragged element (the citation/intext element)
+  const host = findHostForTooltip(tip);
+  if (!host) return;
+
+  // Find the dropZone (the matching Reference-frame element)
+  const refId = selectedItem.getAttribute('data-ref-id');
+  const dropZone = refId ? document.getElementById(refId) : null;
+  if (!dropZone) return;
+
+  // Call your match function
+  MatchDragged(host, dropZone);
+UpdateFramesAndMatches()
+  // Optionally close the tooltip
+  tip.style.visibility = 'hidden';
+  tip.style.opacity = '0';
+});
+
+
+
+function findHostForTooltip(tip) {
+  // Get the host from the tooltip's data-host-id
+  const hostId = tip.getAttribute('data-host-id');
+  let host = hostId ? document.querySelector(`[data-host-id="${hostId}"]`) : null;
+  if (!host) return null; // no host found at all
+  console.log(host)
+  // If the host is an .InTexts element, find the corresponding span.citation
+  if (host.classList.contains('InTexts')) {
+    const draggableSpans = document.querySelectorAll('span.citation[cleanedCit]');
+        host = host.ParentSpan ;  
+  }
+
+  return host;
+}
+
 

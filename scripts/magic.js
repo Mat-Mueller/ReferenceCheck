@@ -2,13 +2,18 @@ import {full_name_to_abbreviation} from './Abbreviations.js'
 import {DoHighlight} from './uiComponents.js'
 
 export function BestMatch(span, referenceFrames) {
-  let Myauthors = span.getAttribute('authors').split(";").map(author => author.trim().toLowerCase());
-  let MyYear = span.getAttribute("year");
+  console.log(span.getAttribute('authors'))
+  let Myauthors = (span.getAttribute('authors') || "")
+    .split(";")
+    .map(a => a.trim().toLowerCase())
+    ;  
+    let MyYear = span.getAttribute("year");
   let Typobestvalue = 10000;
   let Elementbestvalue = 1;
   let bestRef;
   let elementbestRef = [];
   let YearMatch = [];
+  let further_matches = [];
   for (const Ref of referenceFrames) {
       let Refsauth = Ref.getAttribute('authors')
           .split(/,| and /)  // Split by comma or 'and'
@@ -35,6 +40,28 @@ export function BestMatch(span, referenceFrames) {
       } else if (Elementbestvalue === countElementsInArray(Myauthors, Refsauth)) {
         elementbestRef.push(Ref);
       }
+
+
+      if (check_partial_match(Myauthors.filter(a => a && !(a == "et" || a == "al." )), (Ref.getAttribute('authors')) ) ) {
+        further_matches.push(Ref)
+      }
+
+      function check_partial_match(author_list, stringtocompare) {
+        if (!Array.isArray(author_list) || !stringtocompare) return false;
+
+        // Normalize the comparison string: lowercase, trim, collapse spaces
+        const normalizedString = stringtocompare
+          .toLowerCase()
+          .replace(/\s+/g, " ")
+          .trim();
+        //console.log(normalizedString, author_list)
+        // Check if *every* author name from the in-text list is somewhere in the string
+        return author_list.every(author => {
+          const normAuthor = author.toLowerCase().trim();
+          return normalizedString.includes(normAuthor);
+        });
+      }
+
   }
 
   // After the loop, decide based on Typobestvalue
@@ -48,6 +75,11 @@ export function BestMatch(span, referenceFrames) {
   } else {
     span.MatchedWith = elementbestRef
   }
+
+  if (span.MatchedWith.length < 5 && further_matches.length > 0) {
+  const uniqueExtra = further_matches.filter(ref => !span.MatchedWith.includes(ref));
+  span.MatchedWith = span.MatchedWith.concat(uniqueExtra).slice(0, 5);
+}
 }
 
 

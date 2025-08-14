@@ -556,25 +556,22 @@ margin-left : 3px;
     text-align: center;
     
   }
-
-  #MainLoading {
+#MainLoading {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    height: 30%;
-    width: 30%;
-    background-color: white;
-    font-size: 2.5em; /* Bigger text */
-    display: flex; /* Use Flexbox for centering */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    transform: translate(-50%, -50%);
-    /*border: 50px solid white; /* Large border */
-    /*box-shadow: 0 0 30px white(0, 0, 0, 0.5); /* Fading border effect */
-    text-align: center; /* Ensure multi-line text is centered */
-    border: 2px solid grey;
-    border-radius: 5px;
-    box-shadow: 0 7px 10px #999;
+    top: 0;
+    left: 0;
+    width: 100vw;    /* Full width */
+    height: 100vh;   /* Full height */
+    background-color: rgba(255, 255, 255, 0.5); /* Slight overlay (or transparent) */
+    z-index: 9999;   /* On top of everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hide the border/box */
+#MainLoading.hidden {
+    display: none;
 }
 :root{
   --usl-bg: #fff;
@@ -594,7 +591,7 @@ margin-left : 3px;
 }
 
 #UserSelectLoading {
-  display: grid !important;
+  display: grid ;
   grid-template-columns: 1fr;
   justify-items: center;
   text-align: center;

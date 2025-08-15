@@ -98,7 +98,7 @@ async function loadPDF(file) {
         document.getElementById('pdf_frame_head').style.display = "flex"
         document.getElementById('pdf_frame').style.display = "block"
         document.getElementById('pdf_title').innerText = file.name 
-        
+        //document.getElementById('#right_grey_container').style.overflow = "hidden"
 
 
         return pdf

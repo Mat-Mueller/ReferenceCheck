@@ -1978,7 +1978,20 @@ document.addEventListener('click', (e) => {
   if (!dropZone) return;
 
   // Call your match function
-  MatchDragged(host, dropZone);
+                  let ListSimilar = [];
+                                  const draggableSpans = document.querySelectorAll('span.citation[cleanedCit]');
+
+                
+                // Find similar draggable elements
+                draggableSpans.forEach((dragged) => {
+                    if (dragged.getAttribute("cleanedCit").trim() === host.getAttribute("cleanedCit").trim()) {
+                        ListSimilar.push(dragged);
+                    }
+                });
+                  ListSimilar.forEach((host) => {
+                    MatchDragged(host, dropZone);
+                });
+  //MatchDragged(host, dropZone);
 UpdateFramesAndMatches()
   // Optionally close the tooltip
   tip.style.visibility = 'hidden';

@@ -5,7 +5,7 @@ export function createZoomButtonsandSearchField() {
     const zoomInButton = document.createElement("button");
     zoomInButton.innerHTML = "+";
     zoomInButton.onclick = zoomIn;
-    zoomInButton.style.position = "fixed";
+
     zoomInButton.style.bottom = "20px";
     zoomInButton.style.width = "20px";
     zoomInButton.style.right = "20px";
@@ -13,21 +13,17 @@ export function createZoomButtonsandSearchField() {
     const zoomOutButton = document.createElement("button");
     zoomOutButton.innerHTML = "-";
     zoomOutButton.onclick = zoomOut;
-    zoomOutButton.style.position = "fixed";
+
     zoomOutButton.style.bottom = "20px";
     zoomOutButton.style.width = "20px";
     zoomOutButton.style.right = "45px"; // Position it to the right of the Zoom In button
 
-    document.body.appendChild(zoomInButton);
-    document.body.appendChild(zoomOutButton);
+    //document.getElementById("pdf_frame_head").appendChild(zoomInButton);
+    //document.getElementById("pdf_frame_head").appendChild(zoomOutButton);
 
-    const SearchCintainer = document.createElement('div')
-    SearchCintainer.id = "SearchCintainer"
-    const SearchCounter = document.createElement('div')
-    SearchCounter.id = "SearchCounter"
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.id = 'searchSpanField';
+
+    const searchInput =  document.getElementById('searchSpanField')
+
     searchInput.placeholder = window.langDict["search_placeholder"];
     //searchInput.style.marginLeft = '50px';
     searchInput.addEventListener('keydown', function(event) {
@@ -35,12 +31,6 @@ export function createZoomButtonsandSearchField() {
             searchSpanRef(event);      // Call the search function and pass the event
         }
       })
-    
-    SearchCintainer.appendChild(SearchCounter)
-    SearchCintainer.appendChild(searchInput)
-    
-    document.body.appendChild(SearchCintainer)
-
 
 
   }

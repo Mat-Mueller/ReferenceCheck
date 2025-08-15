@@ -94,7 +94,12 @@ async function loadPDF(file) {
         const pdf = await pdfjsLib.getDocument(url).promise;
 
         // Clear the previous content
-        document.getElementById('pdf-container').innerHTML = '';
+        document.getElementById('FAQ_container').style.display = "none"
+        document.getElementById('pdf_frame_head').style.display = "flex"
+        document.getElementById('pdf_frame').style.display = "block"
+        document.getElementById('pdf_title').innerText = file.name 
+        
+
 
         return pdf
     } catch (error) {
@@ -103,7 +108,7 @@ async function loadPDF(file) {
 }
 
 async function renderAllPages(pdfDocument) {
-    const pdfContainer = document.getElementById('pdf-container');
+    const pdfContainer = document.getElementById('pdf_frame');
     const dummy = document.createElement('div');
     dummy.id = "dummy"
     for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {

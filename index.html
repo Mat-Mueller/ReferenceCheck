@@ -119,64 +119,77 @@
                 <input type="file" id="pdf-upload" accept="application/pdf">
                 <p data-i18n="drag_drop">Ziehen Sie eine PDF-Datei hierher oder verwenden Sie den Upload-Button.</p>
             </div>
-            <div id="settings" display="none">
-                <h2 style="padding-left: 10px;" data-i18n="import_settings">Importeinstellungen</h2>
-                <div id="settings-1">
+            <div id="settings" style="display:none;">
+                <h2 id="settings-title" class="settings-title" data-i18n="import_settings">
+                    Import settings
+                </h2>
+
+                <!-- Header/Footer -->
+                <div id="settings-1" class="card">
                     <p id="settings-1text">
-                        <b data-i18n="header_footer_title">Kopf- und Fußzeile:</b><br>
-                        <span id="hf_both" data-i18n="header_footer_both" style="display: none;">Kopf- und Fußzeile erkannt.</span>
-                        <span id="hf_header_only" data-i18n="header_footer_header_only" style="display: none;">Nur Kopfzeile erkannt.</span>
-                        <span id="hf_footer_only" data-i18n="header_footer_footer_only" style="display: none;">Nur Fußzeile erkannt.</span>
-                        <span id="hf_none" data-i18n="header_footer_none" style="display: none;">Keine Kopf- oder Fußzeile erkannt.</span>
+                    <b data-i18n="header_footer_title">Header and footer:</b>
+                    <br>
+                    <span id="hf_both" data-i18n="header_footer_both" style="display:none;">Header and footer detected.</span>
+                    <span id="hf_header_only" data-i18n="header_footer_header_only" style="display:none;">Only header detected.</span>
+                    <span id="hf_footer_only" data-i18n="header_footer_footer_only" style="display:none;">Only footer detected.</span>
+                    <span id="hf_none" data-i18n="header_footer_none" style="display:none;">No header or footer detected.</span>
                     </p>
                     <div>
-                        <label>
-                            <input type="checkbox" id="checkHeader" name="checkHeader">
-                            <span data-i18n="pdf_has_header">PDF hat eine Kopfzeile</span>
-                        </label>
-                        <label>
-                            <input type="checkbox" id="checkFooter" name="checkFooter">
-                            <span data-i18n="pdf_has_footer">PDF hat eine Fußzeile</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="content">
-                    <div id="settings-2">
-                        <p id="settings-2text" style="min-height: 80px; width:100%;">
-                            <b data-i18n="start_ref_title">Beginn des Literaturverzeichnisses:</b><br>
-                            <span id="start_ref_initial" data-i18n="start_ref_click" style="display: none;">Klicken Sie in das Dokument, um den Beginn festzulegen.</span>
-                            <span id="start_ref_set" data-i18n="start_ref_set" style="display: none;">Beginn festgelegt.</span>
-                            <span id="start_ref_found" data-i18n="start_ref_found" style="display: none;">Beginn automatisch erkannt.</span>
-                            <span id="start_ref_missing" data-i18n="start_ref_missing" style="display: none;">Beginn nicht gefunden.</span>
-                        </p>
-                        <button class="button" id="SetStartManually" data-i18n="set_start">Beginn manuell setzen</button>
-                    </div>
-                    <div id="settings-3">
-                        <p id="settings-3text" style="min-height: 80px; width:100%;">
-                            <b data-i18n="end_ref_title">Ende des Literaturverzeichnisses:</b><br>
-                            <span id="end_ref_initial" data-i18n="end_ref_click" style="display: none;">Klicken Sie in das Dokument, um das Ende festzulegen.</span>
-                            <span id="end_ref_set" data-i18n="end_ref_set" style="display: none;">Ende festgelegt.</span>
-                            <span id="end_ref_found" data-i18n="end_ref_found" style="display: none;">Ende automatisch erkannt.</span>
-                            <span id="end_ref_missing" data-i18n="end_ref_missing" style="display: none;">Ende nicht gefunden.</span>
-                        </p>
-                        <button class="button" id="SetEndManually" data-i18n="set_end">Ende manuell setzen</button>
+                    <label>
+                        <input type="checkbox" id="checkHeader" name="checkHeader">
+                        <span data-i18n="pdf_has_header">PDF has header</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" id="checkFooter" name="checkFooter">
+                        <span data-i18n="pdf_has_footer">PDF has footer</span>
+                    </label>
                     </div>
                 </div>
 
-                <div id="settings-4">
+                <!-- Start/End reference section -->
+                <div class="content settings-grid">
+                    <div id="settings-2" class="card">
+                    <p id="settings-2text" style="min-height:80px;width:100%;">
+                        <b data-i18n="start_ref_title">Start of reference section:</b>
+                        <br>
+                        <span id="start_ref_initial" data-i18n="start_ref_click" style="display:none;">Click in the document to set the start.</span>
+                        <span id="start_ref_set" data-i18n="start_ref_set" style="display:none;">Start set.</span>
+                        <span id="start_ref_found" data-i18n="start_ref_found" style="display:none;">Start detected automatically.</span>
+                        <span id="start_ref_missing" data-i18n="start_ref_missing" style="display:none;">Start not found.</span>
+                    </p>
+                    <button class="btn" id="SetStartManually" data-i18n="set_start">Set start manually</button>
+                    </div>
+
+                    <div id="settings-3" class="card">
+                    <p id="settings-3text" style="min-height:80px;width:100%;">
+                        <b data-i18n="end_ref_title">End of reference section:</b>
+                        <br>
+                        <span id="end_ref_initial" data-i18n="end_ref_click" style="display:none;">Click in the document to set the end.</span>
+                        <span id="end_ref_set" data-i18n="end_ref_set" style="display:none;">End set.</span>
+                        <span id="end_ref_found" data-i18n="end_ref_found" style="display:none;">End detected automatically.</span>
+                        <span id="end_ref_missing" data-i18n="end_ref_missing" style="display:none;">End not found.</span>
+                    </p>
+                    <button class="btn" id="SetEndManually" data-i18n="set_end">Set end manually</button>
+                    </div>
+                </div>
+
+                <!-- Reference separation -->
+                <div id="settings-4" class="card">
                     <p id="settings-4text">
-                        <span id="ref_missing" data-i18n="ref_missing" style="display: none;">Bitte wählen Sie zuerst den Bereich des Literaturverzeichnisses.</span>
-                        <span id="suggest_indent" data-i18n="suggest_indent" style="display: none;">Wir empfehlen die Trennung nach Einzug. Klicken Sie unten, um den Algorithmus zur Referenztrennung zu ändern.</span>
-                        <span id="suggest_paragraph" data-i18n="suggest_paragraph" style="display: none;">Wir empfehlen die Trennung nach Absatz. Klicken Sie unten, um den Algorithmus zur Referenztrennung zu ändern.</span>
+                    <span id="ref_missing" data-i18n="ref_missing" style="display:none;">Please first select the reference section.</span>
+                    <span id="suggest_indent" data-i18n="suggest_indent" style="display:none;">We suggest indent separation. Click below to change.</span>
+                    <span id="suggest_paragraph" data-i18n="suggest_paragraph" style="display:none;">We suggest paragraph separation. Click below to change.</span>
                     </p>
 
-                    <div id="subdivButtoonCont">
-                        <button class="button" id="subdivButton"></button>
-                        <button class="button" id="subdivButton2"></button>
+                    <div id="subdivButtoonCont" class="toggle-group">
+                    <button class="btn btn-ghost" id="subdivButton" data-i18n="separate_paragraph">Separate by paragraph</button>
+                    <button class="btn btn-ghost" id="subdivButton2" data-i18n="separate_indent">Separate by indent</button>
                     </div>
-                    <button id="continue-button" data-i18n="continue">Weiter</button>
+
+                    <button id="continue-button" class="btn btn-primary" data-i18n="continue">Continue</button>
                 </div>
             </div>
+
             <div id="thirdframe" class="OuterFrame2" style="display: none"></div>
 
             <!-- Second -->
@@ -194,7 +207,6 @@
                 <div class="Explanations" tooltip="">?</div>
                 </div>
 
-                <!-- You were creating this in JS; leaving it here preserves layout -->
                 <div id="buttonContainer" style="display: inline-block"></div>
             </div>
 
@@ -209,9 +221,27 @@
 
         <div class="frame" id="pdf-container" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
 
-                        <div id="description" style="background-color: white;">
-                <div class="search-string-frame" style="padding: 15px; line-height: 1.6;">
-                <h2 data-i18n="faq_title">Häufig gestellte Fragen (FAQ)</h2>
+                <div id="description" style="background-color: white;">
+                <div id="right_grey_container" class="search-string-frame" style=" line-height: 1.6;">
+
+                    <div id="pdf_frame_head" style="display: none"> 
+
+                        <div id="pdf_title"></div>
+
+                        <div id="SearchCintainer">
+                            <div id="SearchCounter"></div>
+                            <input type="text" 
+                                id="searchSpanField" 
+                                data-i18n="search_placeholder">
+                        </div>
+
+                    </div>
+                    <div id="pdf_frame" style="display: none"> </div>
+
+
+
+               <div id="FAQ_container">
+                    <h2 data-i18n="faq_title">Häufig gestellte Fragen (FAQ)</h2>
 
                 <!-- FAQ 1 -->
                 <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
@@ -256,6 +286,7 @@
                         Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind.
                     </p>
                     </div>
+                </div>
                 </div>
 
 

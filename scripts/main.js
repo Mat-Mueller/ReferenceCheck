@@ -143,7 +143,7 @@ export async function analysis() {
 
         // Search for in-text citations and set up GUI for results
         inTextSearch();
-        MoveToFirstSpan();
+        if (!window.mq.matches) {MoveToFirstSpan()};
 
         // Set up GUI for results and crossref search
         document.getElementById("settings").style.display = "none";
@@ -206,3 +206,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+
+
+
+
+
+window.mq = window.matchMedia("(max-width: 768px) and (orientation: portrait)");
+mq.addEventListener("change", console.log(mq));

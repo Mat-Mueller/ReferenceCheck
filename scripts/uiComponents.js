@@ -641,7 +641,9 @@ SingleRef.innerHTML = `<b>${matchCount}</b> ${window.langDict[key]}`;
             // Add an event listener to scroll to the span element when clicked
             link.addEventListener('click', (event) => {
                 //event.preventDefault(); // Prevent the default anchor behavior
-                span.scrollIntoView({ behavior: 'smooth', block: 'center'  }); // Scroll to the matched span
+                if (!window.mq.matches) {
+                    span.scrollIntoView({ behavior: 'smooth', block: 'center'  }); // Scroll to the matched span
+                }
                 DoHighlight(span)
             });
 
@@ -798,7 +800,9 @@ export function secondFrame(referenceCount) {
         divs.forEach ((div) => {
             div.style.cursor = 'pointer'
             div.addEventListener('click', () => {   
+                if (!window.mq.matches) {
                     ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                     DoHighlight(ReferenceFrameParagraph)    
             });
         })
@@ -817,7 +821,9 @@ export function secondFrame(referenceCount) {
         ReferenceFrameParagraph.appendChild(SingleRef);
 
         SingleRef.addEventListener('click', () => {
+            if (!window.mq.matches) {
             divs[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }
             DoHighlight(divs[0])
         })
 
@@ -1112,7 +1118,7 @@ function UpdateFramesAndMatches() {
                 });
                 */
                 const element = unmatchedReferences[unmatchedClickCount % unmatchedReferences.length]  
-                element.scrollIntoView({behavior: 'smooth', block: 'center'})
+                if (!window.mq.matches){element.scrollIntoView({behavior: 'smooth', block: 'center'})}
                 DoHighlight(element)
                 unmatchedClickCount++; // Cycle to the next unmatched reference on each click
             }

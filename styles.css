@@ -1232,17 +1232,28 @@ a,button,input,label{min-height:48px} /* comfy tap targets */
 .container{max-width:72rem;margin:0 auto;padding:1rem}
 
 
+/* phones (portrait) */
 @media (max-width: 768px) and (orientation: portrait) {
+  html, body {
+    height: auto;           /* let page grow */
+    overflow: auto;         /* allow page scrolling */
+  }
+
   #viewer {
-    flex-direction: column;       /* stack panels vertically */
+    flex-direction: column; /* stack */
+    overflow-y: visible;    /* was hidden → allow scroll */
     align-items: stretch;
   }
 
-  .frame {
-    width: 100% !important;       /* override the base 50% */
-    height: auto;                 /* avoid forced 95% height */
-    margin-bottom: 12px;          /* spacing between stacked panels */
-    overflow: visible;            /* optional: remove inner scrollbars */
-    flex: 1 0 auto;               /* let them size naturally */
+  /* kill fixed heights so content can extend the page */
+  .frame,
+  .intro-frame,
+  .OuterFrame {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important; /* remove nested scrollbars */
+    margin-bottom: 12px;
+    flex: 0 0 auto;
   }
 }

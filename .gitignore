@@ -1,3 +1,4 @@
 # Ignore files used for testing
 test.js
 test.html
+logs.txt

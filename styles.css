@@ -1225,3 +1225,24 @@ body.modal-open > *:not(#privacy-modal) {
   25%  { opacity: 0.9; transform: scale(1.06); }
   100% { opacity: 0;   transform: scale(1.00); }
 }
+
+*{box-sizing:border-box} body{margin:0;line-height:1.6;font-family:system-ui,sans-serif}
+img,video{max-width:100%;height:auto;display:block}
+a,button,input,label{min-height:48px} /* comfy tap targets */
+.container{max-width:72rem;margin:0 auto;padding:1rem}
+
+
+@media (max-width: 768px) and (orientation: portrait) {
+  #viewer {
+    flex-direction: column;       /* stack panels vertically */
+    align-items: stretch;
+  }
+
+  .frame {
+    width: 100% !important;       /* override the base 50% */
+    height: auto;                 /* avoid forced 95% height */
+    margin-bottom: 12px;          /* spacing between stacked panels */
+    overflow: visible;            /* optional: remove inner scrollbars */
+    flex: 1 0 auto;               /* let them size naturally */
+  }
+}

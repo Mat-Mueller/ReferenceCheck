@@ -15,6 +15,7 @@ export async function readRenderPDF() {
 
 }
 
+
 // Initialize PDF loader by setting up drag-and-drop and file input handling
 function initializePDFLoader() {
     return new Promise((resolve, reject) => {
@@ -96,24 +97,37 @@ script.onerror = () => console.error("Trigger.js failed to load");
         });
     });
 }
-
+let __pdfReady;
+async function ensurePdfjs() {
+  if (!__pdfReady) {
+    __pdfReady = import('/pdf.js/pdf.mjs').then((m) => {
+      // adjust paths if needed (e.g., './pdf.js/...')
+      m.GlobalWorkerOptions.workerSrc = '/pdf.js/pdf.worker.mjs';
+      window.pdfjsLib = m; // keep global for existing code
+      return m;
+    });
+  }
+  return __pdfReady;
+}
 async function loadPDF(file) {
+    await ensurePdfjs();                // ← NEW: loads pdf.js on demand
+
     const url = URL.createObjectURL(file);
     try {
         // Load the PDF document
-        const pdf = await pdfjsLib.getDocument(url).promise;
+        const pdf = await pdfjsLib.getDocument({ url }).promise; // or just url
 
         // Clear the previous content
-        document.getElementById('FAQ_container').style.display = "none"
-        document.getElementById('pdf_frame_head').style.display = "flex"
-        document.getElementById('pdf_frame').style.display = "block"
-        document.getElementById('pdf_title').innerText = file.name 
-        //document.getElementById('#right_grey_container').style.overflow = "hidden"
+        document.getElementById('FAQ_container').style.display = "none";
+        document.getElementById('pdf_frame_head').style.display = "flex";
+        document.getElementById('pdf_frame').style.display = "block";
+        document.getElementById('pdf_title').innerText = file.name;
 
-
-        return pdf
+        return pdf;
     } catch (error) {
         console.error("Error loading or rendering PDF:", error);
+    } finally {
+        URL.revokeObjectURL(url);       // free memory
     }
 }
 

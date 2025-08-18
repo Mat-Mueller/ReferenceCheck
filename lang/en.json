@@ -115,7 +115,7 @@
 
   "tooltip_btn_select": "Select",
   "tooltip_btn_none": "None of these",
-  "tooltip_action_remove": "Not a citation",
+  "tooltip_action_remove": "Delete citation",
   "tooltip_action_search_again": "Search again",
   "tooltip_action_link_manual": "Link manually…",
   "tooltip_action_create_ref": "Create reference…",

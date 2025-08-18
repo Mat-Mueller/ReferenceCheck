@@ -1647,7 +1647,9 @@ const headerHTML = `
       <button class="tt-iconbtn"
         onclick="window.DeleteDragged && window.DeleteDragged(document.getElementById('${elId}'), null); const tip=this.closest('.custom-tooltip'); if(tip){ tip.style.opacity='0'; tip.style.visibility='hidden'; }"
         aria-label="${esc(t('tooltip_action_remove','Kein Zitat'))}"
-        title="${esc(t('tooltip_action_remove','Kein Zitat'))}">🗑</button>
+        title="${esc(t('tooltip_action_remove','Kein Zitat'))}">
+        <img src="/trash-can.png" style="width:16px;height:16px;">
+      </button>
     </div>
   </div>
 `;

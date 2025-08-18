@@ -330,6 +330,8 @@ export function matching(ReferenceFrameParagraph) {
 
     element.addEventListener('click', () => {
         // Scroll to the current matched element and highlight it
+
+        if ( !(window.mq.matches)) {
         const matchedItem = element.MatchedWith[currentIndex];
         matchedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
         DoHighlight(matchedItem);
@@ -344,6 +346,7 @@ export function matching(ReferenceFrameParagraph) {
           element.ChildIntext.scrollIntoView({ behavior: 'smooth', block: 'center' });
           DoHighlight(element.ChildIntext);
         }
+      }
     });
 
   }

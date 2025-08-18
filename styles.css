@@ -1228,7 +1228,7 @@ body.modal-open > *:not(#privacy-modal) {
 
 *{box-sizing:border-box} body{margin:0;line-height:1.6;font-family:system-ui,sans-serif}
 img,video{max-width:100%;height:auto;display:block}
-a,button,input,label{min-height:48px} /* comfy tap targets */
+a,button,input,label{min-height:38px} /* comfy tap targets */
 .container{max-width:72rem;margin:0 auto;padding:1rem}
 
 
@@ -1236,7 +1236,7 @@ a,button,input,label{min-height:48px} /* comfy tap targets */
 @media (max-width: 768px) and (orientation: portrait) {
   html, body {
     height: auto;           /* let page grow */
-    overflow: auto;         /* allow page scrolling */
+    overflow-y: auto;         /* allow page scrolling */
   }
 
   #viewer {
@@ -1252,7 +1252,7 @@ a,button,input,label{min-height:48px} /* comfy tap targets */
     width: 100% !important;
     height: auto !important;
     max-height: none !important;
-    overflow: visible !important; /* remove nested scrollbars */
+    overflow-y: visible !important; /* remove nested scrollbars */
     margin-bottom: 12px;
     flex: 0 0 auto;
   }

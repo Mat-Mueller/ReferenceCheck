@@ -6,7 +6,17 @@ import { inTextSearch, removeOldSpans } from './inTextCitations.js';
 import { performCrossRefSearch } from './crossrefSearch.js';
 import {CreateCrossLinksHighlight} from './magic.js'
 
+function smartphone(e) {
+  console.log("mq", mq.matches, e.matches);
+}
 
+window.mq = window.matchMedia("(max-width: 768px) and (orientation: portrait)");
+
+// Pass the function itself, not smartphone()
+mq.addEventListener("change", smartphone);
+
+// Optionally run it once on page load:
+smartphone(mq);
 
 // Load saved language from localStorage OR use browser language
 const savedLang = localStorage.getItem("lang") || navigator.language.slice(0, 2) || "en";
@@ -143,7 +153,7 @@ export async function analysis() {
 
         // Search for in-text citations and set up GUI for results
         inTextSearch();
-        if (!window.mq.matches) {MoveToFirstSpan()};
+        MoveToFirstSpan();
 
         // Set up GUI for results and crossref search
         document.getElementById("settings").style.display = "none";
@@ -210,7 +220,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
-window.mq = window.matchMedia("(max-width: 768px) and (orientation: portrait)");
-mq.addEventListener("change", console.log(mq));

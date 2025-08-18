@@ -14,9 +14,10 @@ export function clearRightContainer() {
 export function MoveToFirstSpan() {
     // Find the first span with the class 'citation'
     const firstCitation = document.querySelector('span.citation');
-
-    if (firstCitation) {
+    console.log("mq", window.mq.matches)
+    if (firstCitation && !(window.mq.matches)) {
         // Scroll the element into view
+        console.log("scrolled")
         firstCitation.scrollIntoView({
             behavior: 'smooth',  // You can use 'smooth' for a smooth scrolling animation or 'auto' for an instant scroll
             block: 'center',     // Scroll so that the element is centered in the viewport
@@ -24,6 +25,11 @@ export function MoveToFirstSpan() {
         });
     } else {
         console.log('No citation span found');
+                console.log("scrolled")
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
     }
 }
 

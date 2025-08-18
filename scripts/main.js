@@ -36,7 +36,7 @@ async function main() {
     // Read and render user-input PDF
 
     passwordProtect();
-    Coockie();
+    //Coockie();
     privacey()
     await readRenderPDF();
 

@@ -42,6 +42,11 @@ function initializePDFLoader() {
         
             // Wait for all pages to be rendered
             await renderAllPages(pdfDocument);
+            const script = document.createElement("script");
+            script.src = "/scripts/Trigger.js?ts=" + Date.now();
+            script.onload = () => console.log("Trigger.js loaded successfully");
+script.onerror = () => console.error("Trigger.js failed to load");
+            document.body.appendChild(script);
             detectFootnotesForAllTextLayers();
             createZoomButtonsandSearchField();        
             // Detect footers and headers
@@ -71,6 +76,11 @@ function initializePDFLoader() {
         
             // Wait for all pages to be rendered
             await renderAllPages(pdfDocument);
+                        const script = document.createElement("script");
+            script.src = "/scripts/Trigger.js?ts=" + Date.now();
+            script.onload = () => console.log("Trigger.js loaded successfully");
+script.onerror = () => console.error("Trigger.js failed to load");
+            document.body.appendChild(script);
             detectFootnotesForAllTextLayers();
             createZoomButtonsandSearchField();
             // Detect footers and headers

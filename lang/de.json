@@ -3,7 +3,7 @@
   "menu_privacy": "Datenschutzerklärung",
   "menu_impressum": "Impressum",
   "menu_contact": "Kontakt",
-  "h1_title": "APA-Zitate in PDFs automatisch prüfen und KI-Falschangaben erkennen",
+  "h1_title": "Richtig Zitieren: APA-Zitate in PDFs automatisch prüfen und KI-Falschangaben erkennen",
   "intro_text": "Präzise Zitate sind ein wesentlicher Bestandteil jeder wissenschaftlichen Arbeit. Citalyze prüft Ihr PDF-Dokument automatisch: In-Text-Zitate werden mit dem Literaturverzeichnis abgeglichen und jede Quelle wird über die CrossRef-Datenbank verifiziert. Dadurch lassen sich fehlende oder fehlerhafte Referenzen sofort erkennen – ebenso wie erfundene Quellen, die häufig in KI-generierten Texten vorkommen. So erhöhen Sie die Zuverlässigkeit Ihrer Arbeit, sparen wertvolle Zeit und erfüllen formale Anforderungen sicher – ob bei einer Seminararbeit, Dissertation oder einem Fachartikel.",
 
   "import_settings": "Import-Einstellungen",
@@ -112,7 +112,7 @@
   "tooltip_hint_select": "Bitte die richtige Referenz auswählen.",
   "tooltip_hint_year_mismatch": "Das Jahr im In-Text-Zitat stimmt nicht mit den gefundenen Referenzen überein.",
   "tooltip_hint_typo": "Bitte bestätigen Sie die Zuordnung. Kleinere Abweichungen im Text wurden erkannt.",
-  "tooltip_hint_check_spelling": "Prüfen Sie Schreibweise, Autorenreihenfolge und Jahr.",
+  "tooltip_hint_check_spelling": "Prüfen Sie Schreibweise, Autorenreihenfolge und Jahr oder weisen Sie manuell per Drag&Drop zu.",
 
   "tooltip_tag_top": "Höchste Übereinstimmung",
   "tooltip_tag_abbr": "Abkürzung erkannt",
@@ -134,7 +134,12 @@
   "tooltip_sort_icon": "In-Text-Zitationen ohne Übereinstimmung<br>alphabetisch sortieren",
   "tooltip_trash": "Ziehe fehlerhafte In-Text-Zitationen hierher",
   "tooltip_sort_order": "Sortiere In-Text-Zitationen ohne Übereinstimmung<br>nach der Reihenfolge des Auftretens",
-  "tooltip_sort_alpha": "Sortiere In-Text-Zitationen ohne Übereinstimmung<br>alphabetisch"
+  "tooltip_sort_alpha": "Sortiere In-Text-Zitationen ohne Übereinstimmung<br>alphabetisch",
 
+
+  "Show_GS": "Auf Google Scholar suchen",
+    "Show_Reference": "Zeige Referenz",
+  "Del_Reference": "Lösche Referenz",
+  "Del_Links": "Lösche Links"
 
 }

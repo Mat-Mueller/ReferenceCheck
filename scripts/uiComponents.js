@@ -1,5 +1,5 @@
 import { getMergedTextByMyId, checkExists } from './crossrefSearch.js';
-import {MakeRefName, matching, BestMatch} from './magic.js';
+import {MakeRefName, matching, BestMatch, MakeListeners} from './magic.js';
 import {checkFooter, checkHeader} from './headerFooterDetect.js'
 import { subdivide, userDecisionSeparation } from './separateReferences.js';
 import {findNearestTextDivBelow, findNearestTextDivAbove} from './findReferenceList.js'
@@ -663,14 +663,14 @@ SingleRef.innerHTML = `<b>${matchCount}</b> ${window.langDict[key]}`;
         });
 
         if (matchCount === 0) {
-            if (ReferenceFrameParagraph){
-                
-                ReferenceFrameParagraph.style.background = `  radial-gradient(circle at center, white 70%,${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
-                ReferenceFrameParagraph.setAttribute("data-match-status", "no-match");
-            } else {
-                SingleRef.parentElement.style.border = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
 
+            var element_to_high = ReferenceFrameParagraph
+            if (!element_to_high){
+            element_to_high = SingleRef.parentElement
             }
+                element_to_high.style.background = `  radial-gradient(circle at center, white 70%,${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
+                element_to_high.setAttribute("data-match-status", "no-match");
+
                 //divs.forEach(div => {
                 //div.style.color = 'red';
             //});
@@ -686,7 +686,202 @@ SingleRef.innerHTML = `<b>${matchCount}</b> ${window.langDict[key]}`;
         }
 
       }
-    
+
+
+// call this wherever you were creating the single button
+// assumes you have: buttoncontainer, mergedText, and j in scope
+function makeHamburger(mergedText, j, SingleRef2, ReferenceFrameParagraph = null) {
+  const items = [
+    {
+      label: 'Google Scholar',
+      buildUrl: (q) => 'https://scholar.google.com/scholar?q=' + encodeURIComponent(q),
+      type: 'link'
+    },
+        {
+      label: window.langDict["Show_Reference"],
+      type: 'action',
+      onClick: () => {
+        const divs = document.querySelectorAll(`[MyId="${j}"]`);
+        const target = divs[0];;
+        console.log(target)
+        console.log(j)
+        if (!target) return;
+
+        // Respect your old mq check (scroll differently on mobile if you use window.mq)
+        const onMobile = !!(window.mq && window.mq.matches);
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: onMobile ? 'start' : 'center'
+        });
+
+        if (typeof DoHighlight === 'function') DoHighlight(target);
+      }
+    },
+
+        {
+      label: window.langDict["Del_Links"],
+      type: 'action',
+      onClick: () => {
+        if (Array.isArray(SingleRef2.MatchedWith)) {
+           
+          SingleRef2.MatchedWith.forEach(citation => {
+            if (citation) {
+              citation.removeAttribute("found");
+              citation.MatchedWith = [];
+
+            }
+          });
+          
+          thirdFrame();
+          requestAnimationFrame(() => {
+            const AllReferences = document.querySelectorAll("div.InTexts"); // span.citation, 
+            AllReferences.forEach(element => {
+            if (element.MatchedWith) {
+                MakeListeners(element);
+            }
+            });
+          });
+
+
+        SingleRef2.MatchedWith = [];
+        ShowLinks(SingleRef2);
+        DragDrop();
+        UpdateFramesAndMatches();
+        }
+      }
+    },
+        {
+      label: window.langDict["Del_Reference"],
+      type: 'action',
+      onClick: () => {
+        if (Array.isArray(SingleRef2.MatchedWith)) {
+          SingleRef2.MatchedWith.forEach(citation => {
+            if (citation) {
+              citation.removeAttribute("found");
+              citation.MatchedWith = [];
+            }
+          });
+
+          thirdFrame();
+
+          requestAnimationFrame(() => {
+            const AllReferences = document.querySelectorAll("div.InTexts"); // span.citation, 
+            AllReferences.forEach(element => {
+            if (element.MatchedWith) {
+                MakeListeners(element);
+            }
+            });
+          });
+
+          DragDrop();
+          ReferenceFrameParagraph.remove();
+          UpdateFramesAndMatches();
+        }
+      }
+    },
+
+  ];
+
+  // wrapper
+  const wrap = document.createElement('div');
+  wrap.className = 'hamburger-wrap';
+  wrap.style.position = 'relative';
+  wrap.style.display = 'inline-block';
+
+  // button
+  const btn = document.createElement('button');
+  btn.textContent = '☰';
+  btn.id = `hamburger-${j}`;
+  Object.assign(btn.style, {
+    cursor: 'pointer',
+    fontSize: '16px',
+    padding: '6px 10px',
+    border: '1px solid #ccc',
+    borderRadius: '6px',
+    background: '#fff'
+  });
+
+  // menu
+  const menu = document.createElement('ul');
+  menu.style.display = 'none';
+  Object.assign(menu.style, {
+    position: 'absolute',
+    right: '0',
+    top: '100%',
+    marginTop: '6px',
+    listStyle: 'none',
+    padding: '6px',
+    background: '#fff',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
+    minWidth: '180px',
+    zIndex: '9999'
+  });
+
+
+
+  function styleMenuItem(el) {
+  Object.assign(el.style, {
+    display: 'block',
+    padding: '8px 10px',
+    textDecoration: 'none',
+    color: '#222',          // same text color as the link
+    background: 'transparent',
+    border: 'none',
+    width: '100%',
+    textAlign: 'left',
+    font: 'inherit',        // picks up same font, size, weight
+    borderRadius: '6px',
+    cursor: 'pointer'
+  });
+  el.addEventListener('mouseenter', () => { el.style.background = '#f3f3f3'; });
+  el.addEventListener('mouseleave', () => { el.style.background = 'transparent'; });
+}
+  // build items
+  items.forEach(it => {
+    const li = document.createElement('li');
+
+if (it.type === 'link') {
+  const a = document.createElement('a');
+  a.href = it.buildUrl(mergedText);
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.textContent = it.label;
+  styleMenuItem(a);               // <-- same styles/hover
+  li.appendChild(a);
+} else if (it.type === 'action') {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = it.label;
+  styleMenuItem(b);               // <-- same styles/hover
+  b.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    menu.style.display = 'none';
+    it.onClick();
+  });
+  li.appendChild(b);
+}
+    menu.appendChild(li);
+  });
+
+  // toggle menu
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  });
+  document.addEventListener('click', (e) => {
+    if (!wrap.contains(e.target)) menu.style.display = 'none';
+  });
+
+  wrap.appendChild(btn);
+  wrap.appendChild(menu);
+  return wrap;
+}
+
+
+
 
 export function secondFrame(referenceCount) {
 
@@ -802,7 +997,8 @@ export function secondFrame(referenceCount) {
         }
         }
         ReferenceFrameParagraph.className = 'Reference-frame';
-
+        
+        /*
         divs.forEach ((div) => {
             div.style.cursor = 'pointer'
             div.addEventListener('click', () => {   
@@ -812,11 +1008,12 @@ export function secondFrame(referenceCount) {
                     DoHighlight(ReferenceFrameParagraph)    
             });
         })
+        */
 
 
         matching(ReferenceFrameParagraph)   ////////////////////////////////////////////////////////////////////////////////////should move
         // Create first paragraph with inline style
-        var SingleRef = document.createElement('p');
+        const SingleRef = document.createElement('p');
         const clickableText = makeLinksClickable(mergedText);
         SingleRef.style.margin = "0px"
 
@@ -826,21 +1023,23 @@ export function secondFrame(referenceCount) {
         SingleRef.style.marginRight = "60px";
         ReferenceFrameParagraph.appendChild(SingleRef);
 
+        /*
         SingleRef.addEventListener('click', () => {
             if (!window.mq.matches) {
             divs[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
             }
             DoHighlight(divs[0])
         })
+        */
 
         // Create second paragraph with inline style
-        SingleRef = document.createElement('p');
-        SingleRef.classList.add('SingleRef');
-        SingleRef.MatchedWith = ReferenceFrameParagraph.MatchedWith
-        ShowLinks(SingleRef, ReferenceFrameParagraph)
+        const SingleRef2 = document.createElement('p');
+        SingleRef2.classList.add('SingleRef');
+        SingleRef2.MatchedWith = ReferenceFrameParagraph.MatchedWith
+        ShowLinks(SingleRef2, ReferenceFrameParagraph)
         //SingleRef.innerHTML += ''
 
-        ReferenceFrameParagraph.appendChild(SingleRef)
+        ReferenceFrameParagraph.appendChild(SingleRef2)
         // Add the CrossRef search button
         const buttoncontainer = document.createElement('div');
         buttoncontainer.className = "buttoncontainer"
@@ -881,18 +1080,12 @@ export function secondFrame(referenceCount) {
         // Append the result frame to the resultsDiv
         ReferenceFrameParagraph.appendChild(resultFrame);
 
-        // make a scholar button
-        const ScholarRefButton = document.createElement('button');
-        ScholarRefButton.textContent = 'GS';
-        ScholarRefButton.className = 'Scholar-search-button';
-        ScholarRefButton.id = `Scholar-button-${j}`
-        ScholarRefButton.addEventListener('click', async () => {           
-                let baseUrl = "https://scholar.google.com/scholar?q=";
-                let formattedQuery = encodeURIComponent(mergedText);  // Encodes the search string for URL
-                let fullUrl = baseUrl + formattedQuery;
-                window.open(fullUrl, '_blank');  // Opens the URL in a new tab or window
-        })
-        buttoncontainer.appendChild(ScholarRefButton);
+
+        
+        buttoncontainer.appendChild(makeHamburger(mergedText, j, SingleRef2, ReferenceFrameParagraph));        // make a trash button with an icon
+        
+        // append to the same container
+       
         ;
 
 
@@ -1168,207 +1361,204 @@ function onDragStartHandler() {
 
 
 export function DragDrop() {
-    let dragStartTime = 0;
-    let draggedElement = null; // Keep track of the dragged element
+    // --- SHARED STATE (singleton) ---
+    const DND = (window.__DND__ ||= { dragStartTime: 0, draggedElement: null, dropZonesInited: false });
 
     // Select all draggable span elements with class "citation"
     const draggables = document.querySelectorAll('span.citation[cleanedCit], .InTexts');
-    
     // Select all drop zones with class "Reference-frame"
     const dropZones = document.querySelectorAll('.Reference-frame, .Trashs');
 
-    // Get CSS variable values for secondary and accent colors
     const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color');
     const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
 
-    // Make elements draggable and add event listeners
+    // Make elements draggable and add event listeners (idempotent)
     draggables.forEach(draggable => {
+        if (draggable.dataset.dndBound === '1') return; // <-- guard
+        draggable.dataset.dndBound = '1';
+
         draggable.setAttribute('draggable', 'true');
-        draggable.style.cursor = 'grab'
-        // Drag start event
+        draggable.style.cursor = 'grab';
+
         draggable.addEventListener('dragstart', (e) => {
-            dragStartTime = new Date().getTime(); // Track drag start time
-            draggedElement = draggable; // Keep reference to the dragged element
-            e.dataTransfer.setData('text/plain', ''); // Some browsers require data to be set
-            onDragStartHandler(dropZones)
+            DND.dragStartTime = Date.now();                 // <-- shared
+            DND.draggedElement = draggable;                 // <-- shared
+            e.dataTransfer.setData('text/plain', '');
+            if (typeof onDragStartHandler === 'function') onDragStartHandler(dropZones);
         });
 
-        // Click event listener (for valid drops)
-        draggable.addEventListener('click', (e) => {
-            const currentTime = new Date().getTime();
-            if (currentTime - dragStartTime > 200) {
+        draggable.addEventListener('click', () => {
+            if (Date.now() - DND.dragStartTime > 200) {
                 console.log(`Clicked on ${draggable.innerText}`);
             }
         });
     });
 
-    // Set up drag events for each drop zone
-    dropZones.forEach((dropZone) => { 
-        // Drag over event (necessary to allow dropping)
-        dropZone.style.cursor = 'pointer'
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            //dropZone.style.border = '4px solid yellow';  // Example: highlight with red border
-        });
+    // Init drop zones once only
+    if (!DND.dropZonesInited) {
+        DND.dropZonesInited = true;
 
-        // Drag leave event (removes hover state when dragging leaves the zone)
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.style.border = '';
-        });
+        dropZones.forEach((dropZone) => {
+            if (dropZone.dataset.dndBound === '1') return;  // <-- guard
+            dropZone.dataset.dndBound = '1';
 
-        // Drop event (handles the actual drop)
-        dropZone.addEventListener('drop', (e) => {
+            dropZone.style.cursor = 'pointer';
+            dropZone.addEventListener('dragover', (e) => e.preventDefault());
+            dropZone.addEventListener('dragleave', () => { dropZone.style.border = ''; });
 
-            e.preventDefault();
-            dropZone.classList.remove('hover');
-            dropZone.style.border = '';
-                console.log(draggedElement)
-                let draggedElementToUse = draggedElement; // Initialize to use the original draggedElement
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('hover');
+                dropZone.style.border = '';
+
+                const draggedElement = DND.draggedElement;  // <-- shared read
+                if (!draggedElement) return;
+
+                let draggedElementToUse = draggedElement;
                 const draggableSpans = document.querySelectorAll('span.citation[cleanedCit]');
-                // Check if draggedElement is of class 'InTexts'
+
                 if (draggedElement.classList.contains('InTexts')) {
-                    // Loop through all 'span.citation' elements to find the corresponding one
-                    
-                    
                     draggableSpans.forEach((dragged) => {
-                        //console.log(dragged.getAttribute("cleanedCit").trim(),draggedElement.innerHTML.trim())
-                        // Check if the 'title' of the 'span' matches the 'innerHTML' of the InTexts element
-                        if (decodeHTMLEntities(dragged.getAttribute("cleanedCit").trim()) === decodeHTMLEntities(draggedElement.getAttribute("cleanedCit").trim())) {
-                            draggedElementToUse = dragged; // Use the matching span as the new draggedElement
-                            //console.log(draggedElementToUse)
-                            return; // Exit the loop after finding the first match
+                        if (decodeHTMLEntities(dragged.getAttribute("cleanedCit")?.trim() || '') ===
+                            decodeHTMLEntities(draggedElement.getAttribute("cleanedCit")?.trim() || '')) {
+                            draggedElementToUse = dragged;
+                            return;
                         }
                     });
                 }
-            
-                // Now that we have the correct draggedElement (either the original or the matching span)
-                let ListSimilar = [];
-                
-                // Find similar draggable elements
+
+                const key = (draggedElementToUse.getAttribute("cleanedCit") || '').trim();
+                const ListSimilar = [];
                 draggableSpans.forEach((dragged) => {
-                    if (dragged.getAttribute("cleanedCit").trim() === draggedElementToUse.getAttribute("cleanedCit").trim()) {
-                        ListSimilar.push(dragged);
-                    }
+                    if ((dragged.getAttribute("cleanedCit") || '').trim() === key) ListSimilar.push(dragged);
                 });
-                            // If the drop zone is a valid "Reference-frame" element
 
-            if (dropZone.classList.contains('Reference-frame')) {
-                // Perform actions for each similar dragged element
-                ListSimilar.forEach((dragged) => {
-                    MatchDragged(dragged, dropZone);
-                });
-            }
-            
-            
-            else if (dropZone.classList.contains('Trashs')) {  /////////////////////////////////////////////////////////////////// not working as the other dom elements cant be dropzones
-                ListSimilar.forEach((dragged) => {
-                    DeleteDragged(dragged, dropZone);
-                });
-            
-            }           
-            UpdateFramesAndMatches()
+                if (dropZone.classList.contains('Reference-frame')) {
+                    ListSimilar.forEach((dragged) => MatchDragged(dragged, dropZone));
+                } else if (dropZone.classList.contains('Trashs')) {
+                    ListSimilar.forEach((dragged) => DeleteDragged(dragged, dropZone));
+                }
+                UpdateFramesAndMatches?.();
+            });
         });
-    });
-
+    }
 
     function decodeHTMLEntities(text) {
         const parser = new DOMParser();
-        const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
-        return decodedString;
+        return parser.parseFromString(text || '', 'text/html').body.textContent || '';
     }
-    
+
     function MatchDragged(draggedElement, dropZone) {
+        draggedElement.style.backgroundColor = secondaryColor;
+        dropZone.style.background = "white";
+        dropZone.setAttribute("data-match-status", "");
+        draggedElement.setAttribute('found', 'true');
 
-        console.log("calling matcheddragged")
-        console.log(dropZone)
-                // 1. Set the background color to secondary color
-                draggedElement.style.backgroundColor = secondaryColor;
-                dropZone.style.background = "white"
-                dropZone.setAttribute("data-match-status", "");
-                // Mark the draggedElement as found
+        DoHighlight?.(dropZone);
+        dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-                draggedElement.setAttribute('found', 'true');
+        const singleRef = dropZone.querySelector('.SingleRef');
+        if (!singleRef) return;
+        singleRef.MatchedWith ||= [];
+        removeLinksRelatedToSpan(draggedElement);
+        singleRef.MatchedWith.push(draggedElement);
+        ShowLinks?.(singleRef);
 
-        
-                const element = dropZone
-                DoHighlight(element)
-                element.scrollIntoView({behavior: 'smooth', block: 'center'})
-
-            
-                // 3. Append a link to the drop zone
-                console.log(dropZone.querySelector('.SingleRef'))
-                let currentLinks = dropZone.querySelector('.SingleRef').MatchedWith;
-                if (!currentLinks) {
-                    currentLinks = []
-                }
-                removeLinksRelatedToSpan(draggedElement);
-                currentLinks.push(draggedElement);
-            
-                ShowLinks(dropZone.querySelector('.SingleRef'));
-            
-                // 4. Go through all .InTexts elements and delete the one that matches the dragged element
-                const inTextElements = document.querySelectorAll('.InTexts'); // Select all elements with the class '.InTexts'
-            
-                inTextElements.forEach(inText => {
-                    // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
-                    if (decodeHTMLEntities(inText.getAttribute('cleanedCit').trim()) === decodeHTMLEntities(draggedElement.getAttribute('cleanedCit').trim())) {
-                        // Remove the matching element
-                        inText.remove();
-                    }
-                });        
-
+        document.querySelectorAll('.InTexts').forEach(inText => {
+            if (decodeHTMLEntities(inText.getAttribute('cleanedCit')?.trim() || '') ===
+                decodeHTMLEntities(draggedElement.getAttribute('cleanedCit')?.trim() || '')) {
+                inText.remove();
+            }
+        });
     }
     window.MatchDragged = MatchDragged;
 
-    function DeleteDragged(draggedElement, dropZone) {
-        
+    function DeleteDragged(draggedElement) {
         draggedElement.style.backgroundColor = "";
-        removeLinksRelatedToSpan(draggedElement)
+        removeLinksRelatedToSpan(draggedElement);
         draggedElement.setAttribute('found', 'deleted');
-        draggedElement.classList.remove("citation")
-        const inTextElements = document.querySelectorAll('.InTexts'); // Select all elements with the class '.InTexts'
-            
-        inTextElements.forEach(inText => {
-            // Check if the innerHTML of the .InTexts element matches the title of the draggedElement
-            if (decodeHTMLEntities(inText.getAttribute('cleanedCit').trim()) === decodeHTMLEntities(draggedElement.getAttribute('cleanedCit').trim())) {
-                // Remove the matching element
+        draggedElement.classList.remove("citation");
+
+        document.querySelectorAll('.InTexts').forEach(inText => {
+            if (decodeHTMLEntities(inText.getAttribute('cleanedCit')?.trim() || '') ===
+                decodeHTMLEntities(draggedElement.getAttribute('cleanedCit')?.trim() || '')) {
                 inText.remove();
             }
-        }); 
-        UpdateFramesAndMatches()
-
+        });
+        UpdateFramesAndMatches?.();
     }
-
     window.DeleteDragged = DeleteDragged;
 
-    // Helper function to remove links related to a specific span in all drop zones
     function removeLinksRelatedToSpan(span) {
-        dropZones.forEach((dropZone) => {
-            // Get the SingleRef element within the dropZone
+        document.querySelectorAll('.Reference-frame, .Trashs').forEach((dropZone) => {
             const singleRef = dropZone.querySelector('.SingleRef');
-    
-            // Check if SingleRef exists and has the myLinks array
             if (singleRef && singleRef.MatchedWith) {
-                // Find the index of the span in the myLinks array
-                const index = singleRef.MatchedWith.indexOf(span);
-                
-                // If span is in myLinks (index >= 0), remove it
-                if (index > -1) {
-                    // Remove the span from myLinks array
-                    singleRef.MatchedWith.splice(index, 1);
-    
-                    // Update the links in the UI by calling ShowLinks
-                    ShowLinks(singleRef);
+                const idx = singleRef.MatchedWith.indexOf(span);
+                if (idx > -1) {
+                    singleRef.MatchedWith.splice(idx, 1);
+                    ShowLinks?.(singleRef);
                 }
             }
         });
     }
-    
 }
 
 
 
 
+
+function create_intext_spans(span, isnew) {
+  const cleanedCit = span.getAttribute('cleanedCit');
+  if (!cleanedCit) return;
+
+  // count how many already exist
+  const currentCount = document.querySelectorAll('.InTexts').length;
+  const newIndex = currentCount + 1;
+
+  function capitalizeFirstLetter(string) {
+    if (["al", "al.", "et", "and", "und"].includes(string)) {
+      return string;
+    }
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  const InTextCitFrameParagraph = document.createElement('div');
+  InTextCitFrameParagraph.className = 'InTexts';
+  InTextCitFrameParagraph.innerHTML = cleanedCit
+    .split(";")
+    .map(stri => capitalizeFirstLetter(stri))
+    .join(" ");
+  InTextCitFrameParagraph.setAttribute("cleanedCit", cleanedCit);
+
+  InTextCitFrameParagraph.MatchedWith = span.MatchedWith;
+  InTextCitFrameParagraph.ParentSpan = span;
+  span.ChildIntext = InTextCitFrameParagraph;
+
+  // use the count for ID
+  InTextCitFrameParagraph.id = `InTexts-${newIndex}`;
+
+  InTextCitFrameParagraph.setAttribute("tooltip", span.getAttribute("tooltip"));
+
+  // coloring
+  if (span.getAttribute("found")) {
+    if (span.getAttribute("found") === "byAbbr") {
+      span.style.backgroundColor = "yellow";
+      InTextCitFrameParagraph.style.backgroundColor = "yellow";
+    } else {
+      span.style.backgroundColor = "orange";
+      InTextCitFrameParagraph.style.backgroundColor = "orange";
+    }
+  } else {
+    const accent = getComputedStyle(document.documentElement)
+      .getPropertyValue('--accent-color');
+    span.style.backgroundColor = accent;
+    InTextCitFrameParagraph.style.backgroundColor = accent;
+  }
+  if (isnew) {
+    FormulateTooltip(InTextCitFrameParagraph)
+  }
+  InTextCitFrame.appendChild(InTextCitFrameParagraph);
+}
 
 
 
@@ -1410,51 +1600,11 @@ citationElements.forEach(function (element) {
 
         // Select only problematic spans (i.e., spans without the 'found' attribute)
         const problematicSpans = document.querySelectorAll('span:not([found="true"])');
-; // Show only problematic spans
-        console.log(problematicSpans)
-
 
 
         // Loop through each problematic span and create a clickable list item
-        problematicSpans.forEach((span, index) => {
-            const cleanedCit = span.getAttribute('cleanedCit'); // Get the cleaned citation text
-
-            function capitalizeFirstLetter(string) {
-                if (string === "al" || string === "al." || string === "et" || string === "and" || string === "und") {return string} else
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            }
-
-            if (cleanedCit) { // Only add if cleanedCit is available
-                const InTextCitFrameParagraph = document.createElement('div');
-                InTextCitFrameParagraph.className = 'InTexts';
-                InTextCitFrameParagraph.innerHTML = cleanedCit.split(";").map(stri => capitalizeFirstLetter(stri)).join(" "); // Display the cleaned citation text
-                InTextCitFrameParagraph.setAttribute("cleanedCit", cleanedCit)
-                InTextCitFrameParagraph.MatchedWith = span.MatchedWith
-                InTextCitFrameParagraph.ParentSpan = span; 
-                span.ChildIntext = InTextCitFrameParagraph
-                InTextCitFrameParagraph.id = `InTexts-${index + 1}`
-                InTextCitFrameParagraph.setAttribute("tooltip", span.getAttribute("tooltip")) 
-                // Ensure the width of the div fits its content
-                if (span.getAttribute("found")) {
-                    if (span.getAttribute("found") === "byAbbr") {
-                    span.style.backgroundColor = "yellow"
-                    InTextCitFrameParagraph.style.backgroundColor = "yellow"
-                    } else {
-                    span.style.backgroundColor = "orange"
-                    InTextCitFrameParagraph.style.backgroundColor = "orange"
-
-                    }
-                } else {
-                    span.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
-                    InTextCitFrameParagraph.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
-                }
-
-
-
-
-                // Append the paragraph to the InTextCitFrame
-                InTextCitFrame.appendChild(InTextCitFrameParagraph);
-            }
+        problematicSpans.forEach((span) => {
+            create_intext_spans(span)
         });
     };
 
@@ -1764,67 +1914,6 @@ const refEl = raw[i];
 }
 
 /* Optional: delegated interactions (radios, buttons). Call once. */
-function WireTooltipInteractions(root = document, handlers = {}) {
-  const h = {
-    onRemove: handlers.onRemove || (()=>{}),
-    onConfirm: handlers.onConfirm || (()=>{}),
-    onNone: handlers.onNone || (()=>{}),
-    onShowMore: handlers.onShowMore || (()=>{}),
-    onSearchAgain: handlers.onSearchAgain || (()=>{}),
-    onLinkManual: handlers.onLinkManual || (()=>{}),
-    onCreateRef: handlers.onCreateRef || (()=>{}),
-    onItemFocus: handlers.onItemFocus || (()=>{})
-  };
-
-  root.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-action]");
-    if (btn) {
-      const action = btn.getAttribute("data-action");
-      const tip = btn.closest(".tt");
-      if (action === "remove") return h.onRemove({ tooltip: tip, event: e });
-      if (action === "confirm") return h.onConfirm({ tooltip: tip, selection: getSelection(tip), event: e });
-      if (action === "none") return h.onNone({ tooltip: tip, event: e });
-      if (action === "show-more") return h.onShowMore({ tooltip: tip, kind: btn.getAttribute("data-kind"), event: e });
-      if (action === "search-again") return h.onSearchAgain({ tooltip: tip, event: e });
-      if (action === "link-manual") return h.onLinkManual({ tooltip: tip, event: e });
-      if (action === "create-ref") return h.onCreateRef({ tooltip: tip, event: e });
-    }
-
-    const item = e.target.closest(".tt-item");
-    if (item) {
-      selectItem(item);
-      const tip = item.closest(".tt");
-      enableConfirm(tip);
-      h.onItemFocus({ tooltip: tip, item, event: e });
-    }
-  });
-
-
-
-  function selectItem(item) {
-    const group = item.closest(".tt-list");
-    group.querySelectorAll(".tt-item").forEach(n => {
-      n.classList.toggle("is-selected", n === item);
-      n.setAttribute("aria-checked", n === item ? "true" : "false");
-    });
-  }
-  function enableConfirm(tip) {
-    const sel = getSelection(tip);
-    const btn = tip.querySelector('[data-action="confirm"]');
-    if (btn) btn.disabled = !sel;
-  }
-  function getSelection(tip) {
-    const sel = tip.querySelector('.tt-item.is-selected');
-    if (!sel) return null;
-    return {
-      kind: sel.getAttribute("data-kind"),
-      idx: Number(sel.getAttribute("data-idx")),
-      text: sel.querySelector(".tt-text")?.textContent || ""
-    };
-  }
-
-  return { destroy(){ root.removeEventListener("click",()=>{}); root.removeEventListener("keydown",()=>{}); } };
-}
 
 
 function createTooltips({

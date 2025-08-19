@@ -3,7 +3,7 @@
   "menu_privacy": "Privacy Policy",
   "menu_impressum": "Impressum",
   "menu_contact": "Contact",
-  "h1_title": "Automatically check APA citations in PDFs and detect AI-generated false references",
+  "h1_title": "Correct Citation: Automatically check APA citations in PDFs and detect AI-generated false references",
   "intro_text": "Accurate citations are essential to any scholarly work. Citalyze automatically reviews your PDF: in-text citations are matched to the reference list, and each source is verified through the CrossRef database. This makes it easy to identify missing or incorrect references, as well as fabricated sources often found in AI-generated content. Increase the reliability of your work, save valuable time, and meet formatting standards with confidence – whether for a term paper, dissertation, or journal article.",
 
   "import_settings": "Import settings",
@@ -107,7 +107,7 @@
   "tooltip_hint_select": "Please select the correct reference.",
   "tooltip_hint_year_mismatch": "The in-text year differs from the matched references.",
   "tooltip_hint_typo": "Small differences detected. Please confirm the link.",
-  "tooltip_hint_check_spelling": "Check spelling, author order, and year.",
+  "tooltip_hint_check_spelling": "Check spelling, author order, and year or assign manually via drag&drop.",
 
   "tooltip_tag_top": "Top match",
   "tooltip_tag_abbr": "Abbreviation",
@@ -127,7 +127,14 @@
   "tooltip_sort_icon": "Sort in-text citations w/o match<br>by alphabetical order",
   "tooltip_trash": "Drag erroneous in-text citations here",
   "tooltip_sort_order": "Sort in-text citations w/o match<br>by order of appearance",
-  "tooltip_sort_alpha": "Sort in-text citations w/o match<br>by alphabetical order"
+  "tooltip_sort_alpha": "Sort in-text citations w/o match<br>by alphabetical order",
 
+
+
+
+  "Show_GS": "Search on Google Scholar",
+  "Show_Reference": "Show Reference",
+  "Del_Reference": "Delete Reference",
+  "Del_Links": "Delete Links"
 }
 

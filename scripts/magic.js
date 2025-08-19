@@ -292,28 +292,22 @@ export function matching(ReferenceFrameParagraph) {
    
 
     const AllReferences = document.querySelectorAll("span.citation, div.InTexts");
-
+    
     AllReferences.forEach(element => {
       if (element.MatchedWith) {
         MakeListeners(element);
       }
     });
- /*
-    select all element of class 
-
-
-    All spans
-
-    All Intexts
-*/
 
   }
 
 
-  function MakeListeners(element) {
-
-    if (!element.MatchedWith || element.MatchedWith.length === 0) {
+  export function MakeListeners(element) {
+    console.log(element)
+    console.log(window.mq.matches)
+    if ((!element.MatchedWith || element.MatchedWith.length === 0) && (!(window.mq.matches))) {
       element.addEventListener('click', () => {
+        console.log(element)
       if (element.ParentSpan) {
         element.ParentSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
         DoHighlight(element.ParentSpan);

@@ -5,68 +5,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <meta name="description" content="Richtig und korrekt Zitieren! Überprüfen Sie automatisch APA-Zitate in PDFs mit Citalyze. Erkennen Sie fehlende Referenzen, CrossRef-Fehler und KI-generierte Zitate.">
-    <link rel="icon" href="Logo.png" type="image/png">
-    <title>Zitate & Quellen in PDFs prüfen | Citalyze</title>
-    <link rel="alternate" hreflang="de" href="https://citalyze.de/">
+<meta name="description" content="Cite correctly. Automatically check APA citations in PDFs with Citalyze. Detect missing references, CrossRef errors, and AI-generated citations.">
+<link rel="icon" href="/Logo.png" type="image/png">
+<title>Check Citations & Verify References | Citalyze</title>
+<link rel="alternate" hreflang="de" href="https://citalyze.de/">
 <link rel="alternate" hreflang="en" href="https://citalyze.de/en/">
 <link rel="alternate" hreflang="x-default" href="https://citalyze.de/">
-<link rel="canonical" href="https://citalyze.de/">
-    <link rel="stylesheet" href="/styles.css">
-    <script type="application/ld+json">
+<link rel="canonical" href="https://citalyze.de/en/">
+<link rel="stylesheet" href="/styles.css">
+
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Was ist diese Software und was macht sie?",
+      "name": "What is this software and what does it do?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Diese Software prüft die Zitiergenauigkeit in PDFs, vergleicht In-Text-Zitate mit dem Literaturverzeichnis und verifiziert Referenzen über CrossRef. Zusätzlich ist eine Google-Scholar-Suche möglich."
+        "text": "This software checks citation accuracy in PDFs, compares in-text citations with the reference list, and verifies references via CrossRef. A Google Scholar search is also available."
       }
     },
     {
       "@type": "Question",
-      "name": "Wie benutze ich die Software?",
+      "name": "How do I use the software?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "PDF hochladen, den Anweisungen folgen und nach der Analyse die Übersicht möglicher Abweichungen zwischen In-Text-Zitaten und Referenzen prüfen."
+        "text": "Upload a PDF, follow the steps, and after the analysis review the summary of potential discrepancies between in-text citations and references."
       }
     },
     {
       "@type": "Question",
-      "name": "Welche Zitierweise wird unterstützt?",
+      "name": "Which citation style is supported?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Unterstützt wird der APA-Stil. Ergebnisse für andere Stile sind derzeit nicht zuverlässig, funktionieren aber eventuell, wenn sie APA ähneln."
+        "text": "The APA style is supported. Results for other styles are currently not reliable, though they may work if they closely resemble APA."
       }
     },
     {
       "@type": "Question",
-      "name": "Wie genau ist das System und was passiert bei Abweichungen?",
+      "name": "How accurate is the system and what happens with discrepancies?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sehr hohe Genauigkeit angestrebt, aber keine 100 % Garantie wegen PDF-Limitierungen. Abweichungen werden markiert, damit Sie sie manuell prüfen und zuordnen können."
+        "text": "We aim for very high accuracy, but there is no 100% guarantee due to PDF limitations. Discrepancies are flagged so you can review and resolve them manually."
       }
     },
     {
-  "@type": "Question",
-  "name": "Kann Citalyze KI-generierte falsche Referenzen erkennen?",
-  "acceptedAnswer": {
-    "@type": "Answer",
-    "text": "Ja. Viele KI-Textgeneratoren erfinden Referenzen oder mischen reale mit falschen Quellen. Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind."
-  }
-}
+      "@type": "Question",
+      "name": "Can Citalyze detect AI-generated false references?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Many AI text generators invent references or mix real with false sources. Citalyze compares each reference against the CrossRef database and flags sources that do not exist or contain errors."
+      }
+    }
   ]
 }
 </script>
+
 
 </head>
 
 <body>
     <div id="controls" class="controls">
-        <img src="Logo.png" alt="Symbol" id="icon" style="width: 40px;">
+        <img src="/Logo.png" alt="Symbol" id="icon" style="width: 40px;">
         <span data-i18n="app_title">Citalyze</span>
         <div id="pdfFile"></div>
         <div id="rightCON">
@@ -76,12 +78,12 @@
             <div class="lang-switcher-container">
                 <div id="lang-menu-btn" class="lang-icon" aria-label="Sprachumschalter">
                     <span role="img" aria-label="Sprachumschalter">
-                        <img class="icon_scg" src="language-svgrepo-com(2).svg" alt="" width="30" height="30">
+                        <img class="icon_scg" src="/language-svgrepo-com(2).svg" alt="" width="30" height="30">
                     </span>
                 </div>
                 <ul id="lang-menu" class="lang-menu-dropdown">
-                    <li><a href="/"    hreflang="de" lang="de" class="active-lang">Deutsch</a></li>
-                    <li><a href="/en/" hreflang="en" lang="en">English</a></li>
+                <li><a href="/"    hreflang="de" lang="de">Deutsch</a></li>
+                <li><a href="/en/" hreflang="en" lang="en" class="active-lang">English</a></li>
                 </ul>
             </div>
 
@@ -93,9 +95,9 @@
             </div>
 
             <ul class="menu" id="menu">
-                <li><a href="#" id="open-privacy-modal" data-i18n="menu_privacy">Datenschutzerklärung</a></li>
+                <li><a href="#" id="open-privacy-modal" data-i18n="menu_privacy">Privacy Policy</a></li>
                 <li><a href="Impressum.html" data-i18n="menu_impressum">Impressum</a></li>
-                <li><a href="mailto:support@citalyze.de?subject=PDF%20Citation%20Analyzer" data-i18n="menu_contact">Kontakt</a></li>
+                <li><a href="mailto:support@citalyze.de?subject=PDF%20Citation%20Analyzer" data-i18n="menu_contact">Contact</a></li>
             </ul>
         </div>
     </div>
@@ -105,16 +107,10 @@
 
             <div id="intro-frame" class="search-string-frame" style="padding: 15px; line-height: 1.6;">
             <section id="intro" class="intro">
-            <h1 data-i18n="h1_title">Richtig Zitieren: APA-Zitate in PDFs automatisch prüfen und KI-Falschangaben erkennen</h1>
+            <h1 data-i18n="h1_title">Correct Citation: Automatically check APA citations in PDFs and detect AI-generated false references</h1>
             <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
             <p data-i18n="intro_text">
-                Präzise Zitate sind ein wesentlicher Bestandteil jeder wissenschaftlichen Arbeit.  
-                Citalyze prüft Ihr PDF-Dokument automatisch: In-Text-Zitate werden mit dem Literaturverzeichnis 
-                abgeglichen und jede Quelle wird über die CrossRef-Datenbank verifiziert.  
-                Dadurch lassen sich fehlende oder fehlerhafte Referenzen sofort erkennen – 
-                ebenso wie erfundene Quellen, die häufig in KI-generierten Texten vorkommen.  
-                So erhöhen Sie die Zuverlässigkeit Ihrer Arbeit, sparen wertvolle Zeit und erfüllen 
-                formale Anforderungen sicher – ob bei einer Seminararbeit, Dissertation oder einem Fachartikel.
+                Accurate citations are essential to any scholarly work. Citalyze automatically reviews your PDF: in-text citations are matched to the reference list, and each source is verified through the CrossRef database. This makes it easy to identify missing or incorrect references, as well as fabricated sources often found in AI-generated content. Increase the reliability of your work, save valuable time, and meet formatting standards with confidence – whether for a term paper, dissertation, or journal article.
             </p>
             </div>
             </section>
@@ -122,7 +118,7 @@
 
             <div id="dragArea">
                 <input type="file" id="pdf-upload" accept="application/pdf">
-                <p data-i18n="drag_drop">Ziehen Sie eine PDF-Datei hierher oder verwenden Sie den Upload-Button.</p>
+                <p data-i18n="drag_drop">Drag and drop a PDF here or use the file upload button.</p>
             </div>
             <div id="settings" style="display:none;">
                 <h2 id="settings-title" class="settings-title" data-i18n="import_settings">
@@ -322,10 +318,10 @@
 
 
 
-    <script src="scripts/Datenschutz.js" defer></script>
-    <script src="scripts/lang.js" defer></script>
+    <script src="/scripts/Datenschutz.js"></script>
+    <script src="/scripts/lang.js"></script>
 
-    <script type="module" src="scripts/main.js" defer></script>
+    <script type="module" src="/scripts/main.js"></script>
 
     <div id="password-overlay">
         <h2 data-i18n="page_protected">Diese Seite ist geschützt</h2>

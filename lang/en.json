@@ -67,7 +67,7 @@
   "show_crossref_results": "Show CrossRef Results",
   "hide_crossref_results": "Hide CrossRef Results",
   "detected_authors_year": "Detected authors and year:",
-  "best_crossref_match": "Best Crossref match:",
+  "best_crossref_match": "Best match with Crossref database:",
   "no_matches_found": "No matches found.",
   "citations_without_match": "Found {{unmatched}} in-text citations without match ({{total}} total)",
 
@@ -78,7 +78,7 @@
 
 
   "refs_without_match": "Found {count}/{total} references without match:",
-    "best_crossref_match": "Best Crossref match",
+
 
     
   "tooltip_found_label": "Found",

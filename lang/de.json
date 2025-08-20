@@ -69,7 +69,7 @@
   "show_crossref_results": "CrossRef-Ergebnisse anzeigen",
   "hide_crossref_results": "CrossRef-Ergebnisse ausblenden",
   "detected_authors_year": "Erkannte Autoren und Jahr:",
-  "best_crossref_match": "Bester Crossref-Treffer:",
+  "best_crossref_match": "Bester Treffer in der Crossref Datenbank:",
   "no_matches_found": "Keine Treffer gefunden.",
   "citations_without_match": "{{unmatched}} In-Text-Zitate ohne Übereinstimmung gefunden ({{total}} gesamt)" ,
 
@@ -78,7 +78,7 @@
   "ref_id_unsuccess": "Bitte passen Sie die Import-Einstellungen an.",
   "reference_not_ok": "Referenzabschnitt nicht erkannt.",
   "refs_without_match": "{count}/{total} Referenzen ohne Übereinstimmung gefunden:",
-    "best_crossref_match": "Bester Crossref-Treffer",
+
     "tooltip_matches": "Gefundene Referenzen:",
 
     

@@ -1,70 +1,55 @@
+// 1) Load dictionary from ROOT so it works under /en/
 window.loadLanguage = function(lang = "en") {
-    return fetch(`lang/${lang}.json`)
-        .then(res => res.json())
-        .then(dict => {
-            // Store translations globally
-            window.langDict = dict;
+  return fetch(`/lang/${lang}.json`)  // <-- changed: leading slash
+    .then(res => res.json())
+    .then(dict => {
+      window.langDict = dict;
 
-            // Replace text content
-            document.querySelectorAll("[data-i18n]").forEach(el => {
-                const key = el.getAttribute("data-i18n");
-                if (dict[key]) {
-                    el.textContent = dict[key];
-                }
-            });
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.textContent = dict[key];
+      });
 
-            // Replace placeholders (like input placeholder)
-            document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-                const key = el.getAttribute("data-i18n-placeholder");
-                if (dict[key]) {
-                    el.setAttribute("placeholder", dict[key]);
-                }
-            });
-        })
-        .catch(err => console.error("Error loading language:", err));
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (dict[key]) el.setAttribute("placeholder", dict[key]);
+      });
+    })
+    .catch(err => console.error("Error loading language:", err));
 };
 
-// Language switcher setup
+// 2) Decide language from URL; switcher NAVIGATES to the other URL
 document.addEventListener("DOMContentLoaded", () => {
-    const defaultLang = localStorage.getItem("lang") || navigator.language.slice(0, 2) || "en";
-    window.loadLanguage(defaultLang);
+  const isEN = window.location.pathname.startsWith("/en/");
+  const currentLang = isEN ? "en" : "de";
+  window.loadLanguage(currentLang);
 
-    // --- New Menu Logic ---
-    const langMenuBtn = document.getElementById("lang-menu-btn");
-    const langMenu = document.getElementById("lang-menu");
-    const langMenuItems = langMenu.querySelectorAll("li");
+  const langMenuBtn = document.getElementById("lang-menu-btn");
+  const langMenu = document.getElementById("lang-menu");
+  const langMenuItems = langMenu ? langMenu.querySelectorAll("li") : [];
 
-    // Toggle the dropdown menu visibility
-    if (langMenuBtn) {
-        langMenuBtn.addEventListener("click", () => {
-            langMenu.classList.toggle("show");
-        });
+  // Toggle dropdown
+  if (langMenuBtn && langMenu) {
+    langMenuBtn.addEventListener("click", () => {
+      langMenu.classList.toggle("show");
+    });
+  }
+
+  // Mark active language and navigate on click
+  langMenuItems.forEach(item => {
+    const lang = item.getAttribute("data-lang");
+    if (lang === currentLang) item.classList.add("active-lang");
+
+    item.addEventListener("click", () => {
+      const target = lang === "en" ? "/en/" : "/";
+      window.location.href = target;  // full navigation to language URL
+    });
+  });
+
+  // Close menu when clicking outside
+  window.addEventListener("click", (e) => {
+    if (langMenu && !e.target.closest(".lang-switcher-container")) {
+      langMenu.classList.remove("show");
     }
-
-    // Set the initial language and highlight the active one
-    langMenuItems.forEach(item => {
-        if (item.getAttribute("data-lang") === defaultLang) {
-            item.classList.add("active-lang");
-        }
-    });
-
-    // Handle language selection from the dropdown
-    langMenuItems.forEach(item => {
-        item.addEventListener("click", (e) => {
-            const selectedLang = e.target.getAttribute("data-lang");
-            if (selectedLang) {
-                localStorage.setItem("lang", selectedLang);
-                location.reload();
-            }
-        });
-    });
-
-    // Close the menu if the user clicks outside of it
-    window.addEventListener("click", (e) => {
-        if (!e.target.closest(".lang-switcher-container") && langMenu.classList.contains("show")) {
-            langMenu.classList.remove("show");
-        }
-    });
-    // --- End of New Menu Logic ---
-
+  });
 });

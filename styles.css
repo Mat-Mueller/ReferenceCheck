@@ -26,7 +26,7 @@ body {
 /* Controls area at the top of the page */
 #controls {
     padding: 5px;
-    background: var(--primary-color); 
+    background: var(--primary-color);  
     color: #fff;
     border-bottom: 1px solid #ccc;
     display: flex;
@@ -116,6 +116,26 @@ body {
     background-color: #FFFFFF;
     position: relative;
 }
+
+.Reference-frame.uncited {
+  position: relative;
+  /* border-left: 6px solid var(--accent-color); /* optional extra accent */
+  /* border-right: 6px solid var(--accent-color); /* optional extra accent */
+  padding-left: 40px; /* space for the exclamation */
+}
+
+.Reference-frame.uncited::before {
+  content: "❗";
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28px;
+  color: red;
+}
+
+
+
 .Reference-frameDESK {
     border: 1px solid #ccc;
     padding-bottom: 5px;

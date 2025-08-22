@@ -668,7 +668,8 @@ SingleRef.innerHTML = `<b>${matchCount}</b> ${window.langDict[key]}`;
             if (!element_to_high){
             element_to_high = SingleRef.parentElement
             }
-                element_to_high.style.background = `  radial-gradient(circle at center, white 70%,${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
+                element_to_high.classList.add("uncited");
+                //element_to_high.style.background = `  radial-gradient(circle at center, white 70%,${getComputedStyle(document.documentElement).getPropertyValue('--accent-color')}`;
                 element_to_high.setAttribute("data-match-status", "no-match");
 
                 //divs.forEach(div => {
@@ -676,11 +677,11 @@ SingleRef.innerHTML = `<b>${matchCount}</b> ${window.langDict[key]}`;
             //});
         } else {
             if (ReferenceFrameParagraph){
-                
-                ReferenceFrameParagraph.style.border = ""//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                ReferenceFrameParagraph.classList.remove("uncited")
+                //ReferenceFrameParagraph.style.border = ""//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
             } else {
-                SingleRef.parentElement.style.border = ""//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
-
+                //SingleRef.parentElement.style.border = ""//getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                SingleRef.parentElement.classList.remove("uncited")
             }
 
         }

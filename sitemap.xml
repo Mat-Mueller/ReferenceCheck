@@ -1,18 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Home (DE) -->
   <url>
     <loc>https://citalyze.de/</loc>
-    <lastmod>2025-08-11T20:24:49+00:00</lastmod>
-    <priority>1.00</priority>
+    <lastmod>2025-08-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/"/>
   </url>
+
+  <!-- Home (EN) -->
+  <url>
+    <loc>https://citalyze.de/en/</loc>
+    <lastmod>2025-08-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/"/>
+  </url>
+
+  <!-- Legal (DE) -->
   <url>
     <loc>https://citalyze.de/Impressum.html</loc>
     <lastmod>2025-08-11T20:24:49+00:00</lastmod>
-    <priority>0.80</priority>
   </url>
-  <url>
-    <loc>https://citalyze.de/index.html</loc>
-    <lastmod>2025-08-11T20:24:49+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
+
+  <!-- Blog Übersicht (DE) -->
+<url>
+  <loc>https://citalyze.de/de/blog/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/"/>
+</url>
+
+<url>
+  <loc>https://citalyze.de/en/blog/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/"/>
+</url>
+
+  <!-- 1logartikel (DE) -->
+<url>
+  <loc>https://citalyze.de/de/blog/richtigzitieren/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/richtigzitieren/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/thenewchallenge/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/thenewchallenge/"/>
+</url>
+
+<!-- Blogartikel EN -->
+<url>
+  <loc>https://citalyze.de/en/blog/thenewchallenge/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/richtigzitieren/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/thenewchallenge/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/thenewchallenge/"/>
+</url>
+
+
+  <!-- 2logartikel (DE) -->
+<url>
+  <loc>https://citalyze.de/de/blog/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/"/>
+</url>
+
+<!-- Blogartikel EN -->
+<url>
+  <loc>https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/"/>
+</url>
+
 </urlset>
+
+
+
+
+
+

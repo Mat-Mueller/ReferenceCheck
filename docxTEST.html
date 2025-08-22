@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DOCX Preview → PDF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- jszip is required for docx-preview -->
+  <script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
+  <script src="https://unpkg.com/docx-preview/dist/docx-preview.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 1rem; }
+    #preview { border: 1px solid #ccc; padding: 1rem; background: #fff; }
+    .docx-wrapper { background: white; margin: 1rem auto; box-shadow: 0 0 4px rgba(0,0,0,0.2); }
+    button { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>DOCX → PDF (docx-preview)</h1>
+  <input type="file" id="upload" accept=".docx">
+  <div id="preview"><em>No document loaded.</em></div>
+  <button id="download" style="display:none">Download as PDF</button>
+
+  <script>
+    const upload   = document.getElementById("upload");
+    const preview  = document.getElementById("preview");
+    const download = document.getElementById("download");
+    let currentFileName = "document";
+
+    upload.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      currentFileName = file.name.replace(/\.docx$/i, "") || "document";
+      const arrayBuffer = await file.arrayBuffer();
+
+      // Clear old content
+      preview.innerHTML = "";
+
+      // Render with docx-preview
+      await window.docx.renderAsync(arrayBuffer, preview, null, {
+        className: "docx",
+        inWrapper: true,
+        breakPages: true,
+        renderHeaders: true,
+        renderFooters: true,
+        renderFootnotes: true,
+        renderEndnotes: true
+      });
+
+      download.style.display = "inline-block";
+    });
+
+download.addEventListener("click", async () => {
+  const el = document.getElementById("preview");
+
+  // 1) wait until layout & images are ready
+  await document.fonts?.ready?.catch(()=>{});
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+  // 2) ensure element is visible & has height
+  const visible = !!(el.offsetWidth || el.offsetHeight);
+  if (!visible) {
+    alert("Preview is not visible; cannot export.");
+    return;
+  }
+
+  // 3) html2pdf options that work better with docx-preview
+  const opt = {
+    margin:       10,
+    filename:     (window.currentFileName || "document") + ".pdf",
+    image:        { type: "jpeg", quality: 0.95 },
+    html2canvas:  {
+      scale: 2,
+      useCORS: true,      // allow external images/fonts
+      allowTaint: true,   // render even if cross-origin taints canvas
+      backgroundColor: "#ffffff",
+      logging: false
+    },
+    jsPDF:        { unit: "pt", format: "a4", orientation: "portrait" },
+    pagebreak:    { mode: ["css", "legacy"], after: ".docx-page" }
+  };
+
+  // 4) run the conversion
+  await html2pdf().from(el).set(opt).save();
+});
+
+  </script>
+</body>
+</html>

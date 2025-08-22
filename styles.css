@@ -449,7 +449,7 @@ margin-left : 3px;
   width: 100px
 }
   #pdf_frame_head {
-    dflex: 0 0 auto;
+    flex: 0 0 auto;
     align-items: center; /* Vertically centers items (optional) */
     justify-content: flex-start; /* Default: Aligns items to the left */
     padding: 5px;               /* Add some padding around the container */
@@ -457,6 +457,16 @@ margin-left : 3px;
     gap: 10px; /* Add space between the left elements */
 
     
+}
+
+#zoomcontainer {
+  display: flex;
+  gap: 8px;
+  padding-right: 10px;
+}
+
+#zoomcontainer button:hover {
+  background: #eee;
 }
 
 #right_grey_container {
@@ -499,7 +509,7 @@ margin-left : 3px;
 #searchSpanField {
 
     border-radius: 5px;
-    width: 50px;     /* Sets the width of the element */
+    width: 100px;     /* Sets the width of the element */
 }
 
 #SearchCintainer {

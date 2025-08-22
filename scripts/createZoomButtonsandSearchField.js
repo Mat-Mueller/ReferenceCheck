@@ -2,38 +2,19 @@ import {searchSpanRef} from "./uiComponents.js"
 
 let scale = 1; // initial zoom scale
 export function createZoomButtonsandSearchField() {
-    const zoomInButton = document.createElement("button");
-    zoomInButton.innerHTML = "+";
-    zoomInButton.onclick = zoomIn;
+  // hook zoom buttons
+  document.getElementById("zoomInBtn").onclick  = zoomIn;
+  document.getElementById("zoomOutBtn").onclick = zoomOut;
 
-    zoomInButton.style.bottom = "20px";
-    zoomInButton.style.width = "20px";
-    zoomInButton.style.right = "20px";
-
-    const zoomOutButton = document.createElement("button");
-    zoomOutButton.innerHTML = "-";
-    zoomOutButton.onclick = zoomOut;
-
-    zoomOutButton.style.bottom = "20px";
-    zoomOutButton.style.width = "20px";
-    zoomOutButton.style.right = "45px"; // Position it to the right of the Zoom In button
-
-    //document.getElementById("pdf_frame_head").appendChild(zoomInButton);
-    //document.getElementById("pdf_frame_head").appendChild(zoomOutButton);
-
-
-    const searchInput =  document.getElementById('searchSpanField')
-
-    searchInput.placeholder = window.langDict["search_placeholder"];
-    //searchInput.style.marginLeft = '50px';
-    searchInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {  // Check if the Enter key was pressed
-            searchSpanRef(event);      // Call the search function and pass the event
-        }
-      })
-
-
-  }
+  // hook search field
+  const searchInput = document.getElementById('searchSpanField');
+  searchInput.placeholder = window.langDict["search_placeholder"];
+  searchInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      searchSpanRef(event);
+    }
+  });
+}
 
   function zoomIn() {
 

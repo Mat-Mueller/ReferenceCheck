@@ -132,131 +132,112 @@ async function loadPDF(file) {
 }
 
 async function renderAllPages(pdfDocument) {
-    const pdfContainer = document.getElementById('pdf_frame');
-    const dummy = document.createElement('div');
-    dummy.id = "dummy"
-    for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
-        const page = await pdfDocument.getPage(pageNum); // Wait for the page to be loaded
-        const viewport = page.getViewport({ scale: 2 });
-        const textLayerDiv = document.createElement('div');
-        textLayerDiv.className = 'textLayer';
-        textLayerDiv.style.height = `${viewport.height / 1}px`;
-        textLayerDiv.style.width = `${viewport.width / 2}px`;
-        textLayerDiv.style.position = 'relative';
-        textLayerDiv.style.marginBottom = '0px'; // Space between pages
-        textLayerDiv.style.overflow = 'hidden'; // Hide overflow content
+  const pdfContainer = document.getElementById('pdf_frame');
+  const dummy = document.createElement('div');
+  dummy.id = "dummy";
 
-        pdfContainer.appendChild(dummy);
-        dummy.appendChild(textLayerDiv);
-        console.log("hi there")
-        const textContent = await page.getTextContent(); // Wait for text content to be retrieved
+  for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
+    const page = await pdfDocument.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 2 });     // keep your scale
+    const scale = viewport.scale;
 
-        let lines = []; // Array to store lines with their Y coordinate
+    const textLayerDiv = document.createElement('div');
+    textLayerDiv.className = 'textLayer';
+    // use the actual viewport size (no /2 or /1)
+    textLayerDiv.style.height = `${viewport.height}px`;
+    textLayerDiv.style.width  = `${viewport.width}px`;
+    textLayerDiv.style.position = 'relative';
+    textLayerDiv.style.marginBottom = '0px';
+    textLayerDiv.style.overflow = 'hidden';
 
-        textContent.items.forEach(function (textItem) {
-            const currentY = textItem.transform[5]; // Y coordinate
-            const currentX = textItem.transform[4]; // X coordinate
-            const lineText = textItem.str;
-            const fontSize = textItem.transform[0]; // Extract font size
-            const fontName = textItem.fontName; // Extract font name (for bold, italic, etc.)
-        
-            // Find the line with a similar Y coordinate
-            let line = lines.find(line => Math.abs(line.y - currentY) < 0.75 * fontSize);
-        
-            // If no line exists for this Y coordinate, create a new line entry
-            if (!line) {
-                line = {
-                    text: '',
-                    x: currentX,
-                    y: currentY,
-                    fontSizeFrequency: {}, // Track frequency of font sizes in this line
-                    fontSize: null,         // Final font size for the line, to be determined
-                    fontName: fontName,     // Store font name for the line
-                    snippets: []            // Track individual snippets for further processing
-                };
-                lines.push(line);
-            }
-        
-            // Append text to the line
-            line.text += lineText;
-        
-            // Store snippet font size for frequency tracking
-            if (!line.fontSizeFrequency[fontSize]) {
-                line.fontSizeFrequency[fontSize] = line.text.length;
-            } else {
-                line.fontSizeFrequency[fontSize] = line.fontSizeFrequency[fontSize] + line.text.length
-            }
-        
-            // Store each snippet along with its font size (for future reference, if needed)
-            line.snippets.push({
-                text: lineText,
-                x: currentX,
-                fontSize: fontSize,
-                fontName: fontName
-            });
-        });
-        
-        // After all items are processed, determine the most frequent font size for each line
-        lines.forEach(function (line) {
-            let maxFrequency = 0;
-            let mostFrequentFontSize = null;
-        
-            // Determine the most frequent font size for the line
-            for (const size in line.fontSizeFrequency) {
-                if (line.fontSizeFrequency[size] > maxFrequency) {
-                    maxFrequency = line.fontSizeFrequency[size];
-                    mostFrequentFontSize = parseFloat(size);
-                }
-            }
-        
-            // Assign the most frequent font size to the entire line
-            line.fontSize = mostFrequentFontSize;
-        
-            // Apply the most frequent font size to the entire line (optional, if rendering the line)
-            //lineElement.style.fontSize = `${line.fontSize}px`; // Apply to rendered element if needed
-        });
-        
+    pdfContainer.appendChild(dummy);
+    dummy.appendChild(textLayerDiv);
 
-        // Sort lines by their Y coordinate (descending order)
-        lines.sort((a, b) => b.y - a.y);
+    const textContent = await page.getTextContent();
 
-        const firstLine = lines[0]; // The first line (topmost)
-        const lastLine = lines[lines.length - 1]; // The last line (bottom-most)
+    let lines = [];
 
-        // Render all lines
-        lines.forEach(function (line, index) {
-            const lineElement = document.createElement('div');
-            lineElement.textContent = line.text.replace(/\s+/g, ' ').trim(); // Remove any trailing space
-            lineElement.className = 'textLine';
-            lineElement.setAttribute('data-page-num', pageNum);
-            lineElement.style.position = 'absolute';
-            lineElement.style.whiteSpace = 'pre'; // Preserve whitespace
-            lineElement.style.left = `${line.x}px`; // Set X position based on the first text item
-            lineElement.style.top = `${(viewport.height - line.y * 2)}px`; // Set Y position (inverted)
-            lineElement.style.margin = '0'; // Ensure no margin is added
-            lineElement.style.padding = '0'; // Ensure no padding is added
+    textContent.items.forEach(function (textItem) {
+      // convert PDF units → viewport pixels
+      const currentY = textItem.transform[5] * scale;   // f * scale
+      const currentX = textItem.transform[4] * scale;   // e * scale
+      const lineText = textItem.str;
+      const fontSize = textItem.transform[0] * scale;   // scale the size too
+      const fontName = textItem.fontName;
 
-            // Apply font size and font weight (bold) if applicable
-            lineElement.style.fontSize = `${line.fontSize}px`; // Set font size
-            //lineElement.style.height = `${line.fontSize}px`;  // Explicitly set the div height to match the font size
-            if (line.fontName && line.fontName.toLowerCase().includes('bold')) {
-                lineElement.style.fontWeight = 'bold'; // Set bold style if the font name contains "bold"
-            }
-            if (line === firstLine) {
-                lineElement.setAttribute('data-header', 'true');
-            }
-            if (line === lastLine) {
-                lineElement.setAttribute('data-footer', 'true');
-            }
+      // group by Y (in pixels)
+      let line = lines.find(line => Math.abs(line.y - currentY) < 0.75 * fontSize);
+      if (!line) {
+        line = {
+          text: '',
+          x: currentX,
+          y: currentY,
+          fontSizeFrequency: {},
+          fontSize: null,
+          fontName: fontName,
+          snippets: []
+        };
+        lines.push(line);
+      }
 
-            lineElement.id = `textLine-${pageNum}-${index}`; 
-            textLayerDiv.appendChild(lineElement);
-        });
-    }
+      line.text += lineText;
+      line.fontSizeFrequency[fontSize] = (line.fontSizeFrequency[fontSize] || 0) + line.text.length;
 
+      line.snippets.push({
+        text: lineText,
+        x: currentX,
+        fontSize: fontSize,
+        fontName: fontName
+      });
+    });
 
-    
+    // pick dominant font size per line
+    lines.forEach(function (line) {
+      let maxFrequency = 0;
+      let mostFrequentFontSize = null;
+      for (const size in line.fontSizeFrequency) {
+        if (line.fontSizeFrequency[size] > maxFrequency) {
+          maxFrequency = line.fontSizeFrequency[size];
+          mostFrequentFontSize = parseFloat(size);
+        }
+      }
+      line.fontSize = mostFrequentFontSize;
+    });
+
+    // KEEP your original ordering: largest y first (visually top first)
+    lines.sort((a, b) => b.y - a.y);
+
+    const firstLine = lines[0];
+    const lastLine  = lines[lines.length - 1];
+
+    // render
+    lines.forEach(function (line, index) {
+      const lineElement = document.createElement('div');
+      lineElement.textContent = line.text.replace(/\s+/g, ' ').trim();
+      lineElement.className = 'textLine';
+      lineElement.setAttribute('data-page-num', pageNum);
+      lineElement.style.position = 'absolute';
+      lineElement.style.whiteSpace = 'pre';
+      lineElement.style.left = `${line.x}px`;
+      // correct flip: top-left CSS ← bottom-left PDF (no *2)
+      lineElement.style.top  = `${(viewport.height - line.y)}px`;
+      lineElement.style.margin = '0';
+      lineElement.style.padding = '0';
+
+      lineElement.style.fontSize = `${line.fontSize}px`;
+      if (line.fontName && line.fontName.toLowerCase().includes('bold')) {
+        lineElement.style.fontWeight = 'bold';
+      }
+      if (line === firstLine) lineElement.setAttribute('data-header', 'true');
+      if (line === lastLine)  lineElement.setAttribute('data-footer', 'true');
+
+      lineElement.id = `textLine-${pageNum}-${index}`;
+      textLayerDiv.appendChild(lineElement);
+    });
+  }
 }
+
+
 
 function detectFootnotesForAllTextLayers() {
 

@@ -33,8 +33,10 @@ document.getElementById("demo").addEventListener("click", async function (event)
     window.demomode = true;  // your flag
 
     // pick file path based on language
-    const  fileName = (window.currentLang === "en") ? "en/DemoDocEn.pdf" : "DemoDocde.pdf";
-    const filePath = `/${fileName}`; 
+    //console.log(window)
+    const  filePath = (window.actualLang === "en") ? "DemoDocEn.pdf" : "DemoDocde.pdf";
+    //const filePath = `../${fileName}`
+    console.log(filePath)
     let pdfDocument = null;
     try {
         // load PDF via fetch

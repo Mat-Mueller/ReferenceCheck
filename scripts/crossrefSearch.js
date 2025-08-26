@@ -27,10 +27,10 @@ export async function performCrossRefSearch() {
   title: [window.langDict["DemoText1"]],
   "container-title": [window.langDict["DemoText2"]],
   URL: "#",
-  DOI: "",
+  DOI: "-",
   formattedAuthors: "Aut1",
   yearString: "XXXX",
-   matchPercentage: 0,
+   matchPercentage: 100,
   abstract: null
 };
             searchResultGUI([placeholderItem], References[i])

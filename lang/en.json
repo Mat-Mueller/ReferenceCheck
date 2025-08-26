@@ -135,6 +135,8 @@
   "Show_GS": "Search on Google Scholar",
   "Show_Reference": "Show Reference",
   "Del_Reference": "Delete Reference",
-  "Del_Links": "Delete Links"
+  "Del_Links": "Delete Links",
+  "DemoText1": "Here you see the best CrossRef result",
+  "DemoText2": "Use it to verify your reference"
 }
 

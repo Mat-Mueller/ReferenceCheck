@@ -717,9 +717,13 @@ margin-left : 3px;
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px;
 }
 .btn{
-  appearance: none; border: 1px solid transparent; border-radius: 10px;
+  appearance: none; border: 1px solid transparent; border-radius: 10px; 
   padding: 10px 14px; font-weight: 600; cursor: pointer; transition: transform .06s ease, background .12s, box-shadow .12s;
 }
+
+
+
+
 .btn:active{ transform: translateY(1px); }
 .btn-primary{
   background: var(--usl-primary); color: #fff; 
@@ -839,7 +843,7 @@ margin-left : 3px;
 .btn{
   appearance:none; cursor:pointer;
   border-radius: 10px; border: 1px solid var(--border);
-  background:#fff; color: var(--text);
+  background:#e4e4e4; color: var(--text);
   padding: 10px 14px; font-weight:600;
   transition: background .12s ease, transform .06s ease, box-shadow .12s ease;
 }

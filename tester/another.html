@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>DOCX → Preview → PDF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Minimal, clean styling -->
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --muted: #8aa0b4;
+      --fg: #eef2f6;
+      --accent: #4f8cff;
+      --card: #121821;
+      --paper: #ffffff;
+      --paper-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, var(--bg), #111722);
+      color: var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      min-height: 100%;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 16px 48px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    header h1 {
+      font-size: 20px;
+      margin: 0;
+      letter-spacing: .2px;
+      font-weight: 650;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.15);
+    }
+
+    .uploader {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+    .dropzone {
+      border: 2px dashed rgba(255,255,255,.15);
+      background: rgba(255,255,255,.03);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color .15s ease, background .15s ease;
+      cursor: pointer;
+      min-height: 64px;
+      display: grid;
+      align-items: center;
+    }
+    .dropzone.dragover {
+      border-color: var(--accent);
+      background: rgba(79,140,255,.08);
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    .btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, #1a2330, #121a24);
+      color: var(--fg);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform .05s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    }
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn.primary {
+      border-color: rgba(79,140,255,.6);
+      background: linear-gradient(180deg, #5a8fff, #3e6fe0);
+      color: white;
+    }
+    .spacer { height: 16px; }
+
+    /* Preview “paper” look (A4 aspect) */
+    .preview-shell {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 16px;
+    }
+    .paper {
+      background: var(--paper);
+      color: #111826;
+      border-radius: 12px;
+      box-shadow: var(--paper-shadow);
+      margin: 0 auto;
+      padding: 28px 36px;
+      width: 794px; /* ~A4 width at 96dpi */
+      max-width: 100%;
+    }
+    .paper * { max-width: 100%; }
+    .paper img {
+      max-width: 100%;
+      height: auto;
+    }
+    .messages {
+      font-size: 13px;
+      color: #ffd66b;
+      white-space: pre-wrap;
+    }
+    .filename {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Mammoth default-ish typography (helps mirror Word) */
+    .paper h1 { font-size: 28px; margin: 0.6em 0 0.4em; }
+    .paper h2 { font-size: 24px; margin: 0.6em 0 0.4em; }
+    .paper h3 { font-size: 20px; margin: 0.6em 0 0.4em; }
+    .paper p  { line-height: 1.5; margin: 0.5em 0; }
+    .paper table { border-collapse: collapse; width: 100%; }
+    .paper th, .paper td { border: 1px solid #e5e7eb; padding: 6px 8px; vertical-align: top; }
+    .paper blockquote {
+      border-left: 4px solid #cbd5e1;
+      padding-left: 12px;
+      color: #475569;
+      margin-left: 0;
+    }
+
+    /* Make content snug on small screens; PDF export uses full width via windowWidth */
+    @media (max-width: 840px) {
+      .paper { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 4h7l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M13 4v5h5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <h1>DOCX Preview &rarr; PDF (Client-side)</h1>
+    </header>
+
+    <div class="card">
+      <div class="uploader">
+        <label class="dropzone" id="dropzone">
+          <div class="row">
+            <div>
+              <strong>Upload a .docx file</strong>
+              <div class="hint">Click to choose or drag & drop here.</div>
+              <div class="filename" id="filename">No file selected.</div>
+            </div>
+            <div>
+              <button class="btn" id="chooseBtn" type="button">Choose file</button>
+            </div>
+          </div>
+          <input type="file" id="fileInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden />
+        </label>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" id="clearBtn" type="button" disabled>Clear</button>
+          <button class="btn primary" id="pdfBtn" type="button" disabled>Save as PDF</button>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="messages" id="messages" aria-live="polite"></div>
+
+      <div class="preview-shell">
+        <div id="preview" class="paper" aria-label="Document preview">
+          <p class="hint" style="margin:0;">Your document preview will appear here.</p>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:14px;">
+        Note: Complex layouts from Word may render slightly differently in HTML/PDF. Embedded images are preserved.
+      </div>
+    </div>
+  </div>
+
+  <!-- Dependencies (UMD builds) -->
+ <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script>
+    (function () {
+      const fileInput = document.getElementById('fileInput');
+      const chooseBtn = document.getElementById('chooseBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const pdfBtn = document.getElementById('pdfBtn');
+      const dropzone = document.getElementById('dropzone');
+      const preview = document.getElementById('preview');
+      const messages = document.getElementById('messages');
+      const filenameEl = document.getElementById('filename');
+
+      let currentFileName = null;
+
+      const setBusy = (isBusy, text) => {
+        if (isBusy) {
+          messages.textContent = text || 'Working…';
+          pdfBtn.disabled = true;
+          clearBtn.disabled = true;
+          chooseBtn.disabled = true;
+          dropzone.classList.add('dragover');
+          document.body.style.cursor = 'progress';
+        } else {
+          messages.textContent = '';
+          clearBtn.disabled = !currentFileName;
+          pdfBtn.disabled = !currentFileName;
+          chooseBtn.disabled = false;
+          dropzone.classList.remove('dragover');
+          document.body.style.cursor = 'default';
+        }
+      };
+
+      function isDocx(file) {
+        return file && (
+          file.name.toLowerCase().endsWith('.docx') ||
+          file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        );
+      }
+
+      function humanFileName(name) {
+        return name.replace(/\.[^.]+$/, '');
+      }
+
+      async function handleFile(file) {
+        if (!isDocx(file)) {
+          messages.textContent = 'Please select a .docx file.';
+          return;
+        }
+        currentFileName = humanFileName(file.name);
+        filenameEl.textContent = file.name;
+
+        setBusy(true, 'Converting DOCX to HTML…');
+
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+
+          // Convert images to data URLs so html2canvas/jsPDF can embed them.
+          const options = {
+            includeDefaultStyle: true,
+            styleMap: [
+              // You can tweak mapping here if needed, e.g.:
+              // "p[style-name='Title'] => h1.title"
+            ],
+            convertImage: mammoth.images.inline(function (element) {
+              return element.read("base64").then(function (imageBuffer) {
+                return {
+                  src: "data:" + element.contentType + ";base64," + imageBuffer,
+                };
+              });
+            }),
+          };
+
+          const result = await mammoth.convertToHtml({ arrayBuffer }, options);
+          preview.innerHTML = result.value || "<p>(Empty document)</p>";
+
+          // Show any warnings/messages from Mammoth
+          if (result.messages && result.messages.length) {
+            messages.textContent = result.messages.map(m => `• ${m.message}`).join('\n');
+          } else {
+            messages.textContent = '';
+          }
+
+          // Enable buttons
+          pdfBtn.disabled = false;
+          clearBtn.disabled = false;
+        } catch (err) {
+          console.error(err);
+          messages.textContent = 'Failed to open file. Is it a valid .docx?';
+          currentFileName = null;
+          filenameEl.textContent = 'No file selected.';
+          preview.innerHTML = '<p class="hint" style="margin:0;">Your document preview will appear here.</p>';
+          pdfBtn.disabled = true;
+          clearBtn.disabled = true;
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      // Export preview to PDF using jsPDF's html() helper
+      async function exportPDF() {
+        if (!currentFileName) return;
+
+        setBusy(true, 'Rendering PDF… (large documents may take a moment)');
+
+        // jsPDF in UMD is under window.jspdf.jsPDF
+        const { jsPDF } = window.jspdf;
+
+        // A4 in points: 595.28 × 841.89
+        const doc = new jsPDF('p', 'pt', 'a4');
+        const margin = 24; // points
+        const pageWidth = doc.internal.pageSize.getWidth() - margin * 2;
+
+        // We help html2canvas with a realistic width for layout to reduce scaling artifacts.
+        const contentWidth = preview.scrollWidth || 794;
+
+        try {
+          await doc.html(preview, {
+            x: margin,
+            y: margin,
+            width: pageWidth,    // jsPDF will scale to this width
+            windowWidth: contentWidth, // tell html2canvas how wide the layout should be
+            autoPaging: 'text',
+            html2canvas: {
+              scale: 1, // keep memory in check; increase for sharper output at cost of speed/ram
+              useCORS: true,
+            },
+            callback: function (doc) {
+              doc.save((currentFileName || 'document') + '.pdf');
+            }
+          });
+        } catch (err) {
+          console.error(err);
+          messages.textContent = 'PDF rendering failed. Try a smaller document or a different browser.';
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function clearAll() {
+        currentFileName = null;
+        fileInput.value = '';
+        filenameEl.textContent = 'No file selected.';
+        preview.innerHTML = '<p class="hint" style="margin:0;">Your document preview will appear here.</p>';
+        messages.textContent = '';
+        pdfBtn.disabled = true;
+        clearBtn.disabled = true;
+      }
+
+      // UI bindings
+      chooseBtn.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) handleFile(file);
+      });
+      pdfBtn.addEventListener('click', exportPDF);
+      clearBtn.addEventListener('click', clearAll);
+
+      // Drag & drop
+      ;['dragenter','dragover'].forEach(evt =>
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault(); e.stopPropagation();
+          dropzone.classList.add('dragover');
+        })
+      );
+      ;['dragleave','drop'].forEach(evt =>
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault(); e.stopPropagation();
+          dropzone.classList.remove('dragover');
+        })
+      );
+      dropzone.addEventListener('drop', (e) => {
+        const file = e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) handleFile(file);
+      });
+
+      // Also trigger file dialog when clicking the dropzone background (not just the button)
+      dropzone.addEventListener('click', (e) => {
+        // Don’t trigger if the user clicked an interactive child (like the buttons)
+        if (e.target.closest('button')) return;
+        fileInput.click();
+      });
+    })();
+  </script>
+</body>
+</html>

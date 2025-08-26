@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>DOCX → PDF (Print in place)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Required libs (order matters) -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <link  href="https://cdn.jsdelivr.net/npm/docx-preview@0.3.6/dist/docx-preview.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.6/dist/docx-preview.min.js"></script>
+
+  <style>
+    :root { --ink:#0f172a; --muted:#6b7280; --border:#d1d5db; --bg:#f8fafc; --accent:#2563eb; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--ink); background:var(--bg); }
+    main { max-width: 960px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 20px; margin: 0 0 12px; }
+    p.note { color: var(--muted); margin: 0 0 16px; }
+    button.primary {
+      border: 1px solid var(--border);
+      background: var(--accent); color: #fff;
+      padding: 12px 16px; border-radius: 12px; font-weight: 600; cursor: pointer;
+    }
+    button.primary:disabled { opacity: .6; cursor: default; }
+    #status { margin-top: 12px; min-height: 22px; color: var(--muted); }
+
+    /* Viewer */
+    #preview-wrap { margin-top: 20px; }
+    .docx-wrapper { background:#fff; }
+    .docx-page { margin: 0 auto 16px; box-shadow: 0 0 6px rgba(0,0,0,.12); }
+
+    /* Print only the preview area; keep sizing tidy */
+    @media print {
+      body { background:#fff; }
+      main { display:none; }
+      #preview-wrap { display:block !important; margin:0; }
+      .docx-page { box-shadow:none !important; margin:0 auto !important; }
+    }
+    /* Page margins for the printer */
+    @page { size:auto; margin:12mm; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>DOCX → PDF (client-side, print dialog)</h1>
+    <p class="note">Click the button, pick a <code>.docx</code>, it renders locally and opens the browser’s print dialog. Choose “Save as PDF”. Nothing is uploaded.</p>
+    <button class="primary" id="goBtn">Choose .docx and Print</button>
+    <div id="status"></div>
+  </main>
+
+  <div id="preview-wrap">
+    <div id="preview"><em style="color:#6b7280">No document loaded yet.</em></div>
+  </div>
+
+  <script>
+    const goBtn   = document.getElementById('goBtn');
+    const status  = document.getElementById('status');
+    const preview = document.getElementById('preview');
+    const wrap    = document.getElementById('preview-wrap');
+
+    function setStatus(msg){ status.textContent = msg || ''; }
+
+    // ONE function the user triggers
+    async function chooseDocxAndPrint() {
+      try {
+        setStatus('Opening file dialog…');
+        const file = await pickDocxFile();
+        if (!file) { setStatus('No file selected.'); return; }
+
+        setStatus('Rendering DOCX…');
+        const buf = await file.arrayBuffer();
+        await renderDocx(buf, preview);
+
+        // ensure the preview is visible and sized before print
+        wrap.style.display = 'block';
+
+        // allow fonts/layout to settle; some browsers need two frames
+        await document.fonts?.ready?.catch(()=>{});
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+        // open print dialog (user picks “Save as PDF”)
+        setStatus('Opening print dialog…');
+        await printInPlace();
+
+        setStatus('Done.');
+      } catch (err) {
+        console.error(err);
+        setStatus('Failed: ' + (err?.message || err));
+      }
+    }
+
+    // ---- helpers ----------------------------------------------------------
+
+    function pickDocxFile(){
+      return new Promise(resolve => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.docx';
+        input.addEventListener('change', () => resolve(input.files && input.files[0]));
+        input.click();
+      });
+    }
+
+    function ensureLibs(){
+      if (!window.JSZip || typeof JSZip.loadAsync !== 'function')
+        throw new Error('JSZip not loaded.');
+      if (!window.docx || typeof docx.renderAsync !== 'function')
+        throw new Error('docx-preview not loaded.');
+    }
+
+    async function renderDocx(arrayBuffer, container){
+      ensureLibs();
+      container.innerHTML = '';
+      await window.docx.renderAsync(arrayBuffer, container, null, {
+        className: 'docx',
+        inWrapper: true,
+        breakPages: true,
+        renderHeaders: true,
+        renderFooters: true,
+        renderFootnotes: true,
+        renderEndnotes: true
+      });
+    }
+
+    // Print the CURRENT DOM (keeps blob: URLs and fonts valid)
+    function printInPlace() {
+      return new Promise(resolve => {
+        const after = () => { window.removeEventListener('afterprint', after); resolve(); };
+        window.addEventListener('afterprint', after);
+        window.print();
+        // Some browsers don’t fire afterprint reliably; resolve anyway after a delay
+        setTimeout(() => { window.removeEventListener('afterprint', after); resolve(); }, 1500);
+      });
+    }
+
+    goBtn.addEventListener('click', () => { chooseDocxAndPrint(); });
+  </script>
+</body>
+</html>

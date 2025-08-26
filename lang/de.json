@@ -140,6 +140,8 @@
   "Show_GS": "Auf Google Scholar suchen",
     "Show_Reference": "Zeige Referenz",
   "Del_Reference": "Lösche Referenz",
-  "Del_Links": "Lösche Links"
+  "Del_Links": "Lösche Links",
+    "DemoText1": "Hier würde der beste CrossRef Treffer stehen",
+  "DemoText2": "Ideal zum Verifizieren ihrer Quellen"
 
 }

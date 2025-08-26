@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DOCX Preview → PDF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- deps -->
+  <script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
+  <script src="https://unpkg.com/docx-preview/dist/docx-preview.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 1rem; }
+    #preview { border: 1px solid #ccc; padding: 1rem; background: #fff; }
+    .docx-wrapper { background: white; margin: 1rem auto; box-shadow: 0 0 4px rgba(0,0,0,0.2); }
+    button { margin-top: 1rem; }
+    /* lines view */
+    #lines { border: 1px dashed #bbb; padding: 8px; margin-top: 12px; display:none; }
+    .line { display:block; padding: 2px 0; }
+    .line + .line { border-top: 1px dashed #eee; }
+  </style>
+</head>
+<body>
+  <h1>DOCX → PDF (docx-preview)</h1>
+  <input type="file" id="upload" accept=".docx">
+  
+
+  <div style="display:flex; gap:.5rem; flex-wrap:wrap">
+    <button id="download" style="display:none">Download as PDF</button>
+    <button id="split" style="display:none">Split into lines</button>
+    <button id="back" style="display:none">Back to original</button>
+  </div>
+
+  <div id="preview"><em>No document loaded.</em></div>
+
+  <div id="lines"></div>
+
+  <script>
+    const upload   = document.getElementById("upload");
+    const preview  = document.getElementById("preview");
+    const download = document.getElementById("download");
+    const splitBtn = document.getElementById("split");
+    const backBtn  = document.getElementById("back");
+    const linesOut = document.getElementById("lines");
+    let currentFileName = "document";
+
+    upload.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      currentFileName = file.name.replace(/\.docx$/i, "") || "document";
+      const arrayBuffer = await file.arrayBuffer();
+
+      // Clear old content
+      preview.innerHTML = "";
+
+      // Render with docx-preview
+      await window.docx.renderAsync(arrayBuffer, preview, null, {
+        className: "docx",
+        inWrapper: true,
+        breakPages: true,
+        renderHeaders: true,
+        renderFooters: true,
+        renderFootnotes: true,
+        renderEndnotes: true
+      });
+
+      download.style.display = "inline-block";
+      splitBtn.style.display = "inline-block";
+      linesOut.style.display = "none";
+      backBtn.style.display = "none";
+      preview.style.display = "";
+    });
+
+    download.addEventListener("click", async () => {
+      const el = document.getElementById("preview");
+      await document.fonts?.ready?.catch(()=>{});
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      const visible = !!(el.offsetWidth || el.offsetHeight);
+      if (!visible) {
+        alert("Preview is not visible; cannot export.");
+        return;
+      }
+
+      const opt = {
+        margin:       10,
+        filename:     (window.currentFileName || "document") + ".pdf",
+        image:        { type: "jpeg", quality: 0.95 },
+        html2canvas:  { scale: 2, useCORS: true, allowTaint: true, backgroundColor: "#ffffff", logging: false },
+        jsPDF:        { unit: "pt", format: "a4", orientation: "portrait" },
+        pagebreak:    { mode: ["css", "legacy"], after: ".docx-page" }
+      };
+
+      await html2pdf().from(el).set(opt).save();
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ---- Split into visual lines ----
+splitBtn.addEventListener("click", () => {
+  const wrapper = preview.querySelector(".docx-wrapper") || preview;
+  if (!wrapper) return;
+
+  const spans = Array.from(wrapper.querySelectorAll("span"));
+
+  spans.forEach(span => {
+    if (!span.textContent || !span.textContent.trim()) return;
+
+    const rects = span.getClientRects();
+    if (rects.length <= 1) return; // not split
+
+    // --- Split this span into multiple clones ---
+    const tn = span.firstChild;
+    if (!tn || tn.nodeType !== Node.TEXT_NODE) return;
+
+    const text = tn.nodeValue;
+    const range = document.createRange();
+    let start = 0;
+    const newSpans = [];
+
+function firstLineEnd(from) {
+  // Whole remainder fits on one line → return end of text
+  range.setStart(tn, from);
+  range.setEnd(tn, text.length);
+  if (range.getClientRects().length <= 1) return text.length;
+
+  let lo = from + 1;        // smallest candidate end (exclusive)
+  let hi = text.length;     // largest candidate end
+  let firstWrap = null;     // smallest end that *wraps*
+
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    range.setStart(tn, from);
+    range.setEnd(tn, mid);
+    const wraps = range.getClientRects().length > 1;
+
+    if (wraps) {
+      firstWrap = mid;      // remember earliest wrapping point
+      hi = mid - 1;         // search left half
+    } else {
+      lo = mid + 1;         // can extend further
+    }
+  }
+
+  // If even one char from 'from' wraps, force progress by 1 char
+  if (firstWrap === from + 1) return from + 1;
+
+  // Otherwise return the last non-wrapping end index
+  const end = (firstWrap ?? (text.length + 1)) - 1;
+  return Math.max(end, from + 1);
+}
+
+
+    while (start < text.length) {
+      const end = firstLineEnd(start);
+      range.setStart(tn, start);
+      range.setEnd(tn, end);
+      const rect = range.getClientRects()[0];
+      if (!rect) break;
+
+      const clone = span.cloneNode(true);
+      clone.textContent = text.slice(start, end);
+      newSpans.push(clone);
+
+      start = end;
+    }
+
+    // Replace the original span with the new ones
+    if (newSpans.length) {
+      span.replaceWith(...newSpans);
+    }
+
+
+    
+
+
+
+
+  });
+
+  console.log("Splitting done");
+
+
+
+
+function mergeSameLineSiblings(wrapper) {
+  const TOL = 2; // px tolerance for "same line"
+  const spans = Array.from(wrapper.querySelectorAll("span"));
+
+  let current = null;
+  let currentTop = null;
+
+  for (const s of spans) {
+    if (!s.textContent) continue; // keep DOM stable; just skip empty
+
+    const r = s.getClientRects()[0];
+    if (!r) {                      // if we can't measure, don't guess
+      current = null;
+      currentTop = null;
+      continue;
+    }
+
+    const sameLine =
+      current &&
+      current.parentNode === s.parentNode &&
+      current.nextSibling === s &&
+      Math.abs(r.top - currentTop) <= TOL;
+
+    if (sameLine) {
+      const add = s.textContent;
+
+      // Only add an extra space at the boundary if neither side has one
+      const needsBoundarySpace =
+        current.textContent &&
+        !/\s$/.test(current.textContent) &&
+        !/^\s/.test(add);
+
+      if (needsBoundarySpace) current.textContent += " ";
+      current.textContent += add;
+
+      s.remove(); // merged -> remove neighbor
+      // keep current & currentTop
+    } else {
+      current = s;
+      currentTop = r.top;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    mergeSameLineSiblings(wrapper);
+
+  console.log("Splitting + merging done");
+});
+
+
+      
+
+
+
+
+
+
+    backBtn.addEventListener("click", () => {
+      linesOut.style.display = "none";
+      preview.style.display = "";
+      backBtn.style.display = "none";
+    });
+  </script>
+</body>
+</html>

@@ -571,7 +571,7 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
         <strong>${item.title[0]}</strong>.
         ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}.
         DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
-
+        console.log(item["container-title"])
         resultFrame.appendChild(resultParagraph);
         resultFrame.style.marginBottom = '10px';
         resultFrame.style.backgroundColor = `hsl(${(item.matchPercentage / 100) * 120}, 100%, 50%)`;
@@ -999,18 +999,6 @@ export function secondFrame(referenceCount) {
         }
         ReferenceFrameParagraph.className = 'Reference-frame';
         
-        /*
-        divs.forEach ((div) => {
-            div.style.cursor = 'pointer'
-            div.addEventListener('click', () => {   
-                if (!window.mq.matches) {
-                    ReferenceFrameParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                    DoHighlight(ReferenceFrameParagraph)    
-            });
-        })
-        */
-
 
         matching(ReferenceFrameParagraph)   ////////////////////////////////////////////////////////////////////////////////////should move
         // Create first paragraph with inline style
@@ -1024,14 +1012,7 @@ export function secondFrame(referenceCount) {
         SingleRef.style.marginRight = "60px";
         ReferenceFrameParagraph.appendChild(SingleRef);
 
-        /*
-        SingleRef.addEventListener('click', () => {
-            if (!window.mq.matches) {
-            divs[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
-            }
-            DoHighlight(divs[0])
-        })
-        */
+
 
         // Create second paragraph with inline style
         const SingleRef2 = document.createElement('p');
@@ -1054,8 +1035,7 @@ export function secondFrame(referenceCount) {
         bestMatchHeading.innerHTML = `<strong>${window.langDict["best_crossref_match"]}</strong>`;
         //bestMatchHeading.style.fontSize = '18px';
         bestMatchHeading.style.marginBottom = '10px';
-        //ReferenceFrameParagraph.appendChild(bestMatchHeading);
-        
+       
         
         const resultFrame = document.createElement('div');
         resultFrame.className = 'result-frame';

@@ -24,6 +24,50 @@ function initializePDFLoader() {
             event.dataTransfer.dropEffect = 'copy'; // Indicates a copy action
         };
     
+
+document.getElementById("demo").addEventListener("click", async function (event) {
+    LoadingPage();
+    event.preventDefault();
+    event.stopPropagation();
+
+    window.demomode = true;  // your flag
+
+    // pick file path based on language
+    const  fileName = (window.currentLang === "en") ? "en/DemoDocEn.pdf" : "DemoDocde.pdf";
+    const filePath = `/${fileName}`; 
+    let pdfDocument = null;
+    try {
+        // load PDF via fetch
+        const response = await fetch(filePath);
+        const data = await response.arrayBuffer();
+
+        // emulate file object if your loadPDF expects a File/Blob
+        const file = new File([data], filePath, { type: "application/pdf" });
+
+        pdfDocument = await loadPDF(file);  // Call loadPDF to render PDF
+        document.getElementById("pdfFile").innerText = ": " + file.name;
+
+        await renderAllPages(pdfDocument);
+    } catch (err) {
+        console.error("Failed to load PDF:", err);
+        // alert("Please select a valid PDF file.");
+    }
+
+            // Dynamically load script after rendering
+            const script = document.createElement("script");
+            script.src = "/scripts/Trigger.js?ts=" + Date.now();
+            script.onload = () => console.log("Trigger.js loaded successfully");
+                document.body.appendChild(script);
+            detectFootnotesForAllTextLayers();
+            createZoomButtonsandSearchField();        
+            // Detect footers and headers
+
+            analysis()
+
+            UNLoadingPage()
+});
+
+
         // Get file via drop
         window.handleDrop = async function (event) {
             if (event.dataTransfer.files[0]) {

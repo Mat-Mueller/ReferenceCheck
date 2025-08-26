@@ -22,7 +22,21 @@ export async function performCrossRefSearch() {
 
         // Manually call the function that was originally triggered by the button click
         const textReference = getMergedTextByMyId(i);
-        checkExists(textReference)
+        if (window.demomode === true) {
+            const placeholderItem = {
+  title: [window.langDict["DemoText1"]],
+  "container-title": [window.langDict["DemoText2"]],
+  URL: "#",
+  DOI: "",
+  formattedAuthors: "Aut1",
+  yearString: "XXXX",
+   matchPercentage: 0,
+  abstract: null
+};
+            searchResultGUI([placeholderItem], References[i])
+            activeRequests--
+        }
+            else {checkExists(textReference)
             .then((searchResults) => {
                 searchResultGUI(searchResults, References[i]);
             })
@@ -31,6 +45,7 @@ export async function performCrossRefSearch() {
             });
 
         await delay(100); // Small delay between starting new requests
+        }
     }
     //hideLoadingSpinner();
 }

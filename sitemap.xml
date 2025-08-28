@@ -5,7 +5,7 @@
   <!-- Home (DE) -->
   <url>
     <loc>https://citalyze.de/</loc>
-    <lastmod>2025-08-20</lastmod>
+    <lastmod>2025-08-28</lastmod>
     <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/"/>
@@ -14,7 +14,7 @@
   <!-- Home (EN) -->
   <url>
     <loc>https://citalyze.de/en/</loc>
-    <lastmod>2025-08-20</lastmod>
+    <lastmod>2025-08-28</lastmod>
     <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/"/>
@@ -28,57 +28,82 @@
 
   <!-- Blog Übersicht (DE) -->
 <url>
-  <loc>https://citalyze.de/de/blog/</loc>
-  <lastmod>2025-08-20</lastmod>
-  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/"/>
-  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/"/>
+  <loc>https://citalyze.de/de/blog/ubersicht/</loc>
+  <lastmod>2025-08-28</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/"/>
 </url>
 
 <url>
-  <loc>https://citalyze.de/en/blog/</loc>
-  <lastmod>2025-08-20</lastmod>
-  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/"/>
-  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/"/>
+  <loc>https://citalyze.de/en/blog/overview/</loc>
+  <lastmod>2025-08-28</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/"/>
 </url>
+
+
 
   <!-- 1logartikel (DE) -->
 <url>
-  <loc>https://citalyze.de/de/blog/richtigzitieren/</loc>
+  <loc>https://citalyze.de/de/blog/ubersicht/citalyze-blog-richtig-zitieren-in-zeiten-von-ki/</loc>
   <lastmod>2025-08-20</lastmod>
-  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/richtigzitieren/"/>
-  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/thenewchallenge/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/thenewchallenge/"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/citalyze-blog-richtig-zitieren-in-zeiten-von-ki/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/the-new-challenge-references-in-the-age-of-ai/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/the-new-challenge-references-in-the-age-of-ai/"/>
 </url>
 
 <!-- Blogartikel EN -->
 <url>
-  <loc>https://citalyze.de/en/blog/thenewchallenge/</loc>
+  <loc>https://citalyze.de/en/blog/overview/the-new-challenge-references-in-the-age-of-ai/</loc>
   <lastmod>2025-08-20</lastmod>
-  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/richtigzitieren/"/>
-  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/thenewchallenge/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/thenewchallenge/"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/citalyze-blog-richtig-zitieren-in-zeiten-von-ki/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/the-new-challenge-references-in-the-age-of-ai/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/the-new-challenge-references-in-the-age-of-ai/"/>
 </url>
+
+
+
 
 
   <!-- 2logartikel (DE) -->
 <url>
-  <loc>https://citalyze.de/de/blog/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/</loc>
+  <loc>https://citalyze.de/de/blog/ubersicht/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/</loc>
   <lastmod>2025-08-20</lastmod>
-  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/"/>
-  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/what-happens-after-submission-how-theses-are-evaluated/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/what-happens-after-submission-how-theses-are-evaluated/"/>
+</url>
+
+<!-- Blogartikel EN -->
+<url>
+  <loc>https://citalyze.de/en/blog/overview/what-happens-after-submission-how-theses-are-evaluated/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/what-happens-after-submission-how-theses-are-evaluated/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/what-happens-after-submission-how-theses-are-evaluated/"/>
+</url>
+
+
+  <!-- 3logartikel (DE) -->
+<url>
+  <loc>https://citalyze.de/de/blog/ubersicht/brauchen-wir-in-zeiten-von-ki-noch-plagiatserkennung/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/brauchen-wir-in-zeiten-von-ki-noch-plagiatserkennung/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/do-we-still-need-plagiarism-detection-in-the-age-of-ai/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/do-we-still-need-plagiarism-detection-in-the-age-of-ai/"/>
 </url>
 
 <!-- Blogartikel EN -->
 <url>
   <loc>https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/</loc>
   <lastmod>2025-08-20</lastmod>
-  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/"/>
-  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/what-happens-after-submission-how-theses-are-evaluated/"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/brauchen-wir-in-zeiten-von-ki-noch-plagiatserkennung/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/do-we-still-need-plagiarism-detection-in-the-age-of-ai/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/do-we-still-need-plagiarism-detection-in-the-age-of-ai/"/>
 </url>
+
 
 </urlset>
 

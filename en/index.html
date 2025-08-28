@@ -74,7 +74,13 @@
         <div id="pdfFile"></div>
         <div id="rightCON">
             <div id="Goback" style="display: none"></div>
-            <div class="reload-icon" onclick="location.reload()" aria-label="Seite neu laden"></div>
+            <div class="reload-icon"
+                role="button"
+                tabindex="0"
+                aria-label="Reload Page"
+                onclick="location.reload()"
+                onkeypress="if(event.key==='Enter' || event.key===' ') location.reload()">
+            </div>
 
             <div class="lang-switcher-container">
                 <div id="lang-menu-btn" class="lang-icon" aria-label="Sprachumschalter">
@@ -89,18 +95,30 @@
             </div>
 
             <!-- Navbar with hamburger menu -->
-            <div class="menu-icon" id="menu-icon" aria-label="Menü öffnen">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
+                           <button
+            type="button"
+            class="menu-icon"
+            id="menu-toggle"
+            aria-label="Open Menue"
+            aria-controls="menu"
+            aria-expanded="false">
+            <span class="bar" aria-hidden="true"></span>
+            <span class="bar" aria-hidden="true"></span>
+            <span class="bar" aria-hidden="true"></span>
+            </button>
+
 
             <ul class="menu" id="menu">
                 <li><a href="#" id="open-privacy-modal" data-i18n="menu_privacy">Privacy Policy</a></li>
                 <li><a href="Impressum.html" data-i18n="menu_impressum">Impressum</a></li>
                 <li><a href="mailto:support@citalyze.de?subject=PDF%20Citation%20Analyzer" data-i18n="menu_contact">Contact</a></li>
-                <li><a href="/en/blog/">Blog: Citing Correctly</a></li>
+                <li><a href="/en/blog/overview/">Blog: Citing Correctly</a></li>
             </ul>
+
+
+
+
+
         </div>
     </div>
 
@@ -109,19 +127,37 @@
 
             <div id="intro-frame" class="search-string-frame" style="padding: 15px; line-height: 1.6;">
             <section id="intro" class="intro">
-            <h1 data-i18n="h1_title">Correct Citation: Automatically check APA citations in PDFs and detect AI-generated false references</h1>
+            <h1 data-i18n="h1_title">Correct Referencing: Automatically Check APA Citations and the Reference List in PDFs</h1>
             <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-            <p data-i18n="intro_text">
-                Accurate citations are essential to any scholarly work. Citalyze automatically reviews your PDF: in-text citations are matched to the reference list, and each source is verified through the CrossRef database. This makes it easy to identify missing or incorrect references, as well as fabricated sources often found in AI-generated content. Increase the reliability of your work, save valuable time, and meet formatting standards with confidence – whether for a term paper, dissertation, or journal article.
+
+            <section id="intro" class="intro">
+
+
+  <p>Accurate citations and a complete reference list are the foundation of every academic paper.</p>
+
+  <p>Citalyze automatically analyzes your PDF: all in-text citations are matched with the reference list, and every source is verified via the CrossRef database.</p>
+
+  <p>This way, missing or incorrect references can be identified immediately – as well as invented sources, which often occur in AI-generated texts.</p>
+     Learn more in our <a href="/en/blog/" title="Blog on correct citing">blog about correct citing</a>.</p>
+  <p>With Citalyze you increase the reliability of your work, save valuable time, and meet formal requirements with confidence – whether for a term paper, master’s thesis, dissertation, or journal article.</p>
+</section>
+            
+            
             </p>
             </div>
-            </section>
-            </div>
+
+            </div> 
+
+            
 
             <div id="dragArea">
-                <input type="file" id="pdf-upload" accept="application/pdf">
-                <p data-i18n="drag_drop">Drag and drop a PDF here or use the file upload button.</p>
-                <button id="demo" type="button" class="btn">Demo</button>
+            <label for="pdf-upload" data-i18n="drag_drop">
+                Drag and drop a PDF here or use the file upload button.
+            </label>
+            
+            <input type="file" id="pdf-upload" accept="application/pdf">
+
+            <button id="demo" type="button" class="btn">Demo</button>
             </div>
             <div id="settings" style="display:none;">
                 <h2 id="settings-title" class="settings-title" data-i18n="import_settings">
@@ -254,45 +290,43 @@
 
                 <!-- FAQ 1 -->
                 <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h4 id="faq-q1" data-i18n="faq_q1">1. Was ist diese Software und was macht sie?</h4>
+                    <h3 id="faq-q1" data-i18n="faq_q1">1. What is this software, and what does it do?"</h3>
                     <p data-i18n="faq_a1">
-                    Diese Software prüft die Zitiergenauigkeit in PDFs und stellt sicher, dass In-Text-Zitate mit dem Literaturverzeichnis übereinstimmen.
-                    Jede Referenz wird über CrossRef verifiziert; zusätzlich können Sie zur Überprüfung Google Scholar durchsuchen.
+                    This software checks citation accuracy in PDFs, ensuring in-text citations match the reference list. It verifies each reference through CrossRef and lets users search Google Scholar for accuracy.
+
                     </p>
                 </div>
 
                 <!-- FAQ 2 -->
                 <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h4 id="faq-q2" data-i18n="faq_q2">2. Wie benutze ich die Software?</h4>
+                    <h3 id="faq-q2" data-i18n="faq_q2">2. Can Citalyze detect AI-generated false references?</h3>
                     <p data-i18n="faq_a2">
-                    Laden Sie Ihr PDF hoch. Die Software führt Sie durch die Zitationseinstellungen. Nach der Analyse sehen Sie eine Übersicht über
-                    eventuelle Abweichungen zwischen In-Text-Zitaten und Einträgen im Literaturverzeichnis.
+                   Yes. Many AI text generators invent references or mix real with false sources. Citalyze compares each reference against the CrossRef database and flags those that do not exist or contain incorrect details.
+
                     </p>
                 </div>
 
                 <!-- FAQ 3 -->
                 <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h4 id="faq-q3" data-i18n="faq_q3">3. Welche Zitierweise wird unterstützt?</h4>
+                    <h3 id="faq-q3" data-i18n="faq_q3">3. How do I use the software?</h3>
                     <p data-i18n="faq_a3">
-                    Die Software erkennt Zitate und Literaturangaben nach dem
-                    <a href="https://apastyle.apa.org/" target="_blank" rel="noopener">APA-Standard</a>.
-                    Ergebnisse für andere Stile sind derzeit nicht zuverlässig; das Matching kann funktionieren, wenn der Stil dem APA-Schema ähnelt.
+                    Upload your PDF, and the software will guide you through citation settings. After the analysis is complete, you’ll see an overview of any mismatched in-text citations and references in your document.
+
                     </p>
                 </div>
 
                 <!-- FAQ 4 -->
                 <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h4 id="faq-q4" data-i18n="faq_q4">4. Wie genau ist das System und was passiert bei Abweichungen?</h4>
+                    <h3 id="faq-q4" data-i18n="faq_q4">4. What reference style is supported?</h3>
                     <p data-i18n="faq_a4">
-                    Wir streben hohe Genauigkeit an, können jedoch keine 100&nbsp;% garantieren, da die Extraktion und Erkennung aus PDF-Texten Grenzen hat.
-                    Bei einer Abweichung markiert die Software den Unterschied, sodass Sie In-Text-Zitate und Referenzen manuell prüfen und zuordnen können.
+                    The software detects citations and references following the APA style. The results for other reference styles are currently not reliable. Matching may work for other reference styles similar to APA.
                     </p>
                 </div>
                                     <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h4 id="faq-q5" data-i18n="faq_q5">5. Kann Citalyze KI-generierte falsche Referenzen erkennen?</h4>
+                    <h3 id="faq-q5" data-i18n="faq_q5">5. What is the level of accuracy, and what happens if there’s a mismatch?</h3>
                     <p data-i18n="faq_a5">
-                        Ja. Viele KI-Textgeneratoren erfinden Referenzen oder mischen reale mit falschen Quellen.
-                        Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind.
+                        While we strive for high accuracy, we cannot guarantee 100% precision, as there is always a chance of mismatches due to limitations in analyzing PDF text and detecting citations and references. If the software detects a mismatch, it will highlight the discrepancy, allowing the user to manually verify and match in-text citations and references.
+
                     </p>
                     </div>
                 </div>
@@ -356,3 +390,4 @@
 </body>
 
 </html>
+

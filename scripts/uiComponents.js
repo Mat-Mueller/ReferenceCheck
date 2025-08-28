@@ -37,22 +37,49 @@ export function MoveToFirstSpan() {
 
 
 
-export function createMenue () {
-    document.getElementById("menu-icon").addEventListener("click", function (e) {
-        e.stopPropagation(); // prevent it from immediately closing
-        document.getElementById("menu").classList.toggle("active");
-        this.classList.toggle("active");
-      });
-    function closeMenu() {
-        document.getElementById("menu").classList.remove("active");
-        document.getElementById("menu-icon").classList.remove("active");
+export function createMenue() {
+  const btn  = document.getElementById('menu-toggle');
+  const menu = document.getElementById('menu');
+
+  function setOpen(isOpen) {
+    btn.setAttribute('aria-expanded', String(isOpen));
+    btn.setAttribute('aria-label', isOpen ? 'Menü schließen' : 'Menü öffnen');
+    btn.classList.toggle('active', isOpen);
+    menu.classList.toggle('active', isOpen);
+    menu.hidden = !isOpen;
+  }
+
+  function isOpen() {
+    return btn.getAttribute('aria-expanded') === 'true';
+  }
+
+  function toggle() {
+    setOpen(!isOpen());
+  }
+
+  function closeIfOpen() {
+    if (isOpen()) setOpen(false);
+  }
+
+  // open/close with mouse or keyboard
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggle();
+  });
+
+  // close on click outside
+  document.addEventListener('click', (e) => {
+    if (!btn.contains(e.target) && !menu.contains(e.target)) {
+      closeIfOpen();
     }
-      
-      // Close menu on any click outside the menu
-    document.addEventListener("click", function () {
-        closeMenu();
-    });
+  });
+
+  // close with Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeIfOpen();
+  });
 }
+
 
 
 function activateButton(button) {

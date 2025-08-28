@@ -290,6 +290,9 @@ body {
     margin-right: 10px;
 }
 
+
+
+
 .button {
     padding: 10px 15px;
     text-align: center;
@@ -544,16 +547,31 @@ margin-left : 3px;
 
 }
 
+h1 {
+  font-size: 2rem;   /* or whatever size fits your design */
+  font-weight: bold;
+}
 
+h2 {
+  font-size: 1.5rem;   /* or whatever size fits your design */
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 1rem;   /* or whatever size fits your design */
+  font-weight: bold;
+}
 /* Style for the menu icon */
 .menu-icon {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 30px;
-    height: 22px;
+    background: none !important;
+    width: 30px !important;
+    height: 22px !important;
     cursor: pointer;
     margin-left: auto;
+    padding: 0px !important;
 }
 
 .menu-icon .bar {

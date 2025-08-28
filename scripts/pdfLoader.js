@@ -33,7 +33,7 @@ document.getElementById("demo").addEventListener("click", async function (event)
     window.demomode = true;  // your flag
 
     // pick file path based on language
-    //console.log(window)
+    console.log(window)
     const  filePath = (window.actualLang === "en") ? "DemoDocEn.pdf" : "DemoDocde.pdf";
     //const filePath = `../${fileName}`
     console.log(filePath)

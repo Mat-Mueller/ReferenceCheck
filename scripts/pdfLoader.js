@@ -57,8 +57,8 @@ document.getElementById("demo").addEventListener("click", async function (event)
 
             // Dynamically load script after rendering
             const script = document.createElement("script");
-            script.src = "/scripts/Trigger.js?ts=" + Date.now();
-            script.onload = () => console.log("Trigger.js loaded successfully");
+            script.src = `/scripts/Trigger.js?file=${encodeURIComponent("demo")}&ts=${Date.now()}`;
+            script.onload = () => console.log(" loaded successfully");
                 document.body.appendChild(script);
             detectFootnotesForAllTextLayers();
             createZoomButtonsandSearchField();        
@@ -90,9 +90,9 @@ document.getElementById("demo").addEventListener("click", async function (event)
             // Wait for all pages to be rendered
             await renderAllPages(pdfDocument);
             const script = document.createElement("script");
-            script.src = "/scripts/Trigger.js?ts=" + Date.now();
-            script.onload = () => console.log("Trigger.js loaded successfully");
-script.onerror = () => console.error("Trigger.js failed to load");
+            script.src = `/scripts/Trigger.js?file=${encodeURIComponent(file.name)}&ts=${Date.now()}`;
+            script.onload = () => console.log(" loaded successfully");
+script.onerror = () => console.error("failed to load");
             document.body.appendChild(script);
             detectFootnotesForAllTextLayers();
             createZoomButtonsandSearchField();        
@@ -124,9 +124,9 @@ script.onerror = () => console.error("Trigger.js failed to load");
             // Wait for all pages to be rendered
             await renderAllPages(pdfDocument);
                         const script = document.createElement("script");
-            script.src = "/scripts/Trigger.js?ts=" + Date.now();
-            script.onload = () => console.log("Trigger.js loaded successfully");
-script.onerror = () => console.error("Trigger.js failed to load");
+            script.src = `/scripts/Trigger.js?file=${encodeURIComponent(file.name)}&ts=${Date.now()}`;
+            script.onload = () => console.log("loaded successfully");
+script.onerror = () => console.error("failed to load");
             document.body.appendChild(script);
             detectFootnotesForAllTextLayers();
             createZoomButtonsandSearchField();

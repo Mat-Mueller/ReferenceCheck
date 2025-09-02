@@ -1463,7 +1463,7 @@ export function DragDrop() {
         draggedElement.setAttribute('found', 'true');
 
         DoHighlight?.(dropZone);
-        dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!window.mq.matches) {dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });}
 
         const singleRef = dropZone.querySelector('.SingleRef');
         if (!singleRef) return;

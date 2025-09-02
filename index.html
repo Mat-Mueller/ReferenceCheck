@@ -13,54 +13,125 @@
 <link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/">
 <link rel="canonical" href="https://citalyze.de/">
     <link rel="stylesheet" href="/styles.css">
-    <script type="application/ld+json">
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
+  "@graph": [
     {
-      "@type": "Question",
-      "name": "Was ist diese Software und was macht sie?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Diese Software prüft die Zitiergenauigkeit in PDFs, vergleicht In-Text-Zitate mit dem Literaturverzeichnis und verifiziert Referenzen über CrossRef. Zusätzlich ist eine Google-Scholar-Suche möglich."
+      "@type": "Organization",
+      "@id": "https://citalyze.de/#org",
+      "name": "Citalyze",
+      "url": "https://citalyze.de/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://citalyze.de/Logo.png"
+      },
+      "email": "support@citalyze.de",
+      "founder": {
+        "@type": "Person",
+        "name": "Matthias Müller"
       }
     },
     {
-      "@type": "Question",
-      "name": "Wie benutze ich die Software?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "PDF hochladen, den Anweisungen folgen und nach der Analyse die Übersicht möglicher Abweichungen zwischen In-Text-Zitaten und Referenzen prüfen."
+      "@type": "WebSite",
+      "@id": "https://citalyze.de/#website",
+      "url": "https://citalyze.de/",
+      "name": "Citalyze",
+      "inLanguage": "de",
+      "publisher": { "@id": "https://citalyze.de/#org" }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://citalyze.de/#app",
+      "name": "Citalyze",
+      "url": "https://citalyze.de/",
+      "inLanguage": "de",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "isAccessibleForFree": true,
+      "description": "Citalyze prüft APA-Referenzen in PDFs, gleicht In-Text-Zitate mit dem Literaturverzeichnis ab und validiert Einträge über Crossref.",
+      "image": "https://citalyze.de/Screenshot.png",
+      "publisher": { "@id": "https://citalyze.de/#org" },
+      "featureList": [
+        "Quellenverzeichnis",
+        "Abgleich In-Text ↔ Literaturverzeichnis",
+        "Quellen-Validierung",
+        "APA-Zitierweise",
+        "Richtig Zitieren"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/InStock",
+        "url": "https://citalyze.de/"
+      },
+      "potentialAction": {
+        "@type": "UploadAction",
+        "name": "PDF hochladen zur Referenzprüfung",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://citalyze.de/#pdf-upload",
+          "httpMethod": "POST",
+          "encodingType": "application/pdf"
+        },
+        "actionPlatform": [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform"
+        ]
       }
     },
     {
-      "@type": "Question",
-      "name": "Welche Zitierweise wird unterstützt?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Unterstützt wird der APA-Stil. Ergebnisse für andere Stile sind derzeit nicht zuverlässig, funktionieren aber eventuell, wenn sie APA ähneln."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Wie genau ist das System und was passiert bei Abweichungen?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Sehr hohe Genauigkeit angestrebt, aber keine 100 % Garantie wegen PDF-Limitierungen. Abweichungen werden markiert, damit Sie sie manuell prüfen und zuordnen können."
-      }
-    },
-    {
-  "@type": "Question",
-  "name": "Kann Citalyze KI-generierte falsche Referenzen erkennen?",
-  "acceptedAnswer": {
-    "@type": "Answer",
-    "text": "Ja. Viele KI-Textgeneratoren erfinden Referenzen oder mischen reale mit falschen Quellen. Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind."
-  }
-}
+      "@type": "FAQPage",
+      "@id": "https://citalyze.de/#faq",
+      "inLanguage": "de",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Was ist diese Software und was macht sie?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Diese Software prüft die Zitiergenauigkeit in PDFs, vergleicht In-Text-Zitate mit dem Literaturverzeichnis und verifiziert Referenzen über CrossRef. Zusätzlich ist eine Google-Scholar-Suche möglich."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie benutze ich die Software?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PDF hochladen, den Anweisungen folgen und nach der Analyse die Übersicht möglicher Abweichungen zwischen In-Text-Zitaten und Referenzen prüfen."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Welche Zitierweise wird unterstützt?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Unterstützt wird der APA-Stil. Ergebnisse für andere Stile sind derzeit nicht zuverlässig, funktionieren aber eventuell, wenn sie APA ähneln."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie genau ist das System und was passiert bei Abweichungen?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sehr hohe Genauigkeit angestrebt, aber keine 100 % Garantie wegen PDF-Limitierungen. Abweichungen werden markiert, damit Sie sie manuell prüfen und zuordnen können."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kann Citalyze KI-generierte falsche Referenzen erkennen?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ja. Viele KI-Textgeneratoren erfinden Referenzen oder mischen reale mit falschen Quellen. Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind."
+          }
+        }
+      ]
+    }
   ]
 }
 </script>
+
 
 </head>
 
@@ -274,46 +345,73 @@
 
 
                <div id="FAQ_container">
-                    <h2 data-i18n="faq_title">Häufig gestellte Fragen (FAQ)</h2>
+                
+                <h2 >Warum sollten Sie Citalyze nutzen?</h2>
 
+                <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
+<h3> Fehlerfrei zitieren automatisch und kostenlos mit Citalyze</h3>
+
+<p>Zitieren gehört zu den wichtigsten formalen Anforderungen in jeder wissenschaftlichen Arbeit und gleichzeitig zu den größten Fehlerquellen. Schon kleine Unstimmigkeiten im Quellenverzeichnis oder fehlende Referenzen können wertvolle Punkte kosten oder Zweifel an der Sorgfalt einer Arbeit aufwerfen (<a href="https://citalyze.de/de/blog/ubersicht/was-passiert-nach-der-abgabe-so-werden-abschlussarbeiten-bewertet/" target="_blank" rel="noopener noreferrer">Blogartikel: Wie werden Arbeiten bewertet</a>). Typische Probleme sind zum Beispiel:
+</p>
+<ul>
+    <li> Ein Zitat im Text, das im Literaturverzeichnis fehlt</li>
+<li> Eine Quelle, die zwar im Verzeichnis steht, aber nie im Text verwendet wurde</li>
+<li> Unterschiedliche Schreibweisen derselben Quelle</li>
+<li> Ein falsches Publikationsjahr oder eine fehlerhafte DOI</li>
+</ul>
+
+<p>Gerade in Zeiten von KI-Textgeneratoren wie ChatGPT kommt ein neues Risiko hinzu: scheinbar korrekt formatierte, aber frei erfundene Quellenangaben. Solche „halluzinierten Referenzen“ sehen auf den ersten Blick echt aus, existieren aber nicht und können die Glaubwürdigkeit einer ganzen Arbeit infrage stellen.
+</p>
+<p>
+Genau hier setzt Citalyze an. Unser Tool überprüft deine Arbeit direkt im PDF-Format, gratis und automatisch. Alle Zitate im Text werden mit deinem Literaturverzeichnis abgeglichen. Fehlende Einträge, falsche Jahreszahlen oder doppelte Angaben erkennt Citalyze sofort und markiert sie übersichtlich im Report. Zusätzlich werden deine Referenzen über CrossRef und auf Wunsch über Google Scholar verifiziert. So kannst du sicher sein, dass jede Quelle auch wirklich existiert.
+</p>
+<p>
+Im Unterschied zu klassischer Plagiatssoftware liegt der Fokus nicht auf kopierten Textstellen, sondern auf der Qualität deiner eigenen Zitation. Traditionelle Plagiatsprüfungen verlieren an Bedeutung, weil wortgetreue Plagiate in Zeiten von KI immer seltener werden (<a href="https://citalyze.de/de/blog/ubersicht/brauchen-wir-in-zeiten-von-ki-noch-plagiatserkennung/" target="_blank" rel="noopener noreferrer">Blogartikel: Brauchen wir in Zeiten von KI noch Plagiatserkennung?</a>). Entscheidend ist heute, ob deine Quellenangaben vollständig, korrekt und überprüfbar sind. Genau das macht Citalyze einzigartig und besonders wertvoll für Studierende, Lehrende und Prüfende.
+</p>
+<p>
+Einfach dein PDF hochladen, wenige Sekunden warten und einen detaillierten Prüfbericht erhalten. So siehst du sofort, wo du nachbessern solltest. Das spart Zeit, erhöht die Verlässlichkeit deiner Arbeit und verhindert unnötigen Punktabzug.
+</p>
+<p>
+Egal ob Bachelorarbeit, Masterarbeit oder Dissertation, mit Citalyze gehst du beim korrekten Zitieren auf Nummer sicher und kannst dich voll auf den Inhalt konzentrieren statt auf formale Details.
+                </div>
+
+                
+
+
+
+                
                 <!-- FAQ 1 -->
                 <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
+                    
+                                        <h2 data-i18n="faq_title">Häufig gestellte Fragen (FAQ)</h2>
+
                     <h3 id="faq-q1" data-i18n="faq_q1">1. Was ist diese Software und was macht sie?</h3>
                     <p data-i18n="faq_a1">
                     Diese Software prüft die Zitiergenauigkeit in PDFs und stellt sicher, dass In-Text-Zitate mit dem Literaturverzeichnis übereinstimmen.
                     Jede Referenz wird über CrossRef verifiziert; zusätzlich können Sie zur Überprüfung Google Scholar durchsuchen.
                     </p>
-                </div>
 
                 <!-- FAQ 2 -->
-                <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
                     <h3 id="faq-q2" data-i18n="faq_q2">2. Wie benutze ich die Software?</h3>
                     <p data-i18n="faq_a2">
                     Laden Sie Ihr PDF hoch. Die Software führt Sie durch die Zitationseinstellungen. Nach der Analyse sehen Sie eine Übersicht über
                     eventuelle Abweichungen zwischen In-Text-Zitaten und Einträgen im Literaturverzeichnis.
                     </p>
-                </div>
+                
 
                 <!-- FAQ 3 -->
-                <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
                     <h3 id="faq-q3" data-i18n="faq_q3">3. Welche Zitierweise wird unterstützt?</h3>
                     <p data-i18n="faq_a3">
                     Die Software erkennt Zitate und Literaturangaben nach dem
                     <a href="https://apastyle.apa.org/" target="_blank" rel="noopener">APA-Standard</a>.
                     Ergebnisse für andere Stile sind derzeit nicht zuverlässig; das Matching kann funktionieren, wenn der Stil dem APA-Schema ähnelt.
                     </p>
-                </div>
-
-                <!-- FAQ 4 -->
-                <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h3 id="faq-q4" data-i18n="faq_q4">4. Wie genau ist das System und was passiert bei Abweichungen?</h3>
+                <h3 id="faq-q4" data-i18n="faq_q4">4. Wie genau ist das System und was passiert bei Abweichungen?</h3>
                     <p data-i18n="faq_a4">
                     Wir streben hohe Genauigkeit an, können jedoch keine 100&nbsp;% garantieren, da die Extraktion und Erkennung aus PDF-Texten Grenzen hat.
                     Bei einer Abweichung markiert die Software den Unterschied, sodass Sie In-Text-Zitate und Referenzen manuell prüfen und zuordnen können.
                     </p>
-                </div>
-                                    <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h3 id="faq-q5" data-i18n="faq_q5">5. Kann Citalyze KI-generierte falsche Referenzen erkennen?</h3>
+                <h3 id="faq-q5" data-i18n="faq_q5">5. Kann Citalyze KI-generierte falsche Referenzen erkennen?</h3>
                     <p data-i18n="faq_a5">
                         Ja. Viele KI-Textgeneratoren erfinden Referenzen oder mischen reale mit falschen Quellen.
                         Citalyze vergleicht jede Referenz mit der CrossRef-Datenbank und markiert Quellen, die nicht existieren oder fehlerhaft sind.

@@ -105,6 +105,24 @@
 </url>
 
 
+  <!-- 3logartikel (DE) -->
+<url>
+  <loc>https://citalyze.de/de/blog/ubersicht/welche-zitierweise-passt-zu-meiner-arbeit/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/welche-zitierweise-passt-zu-meiner-arbeit/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/which-citation-style-should-i-choose/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/which-citation-style-should-i-choose/"/>
+</url>
+
+<!-- Blogartikel EN -->
+<url>
+  <loc>https://citalyze.de/en/blog/overview/which-citation-style-should-i-choose/</loc>
+  <lastmod>2025-08-20</lastmod>
+  <xhtml:link rel="alternate" hreflang="de" href="https://citalyze.de/de/blog/ubersicht/welche-zitierweise-passt-zu-meiner-arbeit/"/>
+  <xhtml:link rel="alternate" hreflang="en" href="https://citalyze.de/en/blog/overview/which-citation-style-should-i-choose/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://citalyze.de/en/blog/overview/which-citation-style-should-i-choose/"/>
+</url>
+
 </urlset>
 
 

@@ -18,51 +18,121 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
+  "@graph": [
     {
-      "@type": "Question",
-      "name": "What is this software and what does it do?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "This software checks citation accuracy in PDFs, compares in-text citations with the reference list, and verifies references via CrossRef. A Google Scholar search is also available."
+      "@type": "Organization",
+      "@id": "https://citalyze.de/#org",
+      "name": "Citalyze",
+      "url": "https://citalyze.de/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://citalyze.de/Logo.png"
+      },
+      "email": "support@citalyze.de",
+      "founder": {
+        "@type": "Person",
+        "name": "Matthias Müller"
       }
     },
     {
-      "@type": "Question",
-      "name": "How do I use the software?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Upload a PDF, follow the steps, and after the analysis review the summary of potential discrepancies between in-text citations and references."
+      "@type": "WebSite",
+      "@id": "https://citalyze.de/#website",
+      "url": "https://citalyze.de/",
+      "name": "Citalyze",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://citalyze.de/#org" }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://citalyze.de/en/#app",
+      "name": "Citalyze",
+      "url": "https://citalyze.de/en/",
+      "inLanguage": "en",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "isAccessibleForFree": true,
+      "description": "Citalyze checks APA references in PDFs by matching in-text citations to the reference list and validating entries via Crossref.",
+      "image": "https://citalyze.de/Screenshot.png",
+      "publisher": { "@id": "https://citalyze.de/#org" },
+      "featureList": [
+        "PDF upload reference checking",
+        "In-text ↔ reference matching",
+        "Crossref verification",
+        "APA-focused validation"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/InStock",
+        "url": "https://citalyze.de/en/"
+      },
+      "potentialAction": {
+        "@type": "UploadAction",
+        "name": "Upload PDF for reference checking",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://citalyze.de/en/#pdf-upload",
+          "httpMethod": "POST",
+          "encodingType": "application/pdf"
+        },
+        "actionPlatform": [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform"
+        ]
       }
     },
     {
-      "@type": "Question",
-      "name": "Which citation style is supported?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "The APA style is supported. Results for other styles are currently not reliable, though they may work if they closely resemble APA."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How accurate is the system and what happens with discrepancies?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "We aim for very high accuracy, but there is no 100% guarantee due to PDF limitations. Discrepancies are flagged so you can review and resolve them manually."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can Citalyze detect AI-generated false references?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Many AI text generators invent references or mix real with false sources. Citalyze compares each reference against the CrossRef database and flags sources that do not exist or contain errors."
-      }
+      "@type": "FAQPage",
+      "@id": "https://citalyze.de/en/#faq",
+      "inLanguage": "en",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is this software and what does it do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Citalyze checks citation accuracy in PDFs by matching in-text citations to the reference list and verifying references via Crossref. A Google Scholar search is also available."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I use the software?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Upload a PDF, follow the on-screen instructions, and after analysis review the overview of potential mismatches between in-text citations and references."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which citation style is supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "APA style is supported. Results for other styles are not currently reliable, though similar formats may partially work."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How accurate is the system and what happens with mismatches?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "High accuracy is the goal, but 100% cannot be guaranteed due to PDF limitations. Detected mismatches are highlighted so you can review and assign them manually."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Citalyze detect AI-generated fake references?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Many AI text generators invent references or mix real with incorrect sources. Citalyze checks each reference against the Crossref database and flags sources that don’t exist or contain errors."
+          }
+        }
+      ]
     }
   ]
 }
 </script>
+
 
 
 </head>
@@ -286,6 +356,35 @@
 
 
                <div id="FAQ_container">
+
+<h2 >Why Citalyze?</h2>
+<div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
+<h3> Cite correctly automatically and for free with Citalyze</h3>
+
+<p>Citing is one of the most important formal requirements in any academic paper and at the same time one of the biggest sources of error. Even small inconsistencies in the reference list or missing citations can cost valuable points or raise doubts about the quality of a paper (<a href="https://citalyze.de/en/blog/overview/what-happens-after-submission-how-theses-are-evaluated/" target="_blank" rel="noopener noreferrer">Blog post: How theses are evaluated</a>). Typical problems include:
+</p>
+<ul>
+    <li> A citation in the text that does not appear in the reference list</li>
+    <li> A source listed in the references but never cited in the text</li>
+    <li> Different spellings of the same reference</li>
+    <li> An incorrect publication year or a wrong DOI</li>
+</ul>
+
+<p>Especially in times of AI text generators like ChatGPT, a new risk emerges: references that look correctly formatted but are actually invented. Such “hallucinated references” may appear genuine at first glance but do not exist and can undermine the credibility of an entire paper.
+</p>
+<p>
+This is where Citalyze comes in. Our tool checks your work directly in PDF format, free of charge and automatically. All citations in the text are matched with your reference list. Missing entries, incorrect years or duplicate references are immediately detected and clearly highlighted in the report. In addition, your references are verified via CrossRef and optionally Google Scholar, ensuring that every source really exists.
+</p>
+<p>
+Unlike traditional plagiarism software, the focus here is not on copied text passages but on the quality of your own citations. Classical plagiarism detection is losing importance because word-for-word plagiarism is becoming less relevant in the age of AI (<a href="https://citalyze.de/en/blog/overview/do-we-still-need-plagiarism-detection-in-the-age-of-ai/" target="_blank" rel="noopener noreferrer">Blog post: Do we still need plagiarism detection in the age of AI?</a>). What matters today is whether your references are complete, correct, and verifiable. This is what makes Citalyze unique and especially valuable for students, teachers, and examiners.
+</p>
+<p>
+Simply upload your PDF, wait a few seconds, and receive a detailed report. You will immediately see where corrections are needed. This saves time, increases the reliability of your work, and prevents unnecessary point deductions.
+</p>
+<p>
+Whether it is a bachelor’s thesis, master’s thesis, or dissertation, with Citalyze you can be sure of correct citation and focus fully on your content instead of formal details.
+</div>
+
                     <h2 data-i18n="faq_title">Häufig gestellte Fragen (FAQ)</h2>
 
                 <!-- FAQ 1 -->
@@ -295,35 +394,21 @@
                     This software checks citation accuracy in PDFs, ensuring in-text citations match the reference list. It verifies each reference through CrossRef and lets users search Google Scholar for accuracy.
 
                     </p>
-                </div>
-
-                <!-- FAQ 2 -->
-                <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h3 id="faq-q2" data-i18n="faq_q2">2. Can Citalyze detect AI-generated false references?</h3>
+  <h3 id="faq-q2" data-i18n="faq_q2">2. Can Citalyze detect AI-generated false references?</h3>
                     <p data-i18n="faq_a2">
                    Yes. Many AI text generators invent references or mix real with false sources. Citalyze compares each reference against the CrossRef database and flags those that do not exist or contain incorrect details.
 
                     </p>
-                </div>
-
-                <!-- FAQ 3 -->
-                <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h3 id="faq-q3" data-i18n="faq_q3">3. How do I use the software?</h3>
+ <h3 id="faq-q3" data-i18n="faq_q3">3. How do I use the software?</h3>
                     <p data-i18n="faq_a3">
                     Upload your PDF, and the software will guide you through citation settings. After the analysis is complete, you’ll see an overview of any mismatched in-text citations and references in your document.
 
                     </p>
-                </div>
-
-                <!-- FAQ 4 -->
-                <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h3 id="faq-q4" data-i18n="faq_q4">4. What reference style is supported?</h3>
+ <h3 id="faq-q4" data-i18n="faq_q4">4. What reference style is supported?</h3>
                     <p data-i18n="faq_a4">
                     The software detects citations and references following the APA style. The results for other reference styles are currently not reliable. Matching may work for other reference styles similar to APA.
                     </p>
-                </div>
-                                    <div class="result-frame" style="background-color:#FFFFFF;margin-bottom:15px;padding:10px;text-align:justify;border:1px solid #ddd;">
-                    <h3 id="faq-q5" data-i18n="faq_q5">5. What is the level of accuracy, and what happens if there’s a mismatch?</h3>
+ <h3 id="faq-q5" data-i18n="faq_q5">5. What is the level of accuracy, and what happens if there’s a mismatch?</h3>
                     <p data-i18n="faq_a5">
                         While we strive for high accuracy, we cannot guarantee 100% precision, as there is always a chance of mismatches due to limitations in analyzing PDF text and detecting citations and references. If the software detects a mismatch, it will highlight the discrepancy, allowing the user to manually verify and match in-text citations and references.
 

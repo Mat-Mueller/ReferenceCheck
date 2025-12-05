@@ -530,6 +530,10 @@ margin-left : 3px;
     max-height: 80%;
 }
 
+.tt-abstract {
+  margin-top: 10px;
+}
+
 #LeftContainer {
     display: flex;
     z-index: 1000;

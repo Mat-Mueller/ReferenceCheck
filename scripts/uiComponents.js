@@ -598,7 +598,7 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
         <strong>${item.title[0]}</strong>.
         ${item['container-title'] ? item['container-title'][0] : 'Unknown Journal'}.
         DOI: <a href="${item.URL}" target="_blank">${item.DOI}</a>`;
-        console.log(item["container-title"])
+
         resultFrame.appendChild(resultParagraph);
         resultFrame.style.marginBottom = '10px';
         resultFrame.style.backgroundColor = `hsl(${(item.matchPercentage / 100) * 120}, 100%, 50%)`;
@@ -606,8 +606,18 @@ function appendResultToDiv(item, ReferenceFrameParagraph) {
         // Append the result frame to the resultsDiv
         resultsDiv.appendChild(resultFrame);
 
+      const clean = (d => (d.innerHTML = item.abstract, d.textContent))(document.createElement("div"));
         // Check if there is an abstract
+        console.log(item.abstract, item)
         if (item.abstract) {
+
+            for (const x of ReferenceFrameParagraph.MatchedWith) {
+                console.log(x,)
+                x.dataset.abstractText = clean
+                FormulateTooltip(x)
+                
+
+            }
             // Create a link for showing the abstract
             resultParagraph.innerHTML += '&nbsp;'
             resultParagraph.innerHTML += '&nbsp;'
@@ -1577,7 +1587,7 @@ const citationElements = document.querySelectorAll('span.citation[cleanedCit]');
 
 
 citationElements.forEach(function (element) {
-
+    //console.log(element)
     FormulateTooltip(element)
     
 });
@@ -1716,13 +1726,18 @@ export function showLoadingSpinner() {
   }
 
 /* FormulateTooltip v2 — HTML, icons, selectable lists, i18n-first */
-function FormulateTooltip(element, {
-  outAttr = "tooltip",          // where to store the HTML (was "tooltip" in your code)
-  maxItems = 5,                 // how many matches/suggestions to show initially
-  suggestions = null,           // optional: array of low-confidence suggestions (strings)
-  suggestionText = null         // optional: typo correction preview string
-} = {}) {
+function FormulateTooltip(
+  element,
+  {
+    outAttr = "tooltip",
+    maxItems = 5,
+    suggestions = null,
+    suggestionText = null,
+    abstractText = null,   // 👈 NEW
+  } = {}
+) {
   const dict = (window.langDict || {});
+const finalAbstract = element.dataset.abstractText || null;
 
   // --- helpers -------------------------------------------------------------
   const decodeHtml = s => { const t = document.createElement('textarea'); t.innerHTML = s || ""; return t.value; };
@@ -1765,6 +1780,8 @@ const refToString = (n) => {
     foundAttr === "typo"  ? "typo"   :
     (!normCit ? "invalid" :
       (matches.length === 0 ? "not_found" : "not_found_with_suggestions"));
+
+
 
   // --- i18n (text only; HTML comes from code) ------------------------------
   const t = (k, d) => {
@@ -1908,14 +1925,55 @@ const refEl = raw[i];
     // `;
   }
 
-  const html = `
-    <div class="tt" role="tooltip" data-status="${esc(status)}">
-      ${headerHTML}
-      ${mainHTML}
-      ${listsHTML}
-      ${footerHTML}
+const abstractHTML = (() => {
+  if (!finalAbstract) return "";
+
+  const words = finalAbstract.split(/\s+/);
+  const hasMore = words.length > 20;
+  const preview = hasMore
+    ? words.slice(0, 20).join(" ") + " …"
+    : finalAbstract;
+
+  const fullEsc    = esc(finalAbstract);
+  const previewEsc = esc(preview);
+  const moreLabel  = esc(dict["tooltip_abstract_more"] || "Continue");
+
+  if (!hasMore) {
+    return `
+      <div class="tt-abstract">
+        <b>Abstract:</b>
+        <span class="tt-abstract-text">${previewEsc}</span>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="tt-abstract" data-full-abstract="${fullEsc}">
+      <b>Abstract:</b>
+      <span class="tt-abstract-text">${previewEsc}</span>
+      <button type="button"
+              class="tt-btn tt-btn--link tt-abstract-more"
+              data-action="abstract-more">
+        ${moreLabel}
+      </button>
     </div>
-  `.trim();
+  `;
+})();
+
+
+
+
+
+const html = `
+  <div class="tt" role="tooltip" data-status="${esc(status)}">
+    ${headerHTML}
+    ${mainHTML}
+    ${listsHTML}
+    ${abstractHTML}
+    ${footerHTML}
+  </div>
+`.trim();
+
 
   element.setAttribute(outAttr, html);
   return { html, status };
@@ -1947,7 +2005,7 @@ function createTooltips({
     let left = r.left + window.scrollX;
     let top  = r.top  + window.scrollY - tr.height - OFFSET;
     // place below if not enough space above
-    if (top < window.scrollY) top = r.bottom + window.scrollY + OFFSET;
+    if (top < window.scrollY) top = r.bottom + window.scrollY + OFFSET - 40;
     // clamp horizontally
     const vw = document.documentElement.clientWidth;
     if (left + tr.width > window.scrollX + vw - 8) left = window.scrollX + vw - tr.width - 8;
@@ -1992,13 +2050,30 @@ tip.setAttribute('data-host-id', hostId);
 
     // Make radio rows selectable (click anywhere on the row incl. the circle)
 tip.addEventListener('click', (e) => {
+  // 1) Handle abstract "Continue" button
+  const moreBtn = e.target.closest('.tt-abstract-more');
+  if (moreBtn && tip.contains(moreBtn)) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const container = moreBtn.closest('.tt-abstract');
+    if (container) {
+      const full = container.getAttribute('data-full-abstract');
+      const span = container.querySelector('.tt-abstract-text');
+      if (span && full) {
+        span.textContent = full;
+      }
+      moreBtn.remove(); // hide the button after expansion
+    }
+    return; // do NOT fall through to tt-item selection logic
+  }
+
+  // 2) Existing radio-row selection logic
   const li = e.target.closest('.tt-item');
   if (!li || !tip.contains(li)) return;
-    console.log("clicked")
   selectItem(li);
   enableConfirmIfSelected(tip);
 });
-
 
 
 // Helpers (keep these inside the same forEach so they see `tip`)

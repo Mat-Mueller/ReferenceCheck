@@ -15,7 +15,7 @@ export async function performCrossRefSearch() {
     for (let i = 0; i < References.length; i++) {
         // Wait until there are fewer than MAX_CONCURRENT_REQUESTS
         while (activeRequests >= MAX_CONCURRENT_REQUESTS) {
-            await delay(100); // Check every 100 ms if there's space for new requests
+            await delay(500); // Check every 100 ms if there's space for new requests
         }
 
         activeRequests++; // Increment active requests count
@@ -80,34 +80,55 @@ export async function checkExists(textReference) {
 
 
 async function crossrefSearch(textReference) {
-    //console.log(`Text passed to crossrefSearch(): ${textReference}`);
-
-    if (textReference.length > 0) {
-        try {
-            //document.body.style.cursor = 'wait'; // Change cursor to wait
-            const query = encodeURIComponent(textReference);
-            const apiUrl = `https://api.crossref.org/works?query.bibliographic=${query}&rows=3`;
-
-            // Await the result of the fetch call
-            
-            const response = await fetch(apiUrl);
-            const searchResults = await response.json();
-            document.body.style.cursor = 'default'; // Revert cursor to default
-            
-            const searchResultsData = searchResults.message.items.slice(0, 2); // Get the first 2 results
-            //console.log(`Sliced search results returned from crossref: ${searchResultsData}`);
-
-            return searchResultsData; // Return the API data after it is fetched
-        } catch (error) {
-            console.error('Error fetching CrossRef data:', error);
-            document.body.style.cursor = 'default'; // Revert cursor to default even if there's an error
-            return null; // Return null in case of an error
-        }
-    } else {
+    if (!textReference || !textReference.trim()) {
         console.log('No text found in the selected divs.');
-        return null; // Return null if no text is found
+        return [];
     }
+
+    const query = encodeURIComponent(textReference);
+    const apiUrl =
+        `https://api.crossref.org/works?query.bibliographic=${query}&rows=3&mailto=you@example.com`;
+
+    let attempt = 0;
+    const maxAttempts = 5;
+    let delay = 500; // start with 500ms
+
+    while (attempt < maxAttempts) {
+        try {
+            const response = await fetch(apiUrl, {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.status === 429) {
+                // RATE LIMIT HIT
+                console.warn(`Crossref 429 – retrying in ${delay}ms (attempt ${attempt+1}/${maxAttempts})`);
+                await new Promise(r => setTimeout(r, delay));
+                delay *= 2;          // exponential backoff
+                attempt++;
+                continue;            // try again
+            }
+
+            if (!response.ok) {
+                console.warn("Crossref HTTP error:", response.status, response.statusText);
+                return [];
+            }
+
+            const json = await response.json();
+            const items = json?.message?.items || [];
+            return items.slice(0, 2);
+
+        } catch (err) {
+            console.error("Crossref fetch failed:", err);
+            await new Promise(r => setTimeout(r, delay));
+            delay *= 2;
+            attempt++;
+        }
+    }
+
+    console.error("Crossref failed after maximum retries.");
+    return [];
 }
+
 
 
 function formatResults(searchResults) {
